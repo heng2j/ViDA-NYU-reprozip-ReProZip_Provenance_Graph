@@ -1,0 +1,178 @@
+{
+  "inputs_outputs": [
+    {
+      "name": "textfile", 
+      "path": "/home/vagrant/reprozip-examples/bash-count/textfile", 
+      "read_by_runs": [
+        0
+      ], 
+      "written_by_runs": []
+    }
+  ], 
+  "other_files": [
+    "/dev/tty", 
+    "/etc/ld.so.cache", 
+    "/home/vagrant/reprozip-examples/bash-count/count.sh", 
+    "/home/vagrant/reprozip-examples/bash-count/textfile", 
+    "/usr/lib/locale/locale-archive"
+  ], 
+  "packages": [
+    {
+      "files": [
+        "/bin/bash"
+      ], 
+      "name": "bash", 
+      "version": "4.3-14ubuntu1.1"
+    }, 
+    {
+      "files": [
+        "/usr/bin/cut", 
+        "/usr/bin/env", 
+        "/usr/bin/wc"
+      ], 
+      "name": "coreutils", 
+      "version": "8.25-2ubuntu2"
+    }, 
+    {
+      "files": [
+        "/lib/x86_64-linux-gnu/ld-2.23.so", 
+        "/lib/x86_64-linux-gnu/libc.so.6", 
+        "/lib/x86_64-linux-gnu/libdl.so.2", 
+        "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache"
+      ], 
+      "name": "libc6", 
+      "version": "2.23-0ubuntu3"
+    }, 
+    {
+      "files": [
+        "/lib/x86_64-linux-gnu/libtinfo.so.5"
+      ], 
+      "name": "libtinfo5", 
+      "version": "6.0+20160213-1ubuntu1"
+    }
+  ], 
+  "runs": [
+    {
+      "name": "run0", 
+      "processes": [
+        {
+          "argv": [
+            "./count.sh"
+          ], 
+          "description": "/home/vagrant/reprozip-examples/bash-count/count.sh\n1", 
+          "exit_time": 6151152888111, 
+          "is_thread": false, 
+          "long_name": "count.sh (1)", 
+          "name": "1", 
+          "parent": null, 
+          "reads": [
+            "/home/vagrant/reprozip-examples/bash-count/count.sh", 
+            "/usr/bin/env", 
+            "/lib/x86_64-linux-gnu/ld-2.23.so", 
+            "/etc/ld.so.cache", 
+            "/lib/x86_64-linux-gnu/libc.so.6", 
+            "/usr/lib/locale/locale-archive"
+          ], 
+          "start_time": 6151141616167, 
+          "writes": []
+        }, 
+        {
+          "argv": [
+            "bash", 
+            "./count.sh"
+          ], 
+          "description": "/bin/bash\n1", 
+          "exit_time": 61511781998330, 
+          "is_thread": false, 
+          "long_name": "bash (1)", 
+          "name": "1", 
+          "parent": [
+            0, 
+            "exec"
+          ], 
+          "reads": [
+            "/bin/bash", 
+            "/etc/ld.so.cache", 
+            "/lib/x86_64-linux-gnu/libtinfo.so.5", 
+            "/lib/x86_64-linux-gnu/libdl.so.2", 
+            "/usr/lib/locale/locale-archive", 
+            "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache", 
+            "/home/vagrant/reprozip-examples/bash-count/count.sh"
+          ], 
+          "start_time": 6151152888111, 
+          "writes": [
+            "/dev/tty"
+          ]
+        }, 
+        {
+          "argv": null, 
+          "description": "/bin/bash\n2", 
+          "exit_time": 6151178151183, 
+          "is_thread": false, 
+          "long_name": "bash (2)", 
+          "name": "2", 
+          "parent": [
+            1, 
+            "fork"
+          ], 
+          "reads": [], 
+          "start_time": 6151161672197, 
+          "writes": []
+        }, 
+        {
+          "argv": [
+            "wc", 
+            "-l", 
+            "textfile"
+          ], 
+          "description": "/usr/bin/wc\n3", 
+          "exit_time": 6151177847425, 
+          "is_thread": false, 
+          "long_name": "wc (3)", 
+          "name": "3", 
+          "parent": [
+            2, 
+            "fork+exec"
+          ], 
+          "reads": [
+            "/usr/bin/wc", 
+            "/lib/x86_64-linux-gnu/ld-2.23.so", 
+            "/etc/ld.so.cache", 
+            "/lib/x86_64-linux-gnu/libc.so.6", 
+            "/usr/lib/locale/locale-archive", 
+            "/home/vagrant/reprozip-examples/bash-count/textfile"
+          ], 
+          "start_time": 6151162812004, 
+          "writes": []
+        }, 
+        {
+          "argv": [
+            "cut", 
+            "-d", 
+            " ", 
+            "-f", 
+            "1"
+          ], 
+          "description": "/usr/bin/cut\n4", 
+          "exit_time": 6151177703437, 
+          "is_thread": false, 
+          "long_name": "cut (4)", 
+          "name": "4", 
+          "parent": [
+            2, 
+            "fork+exec"
+          ], 
+          "reads": [
+            "/usr/bin/cut", 
+            "/lib/x86_64-linux-gnu/ld-2.23.so", 
+            "/etc/ld.so.cache", 
+            "/lib/x86_64-linux-gnu/libc.so.6", 
+            "/usr/lib/locale/locale-archive"
+          ], 
+          "start_time": 6151163598993, 
+          "writes": []
+        }
+      ]
+    }
+  ]
+}

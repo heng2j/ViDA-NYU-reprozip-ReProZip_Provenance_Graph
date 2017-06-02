@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+  .node {
+    cursor: pointer;
+  }
+
+  .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+
+  .node text {
+    font: 10px sans-serif;
+  }
+
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
+
+  .link text {
+    font: 12px sans-serif;
+    fill: #0b1542;
+}
+
+</style>
+<body>
+  <script src="//d3js.org/d3.v3.min.js"></script>
+  <script>
+
+
+var jsonFile = "ache.json";
+
+var data = ["ache.json", "stacked-up-website.json", "bash-count.json"];
+
+var isTreeRedrew = false;
+
+var select = d3.select('body')
+  .append('select')
+    .attr('class','select')
+    .on('change',onchange)
+
+var options = select
+  .selectAll('option')
+  .data(data).enter()
+  .append('option')
+    .text(function (d) { return d; });
+
+function onchange() {
+  selectValue = d3.select('select').property('value')
+
+  jsonFile = selectValue;
+
+    treeDraw(jsonFile);
+
+    isTreeRedrew = true;
+
+  // d3.select('body')
+  //   .append('p')
+  //   .text(selectValue + ' is the last selected option.')
+
+
+};
+
+
+
+
+
+
+    var margin = {top: 20, right: 120, bottom: 20, left: 120},
+    width = 1422 - margin.right - margin.left,
+    height = 800 - margin.top - margin.bottom;
+
+    var timeLineLen;
+
+    var i = 0,
+    duration = 750,
+    root;
+
+
+  //  var treeData = [];
+
+    var tree = d3.layout.tree()
+    .size([height, width]);
+
+    var diagonal = d3.svg.diagonal()
+    .projection(function(d) { return [d.y, d.x]; });
+
+    var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.right + margin.left)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+    //var jsonFile = "ache.json";
+    //var jsonFile = "digits.json";
+
+    //var jsonFile = "bash-count.json";
+
+
+
+    treeDraw(jsonFile);
+
+
+
+    d3.select(self.frameElement).style("height", "800px");
+
+
+   // update function 
+    function update(source) {
+
+  // Compute the new tree layout.
+  var nodes = tree.nodes(root).reverse(),
+  links = tree.links(nodes);
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+  // Update the nodes…
+  var node = svg.selectAll("g.node")
+  .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  // Enter any new nodes at the parent's previous position.
+  var nodeEnter = node.enter().append("g")
+  .attr("class", "node")
+  .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+  .on("click", click);
+
+  nodeEnter.append("circle")
+  .attr("r", 1e-6)
+  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeEnter.append("text")
+  .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+  .attr("dy", ".35em")
+  .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+  .text(function(d) { return d.name; })
+  .style("fill-opacity", 1e-6);
+
+  // Transition nodes to their new position.
+  var nodeUpdate = node.transition()
+  .duration(duration)
+  .attr("transform", function(d) { 
+
+
+
+    return "translate(" + d.y + "," + d.x + ")"; });
+
+  nodeUpdate.select("circle")
+  .attr("r", 4.5)
+  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeUpdate.select("text")
+  .style("fill-opacity", 1);
+
+  // Transition exiting nodes to the parent's new position.
+  var nodeExit = node.exit().transition()
+  .duration(duration)
+  .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+  .remove();
+
+  nodeExit.select("circle")
+  .attr("r", 1e-6);
+
+  nodeExit.select("text")
+  .style("fill-opacity", 1e-6);
+
+  // Update the links…
+  var link = svg.selectAll("path.link")
+  .data(links, function(d) { return d.target.id; });
+
+  // Enter any new links at the parent's previous position.
+  link.enter().insert("path", "g")
+  .attr("class", "link")
+  .attr("d", function(d) {
+    var o = {x: source.x0, y: source.y0};
+    return diagonal({source: o, target: o});
+  });
+
+
+
+
+
+
+  // Transition links to their new position.
+  link.transition()
+  .duration(duration)
+  .attr("d", diagonal);
+
+  // Transition exiting nodes to the parent's new position.
+  link.exit().transition()
+  .duration(duration)
+  .attr("d", function(d) {
+    var o = {x: source.x, y: source.y};
+    return diagonal({source: o, target: o});
+  })
+  .remove();
+
+
+
+  // //update the timeLine 
+
+  // var timeLine = svg.selectAll("line");
+
+  // timeLine.transition()
+  //       .duration(duration)
+       
+
+
+
+    // Update the link text
+    var linktext = svg.selectAll("g.link")
+        .data(links, function (d) {
+        return d.target.id;
+    });                                                                         
+
+
+    linktext.enter()
+        .insert("g")
+        .attr("class", "link")
+        .append("text")
+        .attr("dy", ".35em")
+        .attr("text-anchor", "middle")
+        .text(function (d) {
+        return d.target.rule;
+    });
+
+    // Transition link text to their new positions
+
+    linktext.transition()
+        .duration(duration)
+        .attr("transform", function (d) {
+        return "translate(" + ((d.source.y + d.target.y) / 2) + "," + ((d.source.x + d.target.x) / 2) + ")";
+    })
+
+
+        //Transition exiting link text to the parent's new position.
+    linktext.exit().transition()
+        .remove();
+
+
+  // Stash the old positions for transition.
+  nodes.forEach(function(d) {
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+}
+
+// Toggle children on click.
+function click(d) {
+
+
+  if (d.children) {
+    console.log('d.children' ,d.y);
+
+    d._children = d.children;
+    d.children = null;
+
+
+
+
+    decreaseTimeLineLen(d.y );
+
+  } else {
+
+    console.log('d._children' ,d.y);
+
+    d.children = d._children;
+    d._children = null;
+
+
+
+    increaseTimeLineLen(d.y );
+
+  }
+
+
+
+   updateTimeLine(timeLineLen);
+
+
+
+
+  update(d);
+}
+
+function treeDraw(jsonFile){
+
+
+
+ // d3.json block
+    d3.json(jsonFile, function(error, data){
+
+      if (error) throw error;
+
+
+      var rawData = [] ;
+      var treeData = [];
+
+      data.runs.forEach(function(run){
+
+
+        run.processes.forEach(function(_process){
+
+
+          if(_process.parent == null){
+
+            var node = {["name"]: _process.long_name, ["parent"]: "null", ["rule"] : "null"};
+
+            rawData.push(node);
+
+          }
+          else {
+
+           var parentProcess = run.processes[ ( _process.parent[0] ) ];
+
+
+             var node = {["name"]: _process.long_name, ["parent"]: parentProcess.long_name, ["rule"] : _process.parent[1]};
+
+
+             rawData.push(node);
+
+
+           }
+
+
+         }) 
+
+        console.log('rawData', rawData);
+
+
+        var dataMap = rawData.reduce(function(map, node) {
+         map[node.name] = node;
+         return map;
+       }, {});
+
+      
+        rawData.forEach(function(node) {
+       // add to parent
+       var parent = dataMap[node.parent];
+       if (parent) {
+        // create child array if it doesn't exist
+        (parent.children || (parent.children = []))
+         // add node to child array
+         .push(node);
+       } else {
+        // parent is null or missing
+        treeData.push(node);
+      }
+      });
+
+
+        console.log('treeData', treeData);
+
+
+      })
+
+
+      root = treeData[0];
+      root.x0 = height / 2;
+      root.y0 = 0;
+
+
+      console.log('root.x0' ,  root.x0);
+
+      // Default timeline length for root
+
+      
+      function collapse(d) {
+        if (d.children) {
+          d._children = d.children;
+          d._children.forEach(collapse);
+          d.children = null;
+        }
+
+
+      }
+
+
+      timeLineLen = root.x0 / 2;
+
+
+      if(isTreeRedrew == false){
+      timeLineDraw(timeLineLen);
+      }
+      else{
+
+        updateTimeLine(timeLineLen);
+
+      }
+
+
+
+      root.children.forEach(collapse);
+      update(root);
+
+    })
+
+
+
+}
+
+function timeLineDraw(length){
+
+  console.log('Draw an X to show that the size is correct');
+    // Draw an X to show that the size is correct.
+        var lines = svg.append("line")
+                      .attr("x1", 0)
+                       .attr("y1", height )
+                       .attr("x2", length)
+                       .attr("y2", height )
+                        .attr("stroke-width", 5)
+                      .attr("stroke", "#5adbbd");
+
+
+}
+
+function updateTimeLine(length){
+
+     var timeline =  svg.selectAll("line");
+
+              timeline.transition()
+              //.attr("x1", 0)
+              .attr("x2", length);
+                       
+
+}
+
+function increaseTimeLineLen(length){
+
+   timeLineLen =  length + (root.x0  / 2); //timeLineLen + ( length );
+
+}
+
+function decreaseTimeLineLen(length){
+
+  if((timeLineLen - ( length) >= 0)) {
+
+   timeLineLen =  length //timeLineLen - ( length);
+   }
+
+}
+
+
+
+</script>
