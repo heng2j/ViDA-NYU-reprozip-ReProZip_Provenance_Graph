@@ -6,10 +6,24 @@
     cursor: pointer;
   }
 
+  div.tooltip {
+    position: absolute;
+    text-align: left;
+    flex: auto;
+    height: 15px;
+    padding: 2px;
+    color: white;
+    font: 12px sans-serif;
+    background: black;
+    border: 0px;
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
   .node circle {
     fill: #fff;
     stroke: steelblue;
-    stroke-width: 1.5px;
+    stroke-width: 2.5px;
   }
 
   .node text {
@@ -32,17 +46,40 @@
 }
 
 
+  #graph {
+    float: left;
+    position: relative;
+  }
+  #notes {
+    height: auto;
+    width: 180px;
+    margin-left: 10px;
+    position: absolute;
+    display: block;
+    color: lightslategrey;
+    font: 13px sans-serif;
+
+  }
+
+
+
+
 </style>
 <body>
   <script src="//d3js.org/d3.v3.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
+  <div id='container'>
+    <div id='notes'></div>
+  </div>
   <script>
 
 
-var jsonFile = "ache.json";
+var jsonFile = "bash-count.json";
 
-var data = ["ache.json", "stacked-up-website.json", "bash-count.json"];
+var data = ["bash-count.json", "stacked-up-website.json", "ache.json"];
+
+var forceData = {"packages": []};
 
 var isTreeRedrew = false;
 
@@ -50,7 +87,7 @@ var select = d3.select('body')
   .append('select')
     .attr('class','select')
     .attr("x", 400)
-    .on('change',onchange)
+    .on('change',onchange);
 
 //$("svg").css({top: 800, left: 0, position:'absolute'});
 
@@ -61,7 +98,7 @@ var options = select
     .text(function (d) { return d; });
 
 function onchange() {
-  selectValue = d3.select('select').property('value')
+  selectValue = d3.select('select').property('value');
 
   jsonFile = selectValue;
 
@@ -80,19 +117,23 @@ function onchange() {
 
 
 
-
-    var margin = {top: 20, right: 120, bottom: 20, left: 120},
+    var margin = {top: 20, right: 120, bottom: 20, left: 200},
     width = 1422 - margin.right - margin.left,
-    height = 800 - margin.top - margin.bottom;
+    height = 800 - margin.top - margin.bottom,
+        padding = 3.5, // separation between same-color nodes
+        clusterPadding = 40, // separation between different-color nodes
+        maxRadius = 5;
 
     var timeLineLen;
 
     var i = 0,
     duration = 750,
-    root;
+    rootStartTime,
+    root,
+        n = 200,
+        m = 15; // number of distinct clusters;
 
 
-  //  var treeData = [];
 
     var tree = d3.layout.tree()
     .size([height, width]);
@@ -106,27 +147,30 @@ function onchange() {
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+// Select the container for the notes and dimension it.
 
-    //var jsonFile = "ache.json";
-    //var jsonFile = "digits.json";
-
-    //var jsonFile = "bash-count.json";
-
+var notes = d3.select('#notes')
+    .style({
+        'width': 620-width + 'px',
+        'height': height + 'px'
+    });
 
 
     treeDraw(jsonFile);
 
 
 
-    d3.select(self.frameElement).style("height", "800px");
+
+  d3.select(self.frameElement).style("height", "800px");
 
 
-   // update function 
+   // update Tree function
     function update(source) {
 
   // Compute the new tree layout.
   var nodes = tree.nodes(root).reverse(),
   links = tree.links(nodes);
+
 
   // Normalize for fixed-depth.
   nodes.forEach(function(d) { d.y = d.depth * 180; });
@@ -139,7 +183,22 @@ function onchange() {
   var nodeEnter = node.enter().append("g")
   .attr("class", "node")
   .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-  .on("click", click);
+  .on("dblclick", dblclick).on("click", click)
+      .on("mouseover", function(d) {
+          div.transition()
+              .duration(200)
+              .style("opacity", .8);
+          div .html(
+               d.description
+          )
+              .style("left", (d3.event.pageX) + "px")
+              .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function(d) {
+          div.transition()
+              .duration(500)
+              .style("opacity", 0);
+      });
 
   nodeEnter.append("circle")
   .attr("r", 1e-6)
@@ -152,17 +211,24 @@ function onchange() {
   .text(function(d) { return d.name; })
   .style("fill-opacity", 1e-6);
 
+
+        // add the tool tip
+        var div = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()
   .duration(duration)
-  .attr("transform", function(d) { 
+  .attr("transform", function(d) {
 
 
 
     return "translate(" + d.y + "," + d.x + ")"; });
 
   nodeUpdate.select("circle")
-  .attr("r", 4.5)
+  .attr("r", 8)
   .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
 
   nodeUpdate.select("text")
@@ -213,21 +279,21 @@ function onchange() {
 
 
 
-  // //update the timeLine 
+  // //update the timeLine
 
   // var timeLine = svg.selectAll("line");
 
   // timeLine.transition()
   //       .duration(duration)
-       
-
 
 
     // Update the link text
     var linktext = svg.selectAll("g.link")
         .data(links, function (d) {
         return d.target.id;
-    });                                                                         
+    });
+
+    console.log('linktext',linktext);
 
 
     linktext.enter()
@@ -262,17 +328,15 @@ function onchange() {
 }
 
 // Toggle children on click.
-function click(d) {
+function dblclick(d) {
 
+    console.log('d:', d);
 
   if (d.children) {
     console.log('d.children' ,d.y);
 
     d._children = d.children;
     d.children = null;
-
-
-
 
     decreaseTimeLineLen(d.y );
 
@@ -299,6 +363,49 @@ function click(d) {
   update(d);
 }
 
+
+// Toggle children on click.
+function click(d) {
+
+console.log('single click');
+
+
+
+    // Delete the current notes section to prepare
+    // for new information.
+
+    notes.selectAll('*').remove();
+
+    // Fill in the notes section with informationm
+    // from the node. Because we want to transition
+    // this to match the transitions on the graph,
+    // we first set it's opacity to 0.
+
+    notes.style({'opacity': 0});
+// Now add the notes content.
+
+    notes.append('h3').text("Reads From:");
+    var readsFromList = notes.append('ul');
+    d.reads.forEach(function(file){
+        readsFromList.append('li')
+            .text(file);
+    })
+
+    notes.append('h3').text("Write To:");
+    var writesToList = notes.append('ul');
+    d.writes.forEach(function(file){
+        writesToList.append('li')
+            .text(file);
+    });
+
+    // With the content in place, transition
+    // the opacity to make it visible.
+
+    notes.transition().style({'opacity': 1});
+
+
+}
+
 function treeDraw(jsonFile){
 
 
@@ -308,10 +415,38 @@ function treeDraw(jsonFile){
 
       if (error) throw error;
 
-
       var rawData = [] ;
       var treeData = [];
 
+      var forceNodes = {"nodes" : []};
+
+    //Handle Packages
+      data.packages.forEach(function (package) {
+
+          m++;
+          var thisPackage = {["name"]: package.name, ["version"]: package.version, ["files"] : [] };
+
+          package.files.forEach(function (file) {
+
+
+              n++;
+              var thisFile = {["name"]: file,  ["parent"]: package.name };
+              thisPackage.files.push(thisFile);
+
+              forceNodes.nodes.push(thisFile);
+
+          })
+
+          forceData.packages.push(thisPackage);
+
+
+      });
+
+        console.log('forceData:' , forceData);
+
+        forceDraw(forceData, forceNodes);
+
+    //Handle runs
       data.runs.forEach(function(run){
 
 
@@ -320,7 +455,7 @@ function treeDraw(jsonFile){
 
           if(_process.parent == null){
 
-            var node = {["name"]: _process.long_name, ["parent"]: "null", ["rule"] : "null"};
+            var node = {["name"]: _process.long_name, ["parent"]: "null", ["rule"] : "null", ["description"]: _process.description, ["reads"]: _process.reads ,  ["writes"]: _process.writes  , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
 
             rawData.push(node);
 
@@ -329,8 +464,7 @@ function treeDraw(jsonFile){
 
            var parentProcess = run.processes[ ( _process.parent[0] ) ];
 
-
-             var node = {["name"]: _process.long_name, ["parent"]: parentProcess.long_name, ["rule"] : _process.parent[1]};
+           var node = {["name"]: _process.long_name, ["parent"]: parentProcess.long_name, ["rule"] : _process.parent[1], ["description"]: _process.description ,  ["reads"]: _process.reads ,  ["writes"]: _process.writes , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
 
 
              rawData.push(node);
@@ -339,7 +473,7 @@ function treeDraw(jsonFile){
            }
 
 
-         }) 
+         })
 
         console.log('rawData', rawData);
 
@@ -349,7 +483,7 @@ function treeDraw(jsonFile){
          return map;
        }, {});
 
-      
+
         rawData.forEach(function(node) {
        // add to parent
        var parent = dataMap[node.parent];
@@ -375,12 +509,15 @@ function treeDraw(jsonFile){
       root.x0 = height / 2;
       root.y0 = 0;
 
+      rootStartTime = root.start_time;
 
-      console.log('root.x0' ,  root.x0);
+
+
+      //console.log('root.children[0].exit_time' ,  root.children[0]);
 
       // Default timeline length for root
 
-      
+
       function collapse(d) {
         if (d.children) {
           d._children = d.children;
@@ -396,7 +533,7 @@ function treeDraw(jsonFile){
 
 
       if(isTreeRedrew == false){
-      timeLineDraw(timeLineLen);
+      timeLineDraw(timeLineLen, root.children[0].start_time);
       }
       else{
 
@@ -415,11 +552,12 @@ function treeDraw(jsonFile){
 
 }
 
-function timeLineDraw(length){
+function timeLineDraw(length, childrenStartTime){
 
   console.log('Draw an X to show that the size is correct');
     // Draw an X to show that the size is correct.
         var lines = svg.append("line")
+                      .attr("class", "timeLine")
                       .attr("x1", 0)
                        .attr("y1", height )
                        .attr("x2", length)
@@ -428,7 +566,167 @@ function timeLineDraw(length){
                       .attr("stroke", "#5adbbd");
 
 
+
+//
+//
+//    lines.append("text")
+//            .attr("dy", 5)
+//            .attr("text-anchor", "middle")
+//            .text("Hello");
+
+
+    // Update the link text
+    var timeLineText = svg.selectAll(".timeLine").data(childrenStartTime);
+
+
+
+    timeLineText.enter()
+        .insert("g")
+        .attr("class", "link")
+        .append("text")
+        .attr("dy", ".35em")
+        .attr("text-anchor", "middle")
+        .text("Hello");
+
+    console.log('timeLineText',timeLineText);
+
+    // Transition link text to their new positions
+
+
+
+    //Transition exiting link text to the parent's new position.
+//    timeLineText.exit().transition()
+//        .remove();
+
+
+
+
+
+
 }
+
+
+function forceDraw(data,thisNodes) {
+
+
+
+
+    var color = d3.scale.category20()
+        .domain(d3.range(m));
+
+    var x = d3.scale.ordinal()
+        .domain(d3.range(m))
+        .rangePoints([0, width], 1);
+
+
+
+
+    var nodes = d3.range(n).map(function () {
+
+
+//        data,thisNodes.nodes.forEach(function (node) {
+//
+//
+//
+//
+//        })
+
+
+        var i = Math.floor(Math.random() * m)
+        //,
+        // v = (i + 1) / m * -Math.log(Math.random());
+
+        return {
+            radius: maxRadius,
+            color: color(i),
+            cx: x(i),
+            cy: 50
+        };
+
+
+
+    });
+
+
+
+
+
+    var force = d3.layout.force()
+        .nodes(nodes)
+        .size([width, height])
+        .gravity(0)
+        .charge(0)
+        .on("tick", tick)
+        .start();
+
+
+
+    var circle = svg.selectAll("circle")
+        .data(nodes)
+        .enter().append("circle")
+        .attr("r", function (d) {
+            return d.radius;
+        })
+        .style("fill", function (d) {
+            return d.color;
+        })
+        .call(force.drag);
+
+
+
+
+    function tick(e) {
+        circle
+            .each(gravity(.2 * e.alpha))
+            .each(collide(.5))
+            .attr("cx", function (d) {
+                return d.x;
+            })
+            .attr("cy", function (d) {
+                return d.y;
+            });
+    }
+
+
+// Move nodes toward cluster focus.
+    function gravity(alpha) {
+        return function (d) {
+            d.y += (d.cy - d.y) * alpha;
+            d.x += (d.cx - d.x) * alpha;
+        };
+    }
+
+
+    // Resolve collisions between nodes.
+    function collide(alpha) {
+        var quadtree = d3.geom.quadtree(nodes);
+        return function (d) {
+            var r = d.radius + maxRadius + padding,
+                nx1 = d.x - r,
+                nx2 = d.x + r,
+                ny1 = d.y - r,
+                ny2 = d.y + r;
+            quadtree.visit(function (quad, x1, y1, x2, y2) {
+                if (quad.point && (quad.point !== d)) {
+                    var x = d.x - quad.point.x,
+                        y = d.y - quad.point.y,
+                        l = Math.sqrt(x * x + y * y),
+                        r = d.radius + quad.point.radius + (d.color !== quad.point.color) * padding;
+                    if (l < r) {
+                        l = (l - r) / l * alpha;
+                        d.x -= x *= l;
+                        d.y -= y *= l;
+                        quad.point.x += x;
+                        quad.point.y += y;
+                    }
+                }
+                return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+            });
+        };
+
+    }
+}
+
 
 function updateTimeLine(length){
 
@@ -437,7 +735,7 @@ function updateTimeLine(length){
               timeline.transition()
               //.attr("x1", 0)
               .attr("x2", length);
-                       
+
 
 }
 
