@@ -59,7 +59,7 @@
     float: left;
     height: auto;
     width: 180px;
-    margin-top: 5%;
+    margin-top: 0;
     margin-left: 10px;
     position: absolute;
     display: block;
@@ -91,6 +91,7 @@
     color: #818181;
     display: block;
     transition: 0.3s;
+
   }
 
   .sidenav a:hover, .offcanvas a:focus{
@@ -118,16 +119,17 @@
 
 </style>
 <body>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <a href="#">About</a>
-  <a href="#">Services</a>
-  <a href="#">Clients</a>
-  <a href="#">Contact</a>
-
+  <span style="font-size:30px;cursor:pointer"> Associated Files</span>
+  <input type="search" id="mySearch" placeholder="Search for listing files" style="margin-left:10px;">
   <div id='notes'>
 
   </div>
@@ -138,7 +140,7 @@
 <div id='container'>
  <div id='sidePanel'>
    <div id = 'jsonSelections'></div>
-   <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>
+   <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Associated Files</span>
  </div>
 
 
@@ -148,13 +150,13 @@
 
 <script>
     function openNav() {
-        document.getElementById("mySidenav").style.width = "250px";
-        document.getElementById("main").style.marginLeft = "250px";
+        document.getElementById("mySidenav").style.width = "300px";
+     //   document.getElementById("main").style.marginLeft = "300px";
     }
 
     function closeNav() {
         document.getElementById("mySidenav").style.width = "0";
-        document.getElementById("main").style.marginLeft= "0";
+      //  document.getElementById("main").style.marginLeft= "0";
     }
 </script>
 
@@ -485,20 +487,57 @@
         notes.style({'opacity': 0});
 // Now add the notes content.
 
-        notes.append('h3').text("Reads From:");
+      //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
+
+
+        notes.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", "#readsFromDiv").text("Reads From:").style({'padding-left': 0, 'text-decoration': 'none' });
+
+        var readsFromDiv = notes.append('div').attr("id", "readsFromDiv").attr("class", "panel-collapse");
+
+
+        //readsFromDiv.append('h3').text("Reads From:");
 
 
         var readsList = d.reads.sort();
 
-        var readsFromList = notes.append('ul');
+        var packagePath = '';
+        var newDetails ;
+        var newSummary;
+        var currentUL ;
 
         readsList.forEach(function(file){
 
-            //May
-            var readsFromList = notes.append('ul');
 
-            readsFromList.append('li')
-                .text(file);
+            thisPackagepath = file.substring(0, file.lastIndexOf('/'));
+
+
+
+            if ( packagePath == thisPackagepath){
+
+
+//                var readsFromList = notes.append('ul');
+//
+                currentUL.append('li')
+                    .text(file);
+
+            }
+            else {
+
+                packagePath = thisPackagepath;
+                 newDetails = readsFromDiv.append('details');
+                 newSummary = newDetails.append('summary').text(packagePath);
+                 currentUL = newDetails.append('ul');
+                currentUL.append('li')
+                    .text(file);
+
+
+            }
+
+
+
+
+            //May
+
 
 
         })
