@@ -2,66 +2,118 @@
 <meta charset="utf-8">
 <style>
 
-    .node {
-        cursor: pointer;
-    }
+  body {
+    font-family: "Lato", sans-serif;
+  }
 
-    div.tooltip {
-        position: absolute;
-        text-align: left;
-        flex: auto;
-        height: 15px;
-        padding: 2px;
-        color: white;
-        font: 12px sans-serif;
-        background: black;
-        border: 0px;
-        border-radius: 4px;
-        pointer-events: none;
-    }
+  .node {
+    cursor: pointer;
+  }
 
-    .node circle {
-        fill: #fff;
-        stroke: steelblue;
-        stroke-width: 2.5px;
-    }
+  div.tooltip {
+    position: absolute;
+    text-align: left;
+    flex: auto;
+    height: 15px;
+    padding: 2px;
+    color: white;
+    font: 12px sans-serif;
+    background: black;
+    border: 0px;
+    border-radius: 4px;
+    pointer-events: none;
+  }
 
-    .node text {
-        font: 10px sans-serif;
-    }
+  .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 2.5px;
+  }
 
-    .link {
-        fill: none;
-        stroke: #ccc;
-        stroke-width: 1.5px;
-    }
+  .node text {
+    font: 10px sans-serif;
+  }
 
-    .link text {
-        font: 11px sans-serif;
-        stroke: #0b1542;
-        stroke-width: 0.5px;
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
 
-
-
-    }
-
-
-    #graph {
-        float: left;
-        position: relative;
-    }
-    #notes {
-        height: auto;
-        width: 180px;
-        margin-left: 10px;
-        position: absolute;
-        display: block;
-        color: lightslategrey;
-        font: 13px sans-serif;
-
-    }
+  .link text {
+    font: 11px sans-serif;
+    stroke: #0b1542;
+    stroke-width: 0.5px;
 
 
+
+  }
+
+
+
+  #viz-graph {
+    float: right;
+    position: relative;
+  }
+  #notes {
+    float: left;
+    height: auto;
+    width: 180px;
+    margin-top: 5%;
+    margin-left: 10px;
+    position: absolute;
+    display: block;
+    color: lightslategrey;
+    font: 13px sans-serif;
+
+  }
+
+
+
+  .sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    overflow: auto;
+  }
+
+  .sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+
+  .sidenav a:hover, .offcanvas a:focus{
+    color: #f1f1f1;
+  }
+
+  .sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+  }
+
+  #main {
+    transition: margin-left .5s;
+    padding: 16px;
+  }
+
+  @media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+  }
 
 
 </style>
@@ -69,9 +121,44 @@
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-<div id='container'>
-    <div id='notes'></div>
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <a href="#">About</a>
+  <a href="#">Services</a>
+  <a href="#">Clients</a>
+  <a href="#">Contact</a>
+
+  <div id='notes'>
+
+  </div>
+
+
 </div>
+
+<div id='container'>
+ <div id='sidePanel'>
+   <div id = 'jsonSelections'></div>
+   <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>
+ </div>
+
+
+  <div id='viz-graph'></div>
+
+</div>
+
+<script>
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+        document.getElementById("main").style.marginLeft = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        document.getElementById("main").style.marginLeft= "0";
+    }
+</script>
+
+
 <script>
 
 
@@ -83,35 +170,6 @@
 
     var isTreeRedrew = false;
 
-    var select = d3.select('body')
-        .append('select')
-        .attr('class','select')
-        .attr("x", 400)
-        .on('change',onchange);
-
-    //$("svg").css({top: 800, left: 0, position:'absolute'});
-
-    var options = select
-        .selectAll('option')
-        .data(data).enter()
-        .append('option')
-        .text(function (d) { return d; });
-
-    function onchange() {
-        selectValue = d3.select('select').property('value');
-
-        jsonFile = selectValue;
-
-        treeDraw(jsonFile);
-
-        isTreeRedrew = true;
-
-        // d3.select('body')
-        //   .append('p')
-        //   .text(selectValue + ' is the last selected option.')
-
-
-    };
 
 
 
@@ -141,7 +199,7 @@
     var diagonal = d3.svg.diagonal()
         .projection(function(d) { return [d.y, d.x]; });
 
-    var svg = d3.select("body").append("svg")
+    var svg = d3.select("#viz-graph").append("svg")
         .attr("width", width + margin.right + margin.left)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -157,6 +215,36 @@
 
 
     treeDraw(jsonFile);
+
+    var select = d3.select('#jsonSelections')
+        .append('select')
+        .attr('class','select')
+        .attr("x", 400)
+        .on('change',onchange);
+
+    //$("svg").css({top: 800, left: 0, position:'absolute'});
+
+    var options = select
+        .selectAll('option')
+        .data(data).enter()
+        .append('option')
+        .text(function (d) { return d; });
+
+    function onchange() {
+        selectValue = d3.select('select').property('value');
+
+        jsonFile = selectValue;
+
+        treeDraw(jsonFile);
+
+        isTreeRedrew = true;
+
+        // d3.select('body')
+        //   .append('p')
+        //   .text(selectValue + ' is the last selected option.')
+
+
+    };
 
 
 
@@ -334,17 +422,17 @@
 
         var duration;
 
-    
+
 
         if (d.children) {
-      
+
 
             d._children = d.children;
             d.children = null;
 
             decreaseTimeLineLen(d.y );
 
-             console.log('d._children' ,d._children);
+            console.log('d._children' ,d._children);
 
             duration = d.start_time - rootStartTime;
 
@@ -355,7 +443,7 @@
             d.children = d._children;
             d._children = null;
 
-              console.log('d.children' ,d.children);
+            console.log('d.children' ,d.children);
 
 
             increaseTimeLineLen(d.y );
@@ -369,7 +457,7 @@
 
         updateTimeLine(timeLineLen, durationLabel);
 
-  
+
 
 
 
@@ -398,10 +486,21 @@
 // Now add the notes content.
 
         notes.append('h3').text("Reads From:");
+
+
+        var readsList = d.reads.sort();
+
         var readsFromList = notes.append('ul');
-        d.reads.forEach(function(file){
+
+        readsList.forEach(function(file){
+
+            //May
+            var readsFromList = notes.append('ul');
+
             readsFromList.append('li')
                 .text(file);
+
+
         })
 
         notes.append('h3').text("Write To:");
@@ -442,7 +541,7 @@
                 package.files.forEach(function (file) {
 
 
-                  //  n++;
+                    //  n++;
                     var thisFile = {["name"]: file,  ["parent"]: package.name };
                     thisPackage.files.push(thisFile);
 
@@ -600,11 +699,11 @@
             .attr('text-anchor', 'middle')
             .attr("class", "timeLineText")//easy to style with CSS
             .text(durationLabel);
-            
-            
-            
 
-        
+
+
+
+
 
         console.log('timeLineText',timeLineText);
 
@@ -752,19 +851,19 @@
 
         timeline.transition()
         //.attr("x1", 0)
-        .attr("x2", length);
-        
-       // var timeLineText = svg.
+            .attr("x2", length);
 
-             var timeLineText = d3.selectAll(".timeLineText")
-             .transition()
+        // var timeLineText = svg.
+
+        var timeLineText = d3.selectAll(".timeLineText")
+            .transition()
             .attr("x", timeLineLen / 2)
             .attr('text-anchor', 'middle')
             .attr("class", "timeLineText")//easy to style with CSS
             .text(durationLabel);
 
-        
-        
+
+
 
 
     }
