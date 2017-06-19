@@ -2,119 +2,119 @@
 <meta charset="utf-8">
 <style>
 
-  body {
-    font-family: "Lato", sans-serif;
-  }
+    body {
+        font-family: "Lato", sans-serif;
+    }
 
-  .node {
-    cursor: pointer;
-  }
+    .node {
+        cursor: pointer;
+    }
 
-  div.tooltip {
-    position: absolute;
-    text-align: left;
-    flex: auto;
-    height: 15px;
-    padding: 2px;
-    color: white;
-    font: 12px sans-serif;
-    background: black;
-    border: 0px;
-    border-radius: 4px;
-    pointer-events: none;
-  }
+    div.tooltip {
+        position: absolute;
+        text-align: left;
+        flex: auto;
+        height: 15px;
+        padding: 2px;
+        color: white;
+        font: 12px sans-serif;
+        background: black;
+        border: 0px;
+        border-radius: 4px;
+        pointer-events: none;
+    }
 
-  .node circle {
-    fill: #fff;
-    stroke: steelblue;
-    stroke-width: 2.5px;
-  }
+    .node circle {
+        fill: #fff;
+        stroke: steelblue;
+        stroke-width: 2.5px;
+    }
 
-  .node text {
-    font: 10px sans-serif;
-  }
+    .node text {
+        font: 10px sans-serif;
+    }
 
-  .link {
-    fill: none;
-    stroke: #ccc;
-    stroke-width: 1.5px;
-  }
+    .link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 1.5px;
+    }
 
-  .link text {
-    font: 11px sans-serif;
-    stroke: #0b1542;
-    stroke-width: 0.5px;
-
-
-
-  }
+    .link text {
+        font: 11px sans-serif;
+        stroke: #0b1542;
+        stroke-width: 0.5px;
 
 
 
-  #viz-graph {
-    float: right;
-    position: relative;
-  }
-  #notes {
-    float: left;
-    height: auto;
-    width: 180px;
-    margin-top: 0;
-    margin-left: 10px;
-    position: absolute;
-    display: block;
-    color: lightslategrey;
-    font: 13px sans-serif;
-
-  }
+    }
 
 
 
-  .sidenav {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: #fff;
-    overflow-x: hidden;
-    transition: 0.5s;
-    padding-top: 60px;
-    overflow: auto;
-  }
+    #viz-graph {
+        float: right;
+        position: relative;
+    }
+    #notes {
+        float: left;
+        height: auto;
+        width: 180px;
+        margin-top: 0;
+        margin-left: 10px;
+        position: absolute;
+        display: block;
+        color: lightslategrey;
+        font: 13px sans-serif;
 
-  .sidenav a {
-    padding: 8px 8px 8px 32px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #818181;
-    display: block;
-    transition: 0.3s;
+    }
 
-  }
 
-  .sidenav a:hover, .offcanvas a:focus{
-    color: #f1f1f1;
-  }
 
-  .sidenav .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-  }
+    .sidenav {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #fff;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+        overflow: auto;
+    }
 
-  #main {
-    transition: margin-left .5s;
-    padding: 16px;
-  }
+    .sidenav a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
 
-  @media screen and (max-height: 450px) {
-    .sidenav {padding-top: 15px;}
-    .sidenav a {font-size: 18px;}
-  }
+    }
+
+    .sidenav a:hover, .offcanvas a:focus{
+        color: #f1f1f1;
+    }
+
+    .sidenav .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
+
+    #main {
+        transition: margin-left .5s;
+        padding: 16px;
+    }
+
+    @media screen and (max-height: 450px) {
+        .sidenav {padding-top: 15px;}
+        .sidenav a {font-size: 18px;}
+    }
 
 
 </style>
@@ -127,36 +127,36 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <div id="mySidenav" class="sidenav">
-  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <span style="font-size:30px;cursor:pointer"> Associated Files</span>
-  <input type="search" id="mySearch" placeholder="Search for listing files" style="margin-left:10px;">
-  <div id='notes'>
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <span style="font-size:30px;cursor:pointer"> Associated Files</span>
+    <input type="search" id="mySearch" placeholder="Search for listing files" style="margin-left:10px;">
+    <div id='notes'>
 
-  </div>
+    </div>
 
 
 </div>
 
 <div id='container'>
- <div id='sidePanel'>
-   <div id = 'jsonSelections'></div>
-   <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Associated Files</span>
- </div>
+    <div id='sidePanel'>
+        <div id = 'jsonSelections'></div>
+        <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Associated Files</span>
+    </div>
 
 
-  <div id='viz-graph'></div>
+    <div id='viz-graph'></div>
 
 </div>
 
 <script>
     function openNav() {
         document.getElementById("mySidenav").style.width = "300px";
-     //   document.getElementById("main").style.marginLeft = "300px";
+        //   document.getElementById("main").style.marginLeft = "300px";
     }
 
     function closeNav() {
         document.getElementById("mySidenav").style.width = "0";
-      //  document.getElementById("main").style.marginLeft= "0";
+        //  document.getElementById("main").style.marginLeft= "0";
     }
 </script>
 
@@ -172,7 +172,7 @@
 
     var isTreeRedrew = false;
 
-
+    var tempLastNode;
 
 
 
@@ -425,7 +425,6 @@
         var duration;
 
 
-
         if (d.children) {
 
 
@@ -434,23 +433,49 @@
 
             decreaseTimeLineLen(d.y );
 
-            console.log('d._children' ,d._children);
+            console.log('Close');
 
             duration = d.start_time - rootStartTime;
 
         } else {
 
-            console.log('d._children' ,d.y);
 
             d.children = d._children;
             d._children = null;
 
-            console.log('d.children' ,d.children);
+            console.log('Open');
+
+
+
+
+
+
+            var tempDuration = 0;
+
+            d.children.forEach(function(node) {
+
+                if ((node.start_time - rootStartTime) > tempDuration) {
+
+                    tempDuration = node.start_time - rootStartTime;
+                    tempLastNode = node;
+                };
+
+
+                });
+
+
+            console.log('tempLastNode:' , tempLastNode[0]);
+
+            console.log('tempDuration:' , tempDuration);
+
 
 
             increaseTimeLineLen(d.y );
 
-            duration = d.children[0].start_time - rootStartTime;
+            //increaseTimeLineLen(tempLastNode.y );
+
+            duration = tempDuration;  //d.children[0].start_time - rootStartTime;
+           // duration =  d.children[0].start_time - rootStartTime;
 
 
         }
@@ -487,12 +512,12 @@
         notes.style({'opacity': 0});
 // Now add the notes content.
 
-      //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
+        //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
 
 
         notes.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", "#readsFromDiv").text("Reads From:").style({'padding-left': 0, 'text-decoration': 'none' });
 
-        var readsFromDiv = notes.append('div').attr("id", "readsFromDiv").attr("class", "panel-collapse");
+        var readsFromDiv = notes.append('div').attr("id", "readsFromDiv").attr("class", "panel-collapse collapse");
 
 
         //readsFromDiv.append('h3').text("Reads From:");
@@ -510,6 +535,12 @@
 
             thisPackagepath = file.substring(0, file.lastIndexOf('/'));
 
+            if(_.includes(thisPackagepath, packagePath)){
+
+
+
+            }
+
 
 
             if ( packagePath == thisPackagepath){
@@ -523,10 +554,13 @@
             }
             else {
 
+
+
+
                 packagePath = thisPackagepath;
-                 newDetails = readsFromDiv.append('details');
-                 newSummary = newDetails.append('summary').text(packagePath);
-                 currentUL = newDetails.append('ul');
+                newDetails = readsFromDiv.append('details');
+                newSummary = newDetails.append('summary').text(packagePath);
+                currentUL = newDetails.append('ul');
                 currentUL.append('li')
                     .text(file);
 
