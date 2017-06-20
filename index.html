@@ -129,8 +129,39 @@
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <span style="font-size:30px;cursor:pointer"> Associated Files</span>
+
+
     <input type="search" id="mySearch" placeholder="Search for listing files" style="margin-left:10px;">
+
+    <!-- faq -->
+    <div class="faq">
+        <input type="search" value="" placeholder="Search for listing files" />
+        <ul>
+            <li id="faq-1">
+                <h2><a href="#faq-1">Great Pyramid of Giza</a></h2>
+                <div>
+                    <p>The Great Pyramid of Giza <!-- ... --></p>
+                    <!-- ... -->
+                </div>
+            </li>
+            <li id="faq-2">
+                <h2><a href="#faq-2">Hanging Gardens of Babylon</a></h2>
+                <div>
+                    <p>The Hanging Gardens of Babylon <!-- ... --></p>
+                    <!-- ... -->
+                </div>
+            </li>
+            <!-- ... -->
+        </ul>
+        <div class="faq__notfound"><p>No matches were found.</p></div>
+    </div>
+
+
+
     <div id='notes'>
+
+
+
 
     </div>
 
@@ -174,7 +205,10 @@
 
     var tempLastNode;
 
-
+    // add the tool tip
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
 
 
     var margin = {top: 20, right: 120, bottom: 20, left: 200},
@@ -214,6 +248,9 @@
             'width': 620-width + 'px',
             'height': height + 'px'
         });
+
+    var fileDict = createFileProfiles(jsonFile);
+
 
 
     treeDraw(jsonFile);
@@ -302,10 +339,7 @@
             .style("fill-opacity", 1e-6);
 
 
-        // add the tool tip
-        var div = d3.select("body").append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
+
 
 
         // Transition nodes to their new position.
@@ -461,7 +495,7 @@
                 };
 
 
-                });
+            });
 
 
             console.log('tempLastNode:' , tempLastNode[0]);
@@ -475,7 +509,7 @@
             //increaseTimeLineLen(tempLastNode.y );
 
             duration = tempDuration;  //d.children[0].start_time - rootStartTime;
-           // duration =  d.children[0].start_time - rootStartTime;
+            // duration =  d.children[0].start_time - rootStartTime;
 
 
         }
@@ -517,7 +551,7 @@
 
         notes.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", "#readsFromDiv").text("Reads From:").style({'padding-left': 0, 'text-decoration': 'none' });
 
-        var readsFromDiv = notes.append('div').attr("id", "readsFromDiv").attr("class", "panel-collapse collapse");
+        var readsFromDiv = notes.append('div').attr("id", "readsFromDiv").attr("class", "panel-collapse ");
 
 
         //readsFromDiv.append('h3').text("Reads From:");
@@ -530,51 +564,93 @@
         var newSummary;
         var currentUL ;
 
-        readsList.forEach(function(file){
+        var TestingPackagePath ='';
+
+        if(readsList.length !=0){
+
+            for (var i = 0; i < readsList.length; i++ ){
 
 
-            thisPackagepath = file.substring(0, file.lastIndexOf('/'));
+                TestingPackagePath = setPackagePath(readsList, i , i + 1);
 
-            if(_.includes(thisPackagepath, packagePath)){
+               // console.log('Init TestingPackagePath: ', TestingPackagePath);
 
-
-
-            }
-
-
-
-            if ( packagePath == thisPackagepath){
-
-
-//                var readsFromList = notes.append('ul');
-//
-                currentUL.append('li')
-                    .text(file);
-
-            }
-            else {
-
-
-
-
-                packagePath = thisPackagepath;
+                packagePath = TestingPackagePath;
                 newDetails = readsFromDiv.append('details');
                 newSummary = newDetails.append('summary').text(packagePath);
                 currentUL = newDetails.append('ul');
-                currentUL.append('li')
-                    .text(file);
+
+                while(readsList[i].includes(TestingPackagePath) ){
+
+
+                    var keyName = "\"" + readsList[i] + "\"";
+
+                    var thisFile =  fileDict[keyName];
+
+                    console.log('   thisFile.reads',    thisFile.reads);
+
+
+
+                    currentUL.append('li')
+
+                        .on("mouseover", function(d) {
+
+                           // div.selectAll('*').remove();
+
+                            div.transition()
+                                .duration(200)
+                                .style("opacity", .8);
+                            div .html(
+
+                                ("Read By: ") + 
+                            thisFile.reads
+
+                           // thisFile.writes
+                            )
+                                .style("left", (d3.event.pageX) + "px")
+                                //.style("height", 200 + "px")
+                                //.style("width", 200 + "px")
+                                .style("top", (d3.event.pageY - 28) + "px");
+
+                        })
+                        .on("mouseout", function(d) {
+                            div.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                        })
+                        .text(readsList[i]);
+
+                    if(readsList[i+1] == null){
+
+                        break;
+                    }
+
+                    if(readsList[i+1].includes(TestingPackagePath) == false ){
+
+
+                        break;
+
+
+                    }
+
+
+                    i++;
+
+                }
 
 
             }
 
+        }
+        else {
+            newDetails = readsFromDiv.append('details');
+            newSummary = newDetails.append('summary').text("No file is read from.");
+
+        }
 
 
 
-            //May
 
-
-
-        })
 
         notes.append('h3').text("Write To:");
         var writesToList = notes.append('ul');
@@ -587,6 +663,121 @@
         // the opacity to make it visible.
 
         notes.transition().style({'opacity': 1});
+
+
+    }
+
+    function createFileProfiles(jsonFile){
+
+        var filesDict = {} ;
+        // d3.json block
+        d3.json(jsonFile, function(error, data) {
+
+            if (error) throw error;
+
+
+            data.packages.forEach(function (package) {
+
+                package.files.forEach(function (file) {
+
+                    var keyName = "\"" + file + "\"";
+
+
+
+                    var proccess = [];
+                    proccess["reads"] =[];
+                    proccess["writes"] =[];
+
+                    filesDict[keyName] = proccess;
+
+
+
+                })
+            });
+
+
+
+
+            data.other_files.forEach(function (file) {
+
+
+                var keyName = "\"" + file + "\"";
+
+
+
+                         var proccess = [];
+                         proccess["reads"] =[];
+                         proccess["writes"] =[];
+
+                filesDict[keyName] = proccess;
+
+
+            });
+
+
+
+
+
+            data.runs.forEach(function (run) {
+
+                run.processes.forEach(function(_process) {
+
+
+                    if(_process.reads != null){
+
+                    _process.reads.forEach(function(file){
+
+                        var keyName = "\"" + file + "\"";
+
+                        //console.log('keyName:', filesDict[keyName]);
+                        //console.log('keyName:', keyName);
+
+                        if( keyName in filesDict){
+
+                           // console.log('filesDict[file]:', filesDict[keyName]);
+
+                            filesDict[keyName].reads.push(_process.long_name);
+
+                        }
+
+                    });
+
+                    };
+
+
+                    if (_process.writes != null){
+                    _process.writes.forEach(function(file){
+
+
+
+                        var keyName = "\"" + file + "\"";
+
+                        if(keyName in filesDict){
+
+
+                            filesDict[keyName].writes.push(_process.long_name);
+
+                        }
+
+
+                    });
+                    }
+
+
+
+
+
+                })
+
+
+
+            })
+
+
+
+        });
+
+        return filesDict;
 
 
     }
@@ -620,7 +811,7 @@
 
                     forceNodes.nodes.push(thisFile);
 
-                })
+                });
 
                 forceData.packages.push(thisPackage);
 
@@ -628,6 +819,8 @@
             });
 
             console.log('forceData:' , forceData);
+
+            console.log('fileDict', fileDict);
 
             forceDraw(forceData, forceNodes);
 
@@ -814,12 +1007,6 @@
         var nodes = d3.range(n).map(function () {
 
 
-//        data,thisNodes.nodes.forEach(function (node) {
-//
-//
-//
-//
-//        })
 
 
             var i = Math.floor(Math.random() * m)
@@ -953,6 +1140,53 @@
 
             timeLineLen =  length //timeLineLen - ( length);
         }
+
+    }
+
+    function setPackagePath (fileList, index, nextIndex){
+
+       // console.log('nextIndex: ', nextIndex);
+
+        var TestingPackagePath = '';
+
+        if(fileList[nextIndex] != null){
+
+
+            a1_Len =  fileList[index].length;
+            var i = 0;
+
+            while(i < a1_Len && fileList[index].charAt(i)===fileList[nextIndex].charAt(i)){
+
+                i++
+            }
+
+            if (fileList[index].substring(0,i) == '/'){
+
+
+               // console.log('different character: ',fileList[index].substring(0,i));
+
+                TestingPackagePath = fileList[index].substring(0, fileList[index].lastIndexOf('/'));
+              //  console.log('TestingPackagePath: ',TestingPackagePath);
+
+            }
+            else {
+
+
+                TestingPackagePath = fileList[index].substring(0,i);
+                TestingPackagePath = TestingPackagePath.substring(0, TestingPackagePath.lastIndexOf('/'));
+               // console.log('TestingPackagePath: ',TestingPackagePath);
+
+            }
+
+
+        }
+        else {
+
+            TestingPackagePath = fileList[index].substring(0, fileList[index].lastIndexOf('/'));
+
+        }
+
+        return TestingPackagePath;
 
     }
 
