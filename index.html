@@ -14,7 +14,7 @@
         position: absolute;
         text-align: left;
         flex: auto;
-        height: 15px;
+
         padding: 2px;
         color: white;
         font: 12px sans-serif;
@@ -171,7 +171,7 @@
 <div id='container'>
     <div id='sidePanel'>
         <div id = 'jsonSelections'></div>
-        <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Associated Files</span>
+        <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Process Info</span>
     </div>
 
 
@@ -294,6 +294,10 @@
     // update Tree function
     function update(source) {
 
+
+
+
+
         // Compute the new tree layout.
         var nodes = tree.nodes(root).reverse(),
             links = tree.links(nodes);
@@ -312,6 +316,7 @@
             .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
             .on("dblclick", dblclick).on("click", click)
             .on("mouseover", function(d) {
+
                 div.transition()
                     .duration(200)
                     .style("opacity", .8);
@@ -531,12 +536,29 @@
 
         console.log('single click');
 
-
-
         // Delete the current notes section to prepare
         // for new information.
 
+
         notes.selectAll('*').remove();
+
+        var commands = '';
+
+
+        if(d.argv != null){
+
+            d.argv.forEach(function(argv){
+
+                commands += argv;//.concat(argv.toString());
+                commands += ' ';
+
+            });
+        }
+        else{
+
+            commands = 'No argument for this process'
+        }
+
 
         // Fill in the notes section with informationm
         // from the node. Because we want to transition
@@ -547,69 +569,129 @@
 // Now add the notes content.
 
         //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
+        notes.append('h3').text("Commands:").style({'padding-left': 0, 'text-decoration': 'none' });
+
+        notes.append('p').text(commands);
 
 
-        notes.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", "#readsFromDiv").text("Reads From:").style({'padding-left': 0, 'text-decoration': 'none' });
-
-        var readsFromDiv = notes.append('div').attr("id", "readsFromDiv").attr("class", "panel-collapse ");
 
 
-        //readsFromDiv.append('h3').text("Reads From:");
+
+        // associationString: "reads" or  "writes
+        createFileTooTip(notes,d,"reads");
+        createFileTooTip(notes,d,"writes");
 
 
-        var readsList = d.reads.sort();
 
+
+        // With the content in place, transition
+        // the opacity to make it visible.
+
+        notes.transition().style({'opacity': 1});
+
+
+    }
+
+
+    function createFileTooTip(notes,source, associationString){
+
+
+
+        var readsList ;
+        var idString;
+        var idString_href;
+        var text_String ;
+
+            if(associationString == 'reads'){
+
+                idString = "readsToDiv";
+                idString_href = "#readsToDiv";
+                text_String = "Reads from:";
+                readsList = source.reads.sort();
+            }
+            else if (associationString == 'writes'){
+
+                idString = "writesToDiv";
+                idString_href = "#writesToDiv";
+                text_String = "Writes to:";
+                readsList = source.writes.sort();
+
+            }
+
+
+
+        notes.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", idString_href).text(text_String).style({'padding-left': 0, 'text-decoration': 'none' });
+
+        var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
+
+       // var readsList = source.writes.sort();
         var packagePath = '';
         var newDetails ;
         var newSummary;
         var currentUL ;
 
-        var TestingPackagePath ='';
 
         if(readsList.length !=0){
 
             for (var i = 0; i < readsList.length; i++ ){
 
-
-                TestingPackagePath = setPackagePath(readsList, i , i + 1);
-
-               // console.log('Init TestingPackagePath: ', TestingPackagePath);
-
-                packagePath = TestingPackagePath;
+                packagePath = setPackagePath(readsList, i , i + 1);
                 newDetails = readsFromDiv.append('details');
                 newSummary = newDetails.append('summary').text(packagePath);
                 currentUL = newDetails.append('ul');
 
-                while(readsList[i].includes(TestingPackagePath) ){
+                while(readsList[i].includes(packagePath) ){
 
 
-                    var keyName = "\"" + readsList[i] + "\"";
-
-                    var thisFile =  fileDict[keyName];
-
-                    console.log('   thisFile.reads',    thisFile.reads);
-
-
+                    var thisReadArray = ["\"" + readsList[i] + "\""];
 
                     currentUL.append('li')
-
+                        .data(thisReadArray)
                         .on("mouseover", function(d) {
 
-                           // div.selectAll('*').remove();
+                            var thisFile =  fileDict[d];
+
+                            var proccess_Read = "";
+                            var proccess_Write = "";
+
+
+                            if(thisFile.reads.length != 0){
+                                thisFile.reads.forEach(function(process){
+                                    proccess_Read += process + "<br/>"
+
+                                });
+                            }
+                            else {
+
+                                proccess_Read = "Not read by any process."
+                            }
+
+                            if(thisFile.writes.length != 0){
+                                thisFile.writes.forEach(function(process){
+                                    proccess_Write += process + "<br/>"
+
+                                });
+                            }
+                            else {
+
+                                proccess_Write = "Not written by any process."
+                            }
 
                             div.transition()
                                 .duration(200)
                                 .style("opacity", .8);
-                            div .html(
+                            div.html(
 
-                                ("Read By: ") + 
-                            thisFile.reads
+                                "<h5>Read By: </h5>" +
+                                proccess_Read
+                                +
+                                "<br>"
+                                +
+                                "<h5>Written By: </h5>" +
+                                proccess_Write
 
-                           // thisFile.writes
                             )
                                 .style("left", (d3.event.pageX) + "px")
-                                //.style("height", 200 + "px")
-                                //.style("width", 200 + "px")
                                 .style("top", (d3.event.pageY - 28) + "px");
 
                         })
@@ -625,15 +707,13 @@
                         break;
                     }
 
-                    if(readsList[i+1].includes(TestingPackagePath) == false ){
+                    if(readsList[i+1].includes(packagePath) == false ){
 
 
                         break;
 
 
                     }
-
-
                     i++;
 
                 }
@@ -643,26 +723,9 @@
 
         }
         else {
-            newDetails = readsFromDiv.append('details');
-            newSummary = newDetails.append('summary').text("No file is read from.");
+            readsFromDiv.append('details').append('summary').text("No associated file.");
 
         }
-
-
-
-
-
-        notes.append('h3').text("Write To:");
-        var writesToList = notes.append('ul');
-        d.writes.forEach(function(file){
-            writesToList.append('li')
-                .text(file);
-        });
-
-        // With the content in place, transition
-        // the opacity to make it visible.
-
-        notes.transition().style({'opacity': 1});
 
 
     }
@@ -833,7 +896,7 @@
 
                     if(_process.parent == null){
 
-                        var node = {["name"]: _process.long_name, ["parent"]: "null", ["rule"] : "null", ["description"]: _process.description, ["reads"]: _process.reads ,  ["writes"]: _process.writes  , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
+                        var node = {["name"]: _process.long_name, ["parent"]: "null", ["rule"] : "null", ["description"]: _process.description, ["reads"]: _process.reads ,  ["writes"]: _process.writes  ,["argv"]: _process.argv  , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
 
                         rawData.push(node);
 
@@ -842,7 +905,8 @@
 
                         var parentProcess = run.processes[ ( _process.parent[0] ) ];
 
-                        var node = {["name"]: _process.long_name, ["parent"]: parentProcess.long_name, ["rule"] : _process.parent[1], ["description"]: _process.description ,  ["reads"]: _process.reads ,  ["writes"]: _process.writes , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
+                        var node = {["name"]: _process.long_name, ["parent"]: parentProcess.long_name, ["rule"] : _process.parent[1], ["description"]: _process.description ,  ["reads"]: _process.reads ,  ["writes"]: _process.writes ,["argv"]: _process.argv , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
+
 
 
                         rawData.push(node);
