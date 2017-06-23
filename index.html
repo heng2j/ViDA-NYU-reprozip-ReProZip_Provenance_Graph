@@ -80,7 +80,7 @@
         background-color: #fff;
         overflow-x: hidden;
         transition: 0.5s;
-        padding-top: 60px;
+
         overflow: auto;
     }
 
@@ -124,14 +124,13 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <script src="//d3js.org/d3.v3.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 
 
-    <div id='notes'>
-
+    <div id='notes' class="fileSearch">
+        <span style="font-size:30px;cursor:pointer" onclick="openNav()">Please select a process</span>
 
 
 
@@ -222,7 +221,7 @@
             'height': height + 'px'
         });
 
-    var fileDict = createFileProfiles(jsonFile);
+    var fileDict ;
 
 
 
@@ -297,7 +296,7 @@
                     d.description
                 )
                     .style("left", (d3.event.pageX) + "px")
-                    .style("top", (d3.event.pageY - 28) + "px");
+                    .style("top", (d3.event.pageY - 38) + "px");
             })
             .on("mouseout", function(d) {
                 div.transition()
@@ -476,7 +475,7 @@
             });
 
 
-            console.log('tempLastNode:' , tempLastNode[0]);
+           // console.log('tempLastNode:' , tempLastNode[0]);
 
             console.log('tempDuration:' , tempDuration);
 
@@ -542,16 +541,18 @@
 // Now add the notes content.
 
 
+        //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
+        notes.append('h4').text("Process:").style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
+        notes.append('h5').text(d.name); //.style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
 
 
         //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
-        notes.append('h2').text("Commands:").style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
-
-        notes.append('p').text(commands);
-
+        notes.append('h4').text("Commands:").style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
+        notes.append('h5').text(commands);
 
 
-        notes.append('h2').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
+
+        notes.append('h4').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
 
         notes.append('input').attr("type", "search").attr("id", "fileSearch").attr("placeholder", "Search for listing files")
             .style("margin-left", "10px;");
@@ -570,6 +571,99 @@
         // the opacity to make it visible.
 
         notes.transition().style({'opacity': 1});
+
+
+        //filesSearch Code Block
+
+        'use strict';
+
+        // search & highlight
+
+        ;( function( $, window, document, undefined )
+        {
+            var $container = $( '.fileSearch' );
+            if( !$container.length ) return true;
+
+            var $input			= $container.find( 'input' ),
+                $notfound		= $container.find( '.fileSearch__notfound' ),
+                $items			= $container.find( '> ul > li' ),
+                $item			= $(),
+                itemsIndexed	= [];
+
+            console.log('$container: ', $container);
+
+            $items.each( function()
+            {
+                itemsIndexed.push( $( this ).text().replace( /\s{2,}/g, ' ' ).toLowerCase() );
+            });
+
+            $input.on( 'keyup', function( e )
+            {
+                if( e.keyCode == 13 ) // enter
+                {
+                    $input.trigger( 'blur' );
+                    return true;
+                }
+
+                $items.each( function()
+                {
+                    $item = $( this );
+                    $item.html( $item.html().replace( /<span class="highlight">([^<]+)<\/span>/gi, '$1' ) );
+                });
+
+                var searchVal = $.trim( $input.val() ).toLowerCase();
+                if( searchVal.length )
+                {
+                    for( var i in itemsIndexed )
+                    {
+                        $item = $items.eq( i );
+                        if( itemsIndexed[ i ].indexOf( searchVal ) != -1 )
+                            $item.removeClass( 'is-hidden' ).html( $item.html().replace( new RegExp( searchVal+'(?!([^<]+)?>)', 'gi' ), '<span class="highlight">$&</span>' ) );
+                        else
+                            $item.addClass( 'is-hidden' );
+                    }
+                }
+                else $items.removeClass( 'is-hidden' );
+
+                $notfound.toggleClass( 'is-visible', $items.not( '.is-hidden' ).length == 0 );
+            });
+        })( jQuery, window, document );
+
+
+        // toggling items on title press
+
+        ;( function( $, window, document, undefined )
+        {
+            $( document ).on( 'click', '.fileSearch h2 a', function( e )
+            {
+                e.preventDefault();
+                $( this ).parents( 'li' ).toggleClass( 'is-active' );
+            });
+        })( jQuery, window, document );
+
+
+        // auto-show item content when show results reduces to single
+
+        ;( function( $, window, document, undefined )
+        {
+            var $container = $( '.fileSearch' );
+            if( !$container.length ) return true;
+
+            var $input		= $container.find( 'input' ),
+                $items		= $container.find( '> ul > li' ),
+                $item		= $();
+
+            $input.on( 'keyup', function()
+            {
+                $item = $items.not( '.is-hidden' );
+                if( $item.length == 1 )
+                    $item.addClass( 'js--autoshown is-active' );
+                else
+                    $items.filter( '.js--autoshown' ).removeClass( 'js--autoshown is-active' );
+            });
+        })( jQuery, window, document );
+
+
 
 
     }
@@ -663,6 +757,7 @@
                                 .duration(200)
                                 .style("opacity", .8);
                             div.html(
+                                "<h5>From Package:  " +  thisFile.package+ " </h5>" +
 
                                 "<h5>Read By: </h5>" +
                                 proccess_Read
@@ -728,10 +823,10 @@
                     var keyName = "\"" + file + "\"";
 
 
-
                     var proccess = [];
                     proccess["reads"] =[];
                     proccess["writes"] =[];
+                    proccess["package"] =package.name;
 
                     filesDict[keyName] = proccess;
 
@@ -753,6 +848,7 @@
                 var proccess = [];
                 proccess["reads"] =[];
                 proccess["writes"] =[];
+                proccess["package"] ='other_files';
 
                 filesDict[keyName] = proccess;
 
@@ -864,6 +960,10 @@
             });
 
             console.log('forceData:' , forceData);
+
+
+
+            fileDict  = createFileProfiles(jsonFile);
 
             console.log('fileDict', fileDict);
 
