@@ -59,7 +59,7 @@
         float: left;
         height: auto;
         width: 180px;
-        margin-top: 0;
+
         margin-left: 10px;
         position: absolute;
         display: block;
@@ -128,37 +128,10 @@
 
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <span style="font-size:30px;cursor:pointer"> Associated Files</span>
-
-
-    <input type="search" id="mySearch" placeholder="Search for listing files" style="margin-left:10px;">
-
-    <!-- faq -->
-    <div class="faq">
-        <input type="search" value="" placeholder="Search for listing files" />
-        <ul>
-            <li id="faq-1">
-                <h2><a href="#faq-1">Great Pyramid of Giza</a></h2>
-                <div>
-                    <p>The Great Pyramid of Giza <!-- ... --></p>
-                    <!-- ... -->
-                </div>
-            </li>
-            <li id="faq-2">
-                <h2><a href="#faq-2">Hanging Gardens of Babylon</a></h2>
-                <div>
-                    <p>The Hanging Gardens of Babylon <!-- ... --></p>
-                    <!-- ... -->
-                </div>
-            </li>
-            <!-- ... -->
-        </ul>
-        <div class="faq__notfound"><p>No matches were found.</p></div>
-    </div>
-
 
 
     <div id='notes'>
+
 
 
 
@@ -568,11 +541,20 @@
         notes.style({'opacity': 0});
 // Now add the notes content.
 
+
+
+
         //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
-        notes.append('h3').text("Commands:").style({'padding-left': 0, 'text-decoration': 'none' });
+        notes.append('h2').text("Commands:").style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
 
         notes.append('p').text(commands);
 
+
+
+        notes.append('h2').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
+
+        notes.append('input').attr("type", "search").attr("id", "fileSearch").attr("placeholder", "Search for listing files")
+            .style("margin-left", "10px;");
 
 
 
@@ -602,21 +584,21 @@
         var idString_href;
         var text_String ;
 
-            if(associationString == 'reads'){
+        if(associationString == 'reads'){
 
-                idString = "readsToDiv";
-                idString_href = "#readsToDiv";
-                text_String = "Reads from:";
-                readsList = source.reads.sort();
-            }
-            else if (associationString == 'writes'){
+            idString = "readsToDiv";
+            idString_href = "#readsToDiv";
+            text_String = "Reads from:";
+            readsList = source.reads.sort();
+        }
+        else if (associationString == 'writes'){
 
-                idString = "writesToDiv";
-                idString_href = "#writesToDiv";
-                text_String = "Writes to:";
-                readsList = source.writes.sort();
+            idString = "writesToDiv";
+            idString_href = "#writesToDiv";
+            text_String = "Writes to:";
+            readsList = source.writes.sort();
 
-            }
+        }
 
 
 
@@ -624,7 +606,7 @@
 
         var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
 
-       // var readsList = source.writes.sort();
+        // var readsList = source.writes.sort();
         var packagePath = '';
         var newDetails ;
         var newSummary;
@@ -768,9 +750,9 @@
 
 
 
-                         var proccess = [];
-                         proccess["reads"] =[];
-                         proccess["writes"] =[];
+                var proccess = [];
+                proccess["reads"] =[];
+                proccess["writes"] =[];
 
                 filesDict[keyName] = proccess;
 
@@ -788,42 +770,42 @@
 
                     if(_process.reads != null){
 
-                    _process.reads.forEach(function(file){
+                        _process.reads.forEach(function(file){
 
-                        var keyName = "\"" + file + "\"";
+                            var keyName = "\"" + file + "\"";
 
-                        //console.log('keyName:', filesDict[keyName]);
-                        //console.log('keyName:', keyName);
+                            //console.log('keyName:', filesDict[keyName]);
+                            //console.log('keyName:', keyName);
 
-                        if( keyName in filesDict){
+                            if( keyName in filesDict){
 
-                           // console.log('filesDict[file]:', filesDict[keyName]);
+                                // console.log('filesDict[file]:', filesDict[keyName]);
 
-                            filesDict[keyName].reads.push(_process.long_name);
+                                filesDict[keyName].reads.push(_process.long_name);
 
-                        }
+                            }
 
-                    });
+                        });
 
                     };
 
 
                     if (_process.writes != null){
-                    _process.writes.forEach(function(file){
+                        _process.writes.forEach(function(file){
 
 
 
-                        var keyName = "\"" + file + "\"";
+                            var keyName = "\"" + file + "\"";
 
-                        if(keyName in filesDict){
-
-
-                            filesDict[keyName].writes.push(_process.long_name);
-
-                        }
+                            if(keyName in filesDict){
 
 
-                    });
+                                filesDict[keyName].writes.push(_process.long_name);
+
+                            }
+
+
+                        });
                     }
 
 
@@ -1209,7 +1191,7 @@
 
     function setPackagePath (fileList, index, nextIndex){
 
-       // console.log('nextIndex: ', nextIndex);
+        // console.log('nextIndex: ', nextIndex);
 
         var TestingPackagePath = '';
 
@@ -1227,10 +1209,10 @@
             if (fileList[index].substring(0,i) == '/'){
 
 
-               // console.log('different character: ',fileList[index].substring(0,i));
+                // console.log('different character: ',fileList[index].substring(0,i));
 
                 TestingPackagePath = fileList[index].substring(0, fileList[index].lastIndexOf('/'));
-              //  console.log('TestingPackagePath: ',TestingPackagePath);
+                //  console.log('TestingPackagePath: ',TestingPackagePath);
 
             }
             else {
@@ -1238,7 +1220,7 @@
 
                 TestingPackagePath = fileList[index].substring(0,i);
                 TestingPackagePath = TestingPackagePath.substring(0, TestingPackagePath.lastIndexOf('/'));
-               // console.log('TestingPackagePath: ',TestingPackagePath);
+                // console.log('TestingPackagePath: ',TestingPackagePath);
 
             }
 
