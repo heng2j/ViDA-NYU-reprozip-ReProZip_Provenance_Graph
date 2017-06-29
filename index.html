@@ -31,7 +31,8 @@
     }
 
     .node text {
-        font: 10px sans-serif;
+        font: 15px sans-serif;
+        fill: #555;
     }
 
     .link {
@@ -42,9 +43,17 @@
 
     .link text {
         font: 11px sans-serif;
-        stroke: #0b1542;
+        fill: #555;
         stroke-width: 0.5px;
 
+
+
+
+    }
+
+    .timeLineText , .totalTimeLineText {
+
+        fill: #555;
 
 
     }
@@ -205,7 +214,7 @@
         height = 800 - margin.top - margin.bottom,
         padding = 3.5, // separation between same-color nodes
         clusterPadding = 40, // separation between different-color nodes
-        maxRadius = 5;
+        maxRadius = 20;
 
     var timeLineLen;
     var timeLineLen_Total;
@@ -250,7 +259,7 @@
     treeDraw(jsonFile);
 
 
-    
+
 
     var select = d3.select('#jsonSelections')
         .append('select')
@@ -314,7 +323,7 @@
             .on("mousedown", function(d){
 
                 console.log("mouseDown d", d);
-                d3.select("body").transition().style("background-color", "black");
+                d3.select("body").transition().style("background-color", "#1c1c1c");
 
             })
             .on("mouseup", function(d){
@@ -440,6 +449,7 @@
             .append("text")
             .attr("dy", ".35em")
             .attr("text-anchor", "middle")
+            .style("font-size", 15)
             .text(function (d) {
                 return d.target.rule;
             });
@@ -915,7 +925,7 @@
 
             for (var i = 0; i < readsList.length; i++ ){
 
-               // packagePath = setPackagePath(readsList, i , i + 1);
+                // packagePath = setPackagePath(readsList, i , i + 1);
                 //newDetails = readsFromDiv.append('details');
                 //newSummary = newDetails.append('summary').text(packagePath);
                 //currentUL = newDetails.append('ul');
@@ -1187,31 +1197,50 @@
 
 
 
-
-
-
-
-
+            var tempPackageX = 0;
+            var tempPackageY = 50;
 
             //Handle Packages
             data.packages.forEach(function (package) {
 
                 //m++;
-                var thisPackage = {["name"]: package.name, ["version"]: package.version, ["files"] : [] };
+
+
+
+
+
+
+                var thisPackage = {["name"]: package.name, ["version"]: package.version, ["files"] : [] , ["cx"]: 0, ["cy"]: tempPackageY , ["color"]: "" , ["radius"] : maxRadius};
 
                 package.files.forEach(function (file) {
 
 
                     var keyName = "\"" + file + "\"";
 
+                    //console.log('fileDict[file]:', fileDict[keyName]);
 
                     //  n++;
-                    var thisFile = {["name"]: file,  ["parent"]: package.name };
+                    var thisFile =  fileDict[keyName]; //{["name"]: file,  ["parent"]: package.name };
                     thisPackage.files.push(thisFile);
 
                     forceNodes.nodes.push(thisFile);
 
                 });
+
+
+
+              //  var color =  d3.scale.category20();
+
+
+
+
+
+                thisPackage.color =  "pink";
+
+                thisPackage.cx = tempPackageX;
+                tempPackageX = tempPackageX + 200;
+
+
 
                 forceData.packages.push(thisPackage);
 
@@ -1219,13 +1248,12 @@
             });
 
             console.log('forceData:' , forceData);
-            console.log('packages["bash"]:' , forceData);
 
 
 
 
 
-            forceDraw(forceData, forceNodes);
+
 
             //Handle runs
             data.runs.forEach(function(run){
@@ -1316,12 +1344,12 @@
 
                                 var keyName = "\"" + file + "\"";
 
-                                 //console.log('Inner keyName:', fileDict[keyName]);
+                                //console.log('Inner keyName:', fileDict[keyName]);
                                 //console.log('keyName:', keyName);
 
                                 if( keyName in fileDict){
 
-                                   // console.log('filesDict[file] package Name:', fileDict[keyName].package);
+                                    // console.log('filesDict[file] package Name:', fileDict[keyName].package);
 
                                     packages.reads.push(fileDict[keyName].package);
                                     //filesDict[keyName].reads.push(_process.long_name);
@@ -1410,7 +1438,13 @@
 
 
 
-            console.log('root.children[0].exit_time' ,  root.children[0]);
+
+            forceDraw(forceData, forceNodes, root);
+
+
+
+
+
 
             // Default timeline length for root
 
@@ -1587,39 +1621,9 @@
     function forceDraw(data,thisNodes) {
 
 
+        var nodes = data.packages;
 
-
-        var color = d3.scale.category20()
-            .domain(d3.range(m));
-
-        var x = d3.scale.ordinal()
-            .domain(d3.range(m))
-            .rangePoints([0, width], 1);
-
-
-
-
-        var nodes = d3.range(n).map(function () {
-
-
-
-
-            var i = Math.floor(Math.random() * m)
-            //,
-            // v = (i + 1) / m * -Math.log(Math.random());
-
-            return {
-                radius: maxRadius,
-                color: color(i),
-                cx: x(i),
-                cy: 50
-            };
-
-
-
-        });
-
-
+        console.log('nodes: ,' , nodes);
 
 
 
@@ -1639,11 +1643,20 @@
             .attr("r", function (d) {
                 return d.radius;
             })
-            .style("fill", function (d) {
-                return d.color;
+            .style("fill",function() {
+                return "hsl(" + Math.random() * 360 + ",60%,80%)";
             })
             .call(force.drag);
 
+        var label = svg.selectAll(".mytext")
+            .data(nodes)
+            .enter()
+            .append("text")
+            .text(function (d) { return d.name; })
+            .style("text-anchor", "middle")
+            .style("fill", "#555")
+            .style("font-family", "Arial")
+            .style("font-size", 18);
 
 
 
@@ -1657,6 +1670,9 @@
                 .attr("cy", function (d) {
                     return d.y;
                 });
+
+            label.attr("x", function(d){ return d.x; })
+                .attr("y", function (d) {return d.y - 30; });
         }
 
 
@@ -1715,6 +1731,7 @@
             .attr("x", timeLineLen / 2)
             .attr('text-anchor', 'middle')
             .attr("class", "timeLineText")//easy to style with CSS
+
             .text(durationLabel);
 
 
@@ -1785,6 +1802,34 @@
 
     }
 
+    /**
+     * Returns a list of all nodes under the root.
+     */
+    function flatten(root) {
+        var nodes = [];
+        var i = 0;
+
+        function recurse(node) {
+            if (node.children)
+                node.children.forEach(recurse);
+            if (!node.id)
+                node.id = ++i;
+            nodes.push(node);
+        }
+
+        recurse(root);
+        return nodes;
+    }
+
+    /**
+     * Gives the coordinates of the border for keeping the nodes inside a frame
+     * http://bl.ocks.org/mbostock/1129492
+     */
+    function nodeTransform(d) {
+        d.x =  Math.max(maxNodeSize, Math.min(w - (d.imgwidth/2 || 16), d.x));
+        d.y =  Math.max(maxNodeSize, Math.min(h - (d.imgheight/2 || 16), d.y));
+        return "translate(" + d.x + "," + d.y + ")";
+    }
 
 
 </script>
