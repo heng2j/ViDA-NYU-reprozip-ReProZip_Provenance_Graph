@@ -54,7 +54,7 @@
     .timeLineText , .totalTimeLineText {
 
         fill: #555;
-
+        font-size: 15px;
 
     }
 
@@ -199,6 +199,8 @@
 
     var forceData = {"packages": []};
 
+    var force;
+
     var isTreeRedrew = false;
 
     var tempLastNode;
@@ -322,8 +324,52 @@
             .on("click", click)
             .on("mousedown", function(d){
 
-                console.log("mouseDown d", d);
+                //mousedownOnNode_Canvas();
+
+//                var point = d3.mouse(this),
+//                    node = {x: point[0], y: point[1]};
+
+//                forceData.packages.forEach(function (package) {
+//
+//                    if d.name
+//                });
+
+                console.log('force node', force.nodes());
+
+                console.log('reading packages:', d.packages.reads);
+
+                console.log('writing packages:', d.packages.writes);
+
                 d3.select("body").transition().style("background-color", "#1c1c1c");
+
+                var links = force.links();
+                var link = svg.selectAll(".link");
+
+                // add links to any nearby nodes
+                force.nodes().forEach(function(target) {
+
+                    d.packages.reads.forEach(function (readFile) {
+
+                        if(target.name == readFile){
+
+                            var node = {};
+                            node.x = d.x;
+                            node.y = d.y;
+
+                            console.log('mousedown node:', node);
+                            links.push({source: node, target: target});
+                        }
+
+                    })
+
+
+
+                });
+
+                link = link.data(links);
+
+                force.start();
+
 
             })
             .on("mouseup", function(d){
@@ -1262,8 +1308,7 @@
                 run.processes.forEach(function(_process){
 
                     var packages = {["reads"]:[], ["writes"]: []};
-
-
+                    var packagesName = [];
 
 
                     if(_process.parent == null){
@@ -1286,6 +1331,7 @@
                                     // console.log('filesDict[file] package Name:', fileDict[keyName].package);
 
                                     packages.reads.push(fileDict[keyName].package);
+                                    packagesName.push(fileDict[keyName].package);
                                     //filesDict[keyName].reads.push(_process.long_name);
 
                                 }
@@ -1308,6 +1354,7 @@
                                 if(keyName in fileDict){
 
                                     packages.writes.push(fileDict[keyName].package);
+                                    packagesName.push(fileDict[keyName].package);
 
                                 }
 
@@ -1319,6 +1366,9 @@
                         }
 
                         node.packages = packages;
+
+                        let uniq = [...new Set(packagesName)];
+                        node.packageNames = uniq;
 
 
                         if(_process.exit_time > tempMaxRunTime ){
@@ -1479,7 +1529,7 @@
 
             duration_total_ms =  (tempMaxRunTime - rootStartTime) / 1000000 ;
 
-            var durationLabel_total  = getTimeLineLabel(duration_total_ms);
+            var durationLabel_total  = getTimeLineLabel(duration_total_ms,"total");
 
 
             // timeLineLen = root.x0 / 2;
@@ -1520,7 +1570,7 @@
 
     }
 
-    function getTimeLineLabel(duration_ms){
+    function getTimeLineLabel(duration_ms, isTotalString){
 
         var duration_total = new moment.duration(duration_ms);
 
@@ -1529,29 +1579,37 @@
 
         if(duration_total.asMilliseconds() < 60000){
 
-            durationLabel_total =  "Took " + duration_total.asMilliseconds().toFixed(2) + " milliseconds";
+            durationLabel_total =  duration_total.asMilliseconds().toFixed(2) + " milliseconds";
 
         }
         else if (duration_total.asSeconds() < 60 && duration_total.asSeconds() > 0){
 
-            durationLabel_total =  "Took " + duration_total.asSeconds().toFixed(2) + " seconds";
+            durationLabel_total =  duration_total.asSeconds().toFixed(2) + " seconds";
 
         }
 
         else if (duration_total.asMinutes() < 60 && duration_total.asMinutes() > 0){
 
-            durationLabel_total =  "Took " + duration_total.asMinutes().toFixed(2) + " minutes"; //+ " and " + duration.asSeconds().toFixed(0) + " seconds";
+            durationLabel_total =  duration_total.asMinutes().toFixed(2) + " minutes"; //+ " and " + duration.asSeconds().toFixed(0) + " seconds";
 
         }
         else if (duration_total.asHours() < 24 && duration_total.asHours() > 0){
 
-            durationLabel_total =  "Took " + duration_total.asHours().toFixed(2) + " hours" ;
+            durationLabel_total =   duration_total.asHours().toFixed(2) + " hours" ;
 
         }
         else if (duration_total.asDays() < 28 && duration_total.asDays() > 0){
 
-            durationLabel_total =  "Took " + duration_total.asDays().toFixed(2) + " days" ;
+            durationLabel_total =  duration_total.asDays().toFixed(2) + " days" ;
 
+        }
+
+        if (isTotalString == "total"){
+
+            durationLabel_total = "Total " + durationLabel_total;
+        }else{
+
+            durationLabel_total = "Took " + durationLabel_total;
         }
 
         return durationLabel_total;
@@ -1627,7 +1685,7 @@
 
 
 
-        var force = d3.layout.force()
+         force = d3.layout.force()
             .nodes(nodes)
             .size([width, height])
             .gravity(0)
@@ -1802,33 +1860,25 @@
 
     }
 
-    /**
-     * Returns a list of all nodes under the root.
-     */
-    function flatten(root) {
-        var nodes = [];
-        var i = 0;
 
-        function recurse(node) {
-            if (node.children)
-                node.children.forEach(recurse);
-            if (!node.id)
-                node.id = ++i;
-            nodes.push(node);
-        }
+    function mousedownOnNode_Canvas() {
+        var point = d3.mouse(this),
+            node = {x: point[0], y: point[1]};
 
-        recurse(root);
-        return nodes;
-    }
+        console.log('mouse_down position:', node);
 
-    /**
-     * Gives the coordinates of the border for keeping the nodes inside a frame
-     * http://bl.ocks.org/mbostock/1129492
-     */
-    function nodeTransform(d) {
-        d.x =  Math.max(maxNodeSize, Math.min(w - (d.imgwidth/2 || 16), d.x));
-        d.y =  Math.max(maxNodeSize, Math.min(h - (d.imgheight/2 || 16), d.y));
-        return "translate(" + d.x + "," + d.y + ")";
+           // n = nodes.push(node);
+
+//        // add links to any nearby nodes
+//        nodes.forEach(function(target) {
+//            var x = target.x - node.x,
+//                y = target.y - node.y;
+//            if (Math.sqrt(x * x + y * y) < 30) {
+//                links.push({source: node, target: target});
+//            }
+//        });
+//
+//        restart();
     }
 
 
