@@ -82,7 +82,7 @@
             "./count.sh"
           ], 
           "description": "/bin/bash\n1", 
-          "exit_time": 61511781998330, 
+          "exit_time": 6151178998330, 
           "is_thread": false, 
           "long_name": "bash (1)", 
           "name": "1", 
