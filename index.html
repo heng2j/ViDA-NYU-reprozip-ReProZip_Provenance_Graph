@@ -67,7 +67,11 @@
         font: 13px sans-serif;
 
     }
+    #container,
+    #viz-graph{
 
+
+    }
 
 
     .sidenav {
@@ -128,7 +132,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-<script src="//momentjs.com/downloads/moment.js"></script>
+<script src="https://momentjs.com/downloads/moment.js"></script>
 
 <!--
 
@@ -180,7 +184,7 @@
 
     var jsonFile = "bash-count.json";
 
-   //var jsonFile = "stacked-up-website.json";
+    //var jsonFile = "stacked-up-website.json";
 
     var data = ["bash-count.json", "stacked-up-website.json", "ache.json"];
 
@@ -245,6 +249,9 @@
 
     treeDraw(jsonFile);
 
+
+    
+
     var select = d3.select('#jsonSelections')
         .append('select')
         .attr('class','select')
@@ -286,8 +293,6 @@
 
 
 
-
-
         // Compute the new tree layout.
         var nodes = tree.nodes(root).reverse(),
             links = tree.links(nodes);
@@ -304,7 +309,21 @@
         var nodeEnter = node.enter().append("g")
             .attr("class", "node")
             .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-            .on("dblclick", dblclick).on("click", click)
+            .on("dblclick", dblclick)
+            .on("click", click)
+            .on("mousedown", function(d){
+
+                console.log("mouseDown d", d);
+                d3.select("body").transition().style("background-color", "black");
+
+            })
+            .on("mouseup", function(d){
+
+                console.log("mouseUP");
+                d3.select("body").transition().style("background-color", "white");
+
+            })
+
             .on("mouseover", function(d) {
 
                 div.transition()
@@ -485,16 +504,16 @@
 
             if (d.children != null){
 
-            d.children.forEach(function(node) {
+                d.children.forEach(function(node) {
 
-                if ((node.start_time - rootStartTime) > tempDuration) {
+                    if ((node.start_time - rootStartTime) > tempDuration) {
 
-                    tempDuration = node.start_time - rootStartTime;
-                    tempLastNode = node;
-                };
+                        tempDuration = node.start_time - rootStartTime;
+                        tempLastNode = node;
+                    };
 
 
-            });
+                });
             }
             else{
                 tempDuration = d.exit_time - rootStartTime;
@@ -502,13 +521,13 @@
             }
 
 
-           // console.log('tempLastNode:' , tempLastNode[0]);
+            // console.log('tempLastNode:' , tempLastNode[0]);
 
             console.log('tempDuration:' , tempDuration);
 
 
 
-          //  increaseTimeLineLen(d.y );
+            //  increaseTimeLineLen(d.y );
 
             //increaseTimeLineLen(tempLastNode.y );
 
@@ -520,7 +539,7 @@
 
         timeLineLen =  timeLineLen_Total * (duration / duration_total_ms);
 
-      //  var durationLabel  = "Took " + (duration / 1000000).toFixed(2) + " milliseconds";
+        //  var durationLabel  = "Took " + (duration / 1000000).toFixed(2) + " milliseconds";
 
         updateTimeLine(timeLineLen, getTimeLineLabel(duration));
 
@@ -595,7 +614,10 @@
 
         searchFilesInfoDiv.append('h4').text("Associated Packages:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
 
-        console.log('click d:', d);
+
+        createPackageTooTip(searchFilesInfoDiv,d,"reads");
+        createPackageTooTip(searchFilesInfoDiv,d,"writes");
+
 
         // With the content in place, transition
         // the opacity to make it visible.
@@ -633,7 +655,7 @@
                 console.log('keyup : ');
 
                 $(".searchFilesInfoDiv").hide();
-               // searchFilesInfoDiv.selectAll('*').;
+                // searchFilesInfoDiv.selectAll('*').;
 
 
                 if( e.keyCode == 13 ) // enter
@@ -713,7 +735,6 @@
 
 
     function createFileTooTip(notes,source, associationString){
-
 
 
         var readsList ;
@@ -853,13 +874,102 @@
 
     }
 
+    function createPackageTooTip(notes,source, associationString){
+
+
+        var readsList ;
+        var idString;
+        var idString_href;
+        var text_String ;
+
+        if(associationString == 'reads'){
+
+            idString = "pkg_readsToDiv";
+            idString_href = "#pkg_readsToDiv";
+            text_String = "Reads from:";
+            readsList = source.packages.reads.sort();
+        }
+        else if (associationString == 'writes'){
+
+            idString = "pkg_writesToDiv";
+            idString_href = "#pkg_writesToDiv";
+            text_String = "Writes to:";
+            readsList = source.packages.writes.sort();
+
+        }
+
+
+
+        notes.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", idString_href).text(text_String).style({'padding-left': 0, 'text-decoration': 'none' });
+
+        var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
+
+        // var readsList = source.writes.sort();
+        var packagePath = '';
+        var newDetails ;
+        var newSummary;
+        var currentUL ;
+
+
+        if(readsList.length !=0){
+
+            for (var i = 0; i < readsList.length; i++ ){
+
+               // packagePath = setPackagePath(readsList, i , i + 1);
+                //newDetails = readsFromDiv.append('details');
+                //newSummary = newDetails.append('summary').text(packagePath);
+                //currentUL = newDetails.append('ul');
+                currentUL = readsFromDiv.append('ul');
+
+                currentUL.append('li')
+                    .text(readsList[i]);
+
+//                while(readsList[i].includes(packagePath) ){
+//
+//
+//                    var thisReadArray = ["\"" + readsList[i] + "\""];
+//
+//                    var fileName = readsList[i].replace(packagePath,"");
+//
+//                    currentUL.append('li')
+//                        .data(thisReadArray)
+//                        .text(fileName);
+//
+//                    if(readsList[i+1] == null){
+//
+//                        break;
+//                    }
+//
+//                    if(readsList[i+1].includes(packagePath) == false ){
+//
+//
+//                        break;
+//
+//
+//                    }
+//                    i++;
+//
+//                }
+
+
+            }
+
+        }
+        else {
+            readsFromDiv.append('details').append('summary').text("No associated package.");
+
+        }
+
+
+    }
+
     //Create the files dictionary
     function createFileProfiles(jsonFile){
 
-       // var filesDict;
+        // var filesDict;
 
         // d3.json block
-       d3.json(jsonFile, function(error, data) {
+        d3.json(jsonFile, function(error, data) {
 
             if (error) throw error;
 
@@ -914,7 +1024,7 @@
 
                             if( keyName in fileDict){
 
-                                 //console.log('filesDict[file]:', filesDict[keyName]);
+                                //console.log('filesDict[file]:', filesDict[keyName]);
 
                                 fileDict[keyName].reads.push(_process.long_name);
 
@@ -950,8 +1060,8 @@
             });
 
 
-           console.log('internal filesDict ', fileDict);
-           console.log('inner query with keyName:', fileDict["\"/usr/bin/cut\""]);
+            console.log('internal filesDict ', fileDict);
+            console.log('inner query with keyName:', fileDict["\"/usr/bin/cut\""]);
 
 
 
@@ -985,7 +1095,7 @@
 
 
 
-           // createFileProfiles(jsonFile);
+            // createFileProfiles(jsonFile);
 
             data.packages.forEach(function (package) {
 
@@ -1077,7 +1187,8 @@
 
 
 
-            console.log('fileDict', fileDict);
+
+
 
 
 
@@ -1122,22 +1233,16 @@
 
                 run.processes.forEach(function(_process){
 
+                    var packages = {["reads"]:[], ["writes"]: []};
+
+
+
 
                     if(_process.parent == null){
 
                         var node = {["name"]: _process.long_name, ["parent"]: "null", ["rule"] : "null", ["description"]: _process.description, ["reads"]: _process.reads ,  ["writes"]: _process.writes  ,["argv"]: _process.argv  , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
 
-                        rawData.push(node);
-
-                    }
-                    else {
-
-                        var parentProcess = run.processes[ ( _process.parent[0] ) ];
-
-                        var node = {["name"]: _process.long_name, ["parent"]: parentProcess.long_name, ["rule"] : _process.parent[1], ["description"]: _process.description ,  ["reads"]: _process.reads ,  ["writes"]: _process.writes ,["argv"]: _process.argv , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
-
-                        var packages = [];
-                       // var filesDict = {} ;
+                        // var filesDict = {} ;
 
                         if(_process.reads != null){
 
@@ -1145,20 +1250,24 @@
 
                                 var keyName = "\"" + file + "\"";
 
-                               // console.log('keyName:', fileDict[keyName]);
+                                //console.log('Inner keyName:', fileDict[keyName]);
                                 //console.log('keyName:', keyName);
 
                                 if( keyName in fileDict){
 
-                                  //  console.log('filesDict[file]:', fileDict[keyName]);
+                                    // console.log('filesDict[file] package Name:', fileDict[keyName].package);
 
+                                    packages.reads.push(fileDict[keyName].package);
                                     //filesDict[keyName].reads.push(_process.long_name);
 
                                 }
 
                             });
 
+                            let uniq = [...new Set(packages.reads)];
+                            packages.reads = uniq;
                         };
+
 
 
                         if (_process.writes != null){
@@ -1170,23 +1279,84 @@
 
                                 if(keyName in fileDict){
 
-                                 //   console.log('keyName:', fileDict[keyName]);
-                                    //filesDict[keyName].writes.push(_process.long_name);
+                                    packages.writes.push(fileDict[keyName].package);
 
                                 }
 
 
                             });
+
+                            let uniq = [...new Set(packages.writes)];
+                            packages.writes = uniq;
                         }
 
+                        node.packages = packages;
+
+
+                        if(_process.exit_time > tempMaxRunTime ){
+
+                            tempMaxRunTime = _process.exit_time;
+                        }
+
+                        rawData.push(node);
+
+                    }
+                    else {
+
+                        var parentProcess = run.processes[ ( _process.parent[0] ) ];
+
+                        var node = {["name"]: _process.long_name, ["parent"]: parentProcess.long_name, ["rule"] : _process.parent[1], ["description"]: _process.description ,  ["reads"]: _process.reads ,  ["writes"]: _process.writes ,["argv"]: _process.argv , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
+
+
+                        // var filesDict = {} ;
+
+                        if(_process.reads != null){
+
+                            _process.reads.forEach(function(file){
+
+                                var keyName = "\"" + file + "\"";
+
+                                 //console.log('Inner keyName:', fileDict[keyName]);
+                                //console.log('keyName:', keyName);
+
+                                if( keyName in fileDict){
+
+                                   // console.log('filesDict[file] package Name:', fileDict[keyName].package);
+
+                                    packages.reads.push(fileDict[keyName].package);
+                                    //filesDict[keyName].reads.push(_process.long_name);
+
+                                }
+
+                            });
+
+                            let uniq = [...new Set(packages.reads)];
+                            packages.reads = uniq;
+                        };
 
 
 
-                        _process.reads.forEach(function(file){
+                        if (_process.writes != null){
+                            _process.writes.forEach(function(file){
 
 
 
-                        });
+                                var keyName = "\"" + file + "\"";
+
+                                if(keyName in fileDict){
+
+                                    packages.writes.push(fileDict[keyName].package);
+
+                                }
+
+
+                            });
+
+                            let uniq = [...new Set(packages.writes)];
+                            packages.writes = uniq;
+                        }
+
+                        node.packages = packages;
 
 
                         if(_process.exit_time > tempMaxRunTime ){
@@ -1278,7 +1448,7 @@
             var durationLabel_total  = getTimeLineLabel(duration_total_ms);
 
 
-           // timeLineLen = root.x0 / 2;
+            // timeLineLen = root.x0 / 2;
             timeLineLen_Total = root.x0 / 2;
 
 
