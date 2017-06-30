@@ -336,39 +336,13 @@
 
                 console.log('force node', force.nodes());
 
-                console.log('reading packages:', d.packages.reads);
-
-                console.log('writing packages:', d.packages.writes);
 
                 d3.select("body").transition().style("background-color", "#1c1c1c");
 
                 var links = force.links();
-                var link = svg.selectAll(".link");
-
-                // add links to any nearby nodes
-                force.nodes().forEach(function(target) {
-
-                    d.packages.reads.forEach(function (readFile) {
-
-                        if(target.name == readFile){
-
-                            var node = {};
-                            node.x = d.x;
-                            node.y = d.y;
-
-                            console.log('mousedown node:', node);
-                            links.push({source: node, target: target});
-                        }
-
-                    })
+               // var link = svg.selectAll(".link");
 
 
-
-                });
-
-                link = link.data(links);
-
-                force.start();
 
 
             })
@@ -611,6 +585,62 @@
     function click(d) {
 
         console.log('single click');
+
+        // Delete the current links section to prepare
+        // for new links.
+
+
+        //force.links().exit().remove();
+
+        var links = force.links();
+        var link = svg.selectAll(".edge");
+        var circles = svg.selectAll(".cirlce");
+
+        console.log('click circles: ', circles);
+
+        // add links to any nearby nodes
+
+        force.nodes().forEach(function(target) {
+
+            d.packages.reads.forEach(function (readFile) {
+
+                if(target.name == readFile){
+
+                    var node = {};
+                    node.x = d.x;
+                    node.y = d.y;
+                    node.weight = 100;
+
+                    links.push({source: node, target: target});
+                }
+
+            })
+
+
+
+        });
+
+
+        console.log('click links: ', links);
+
+
+
+        link = link.data(links);
+
+        link.enter().insert("line", ".circle")
+            .attr("class", "edge");
+        link.exit()
+            .remove();
+
+
+        d3.event.stopPropagation();
+
+        force.start();
+
+
+
+
+
 
         // Delete the current notes section to prepare
         // for new information.
@@ -932,6 +962,7 @@
 
     function createPackageTooTip(notes,source, associationString){
 
+        console.log('this source: ', source);
 
         var readsList ;
         var idString;
@@ -972,10 +1003,10 @@
             for (var i = 0; i < readsList.length; i++ ){
 
                 // packagePath = setPackagePath(readsList, i , i + 1);
-                //newDetails = readsFromDiv.append('details');
-                //newSummary = newDetails.append('summary').text(packagePath);
-                //currentUL = newDetails.append('ul');
-                currentUL = readsFromDiv.append('ul');
+                newDetails = readsFromDiv.append('details');
+                newSummary = newDetails.append('summary').text(source.name);
+                currentUL = newDetails.append('ul');
+                //currentUL = readsFromDiv.append('ul');
 
                 currentUL.append('li')
                     .text(readsList[i]);
@@ -1494,8 +1525,6 @@
 
 
 
-
-
             // Default timeline length for root
 
 
@@ -1678,26 +1707,28 @@
 
     function forceDraw(data,thisNodes) {
 
-
         var nodes = data.packages;
 
         console.log('nodes: ,' , nodes);
 
 
-
          force = d3.layout.force()
             .nodes(nodes)
             .size([width, height])
+             .linkDistance(30)
             .gravity(0)
             .charge(0)
             .on("tick", tick)
             .start();
 
 
+        var edges = svg.selectAll(".edge");
+
 
         var circle = svg.selectAll("circle")
             .data(nodes)
             .enter().append("circle")
+            .attr("class", 'circle')
             .attr("r", function (d) {
                 return d.radius;
             })
@@ -1720,14 +1751,19 @@
 
         function tick(e) {
             circle
-                .each(gravity(.2 * e.alpha))
-                .each(collide(.5))
+                .each(gravity(3 * e.alpha))
+                .each(collide(.2))
                 .attr("cx", function (d) {
                     return d.x;
                 })
                 .attr("cy", function (d) {
                     return d.y;
                 });
+
+            edges.attr("x1", function(d){ return d.source.x; })
+                .attr("y1", function(d){ return d.source.y; })
+                .attr("x2", function(d){ return d.target.x; })
+                .attr("y2", function(d){ return d.target.y; });
 
             label.attr("x", function(d){ return d.x; })
                 .attr("y", function (d) {return d.y - 30; });
@@ -1772,6 +1808,8 @@
 
         }
     }
+
+
 
 
     function updateTimeLine(length, durationLabel){
