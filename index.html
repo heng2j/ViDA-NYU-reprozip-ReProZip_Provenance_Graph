@@ -58,6 +58,10 @@
 
     }
 
+    .edge {
+        stroke: #999;
+    }
+
 
 
     #viz-graph {
@@ -201,6 +205,8 @@
 
     var force;
 
+    var packagesNumber = 0;
+
     var isTreeRedrew = false;
 
     var tempLastNode;
@@ -257,6 +263,7 @@
     var fileDict = {};
 
 
+    var edge = svg.selectAll(".edge");
 
     treeDraw(jsonFile);
 
@@ -498,10 +505,8 @@
     // Toggle children on click.
     function dblclick(d) {
 
-        console.log('d:', d);
 
         var duration;
-
 
         if (d.children) {
 
@@ -575,8 +580,6 @@
 
 
 
-
-
         update(d);
     }
 
@@ -584,7 +587,28 @@
     // Toggle children on click.
     function click(d) {
 
+
+
         console.log('single click');
+
+
+        console.log('single click force.nodes()', force.nodes());
+
+
+        console.log('single click force.nodes().length', force.nodes().length);
+
+        console.log('single click packagesNumber', packagesNumber);
+
+        console.log('single click forceData.packages: ', forceData.packages);
+
+        if(force.nodes().length > packagesNumber){
+
+            force.nodes().pop();
+
+            console.log('single click force.nodes() after pop', force.nodes());
+
+        }
+
 
         // Delete the current links section to prepare
         // for new links.
@@ -593,12 +617,22 @@
         //force.links().exit().remove();
 
         var links = force.links();
-        var link = svg.selectAll(".edge");
+       // var link = svg.selectAll(".edge");
         var circles = svg.selectAll(".cirlce");
 
         console.log('click circles: ', circles);
 
         // add links to any nearby nodes
+
+        var node = {};
+        node.x = d.x;
+        node.y = d.y;
+        node.px = d.x;
+        node.py = d.y;
+        node.weight = 100;
+
+        var newforceNodes = force.nodes().push(node);
+
 
         force.nodes().forEach(function(target) {
 
@@ -606,10 +640,6 @@
 
                 if(target.name == readFile){
 
-                    var node = {};
-                    node.x = d.x;
-                    node.y = d.y;
-                    node.weight = 100;
 
                     links.push({source: node, target: target});
                 }
@@ -621,22 +651,7 @@
         });
 
 
-        console.log('click links: ', links);
-
-
-
-        link = link.data(links);
-
-        link.enter().insert("line", ".circle")
-            .attr("class", "edge");
-        link.exit()
-            .remove();
-
-
-        d3.event.stopPropagation();
-
-        force.start();
-
+        restart(edge, links ,force);
 
 
 
@@ -1287,7 +1302,7 @@
 
 
 
-                var thisPackage = {["name"]: package.name, ["version"]: package.version, ["files"] : [] , ["cx"]: 0, ["cy"]: tempPackageY , ["color"]: "" , ["radius"] : maxRadius};
+                var thisPackage = {["name"]: package.name, ["version"]: package.version, ["files"] : [] , ["cx"]: 0, ["cy"]: tempPackageY , ["OGy"]: tempPackageY, ["color"]: "" , ["radius"] : maxRadius};
 
                 package.files.forEach(function (file) {
 
@@ -1308,15 +1323,13 @@
 
               //  var color =  d3.scale.category20();
 
-
-
-
-
-                thisPackage.color =  "pink";
+               // thisPackage.color =  "pink";
 
                 thisPackage.cx = tempPackageX;
-                tempPackageX = tempPackageX + 200;
+                thisPackage.OGX = tempPackageX;
+                tempPackageX = tempPackageX + (width / data.packages.length); // 200;
 
+                packagesNumber++;
 
 
                 forceData.packages.push(thisPackage);
@@ -1525,6 +1538,11 @@
 
 
 
+
+
+
+
+
             // Default timeline length for root
 
 
@@ -1707,9 +1725,11 @@
 
     function forceDraw(data,thisNodes) {
 
+       // console.log('nodes: ,' , data);
+
         var nodes = data.packages;
 
-        console.log('nodes: ,' , nodes);
+
 
 
          force = d3.layout.force()
@@ -1719,10 +1739,10 @@
             .gravity(0)
             .charge(0)
             .on("tick", tick)
-            .start();
 
 
-        var edges = svg.selectAll(".edge");
+
+        var links = force.links();
 
 
         var circle = svg.selectAll("circle")
@@ -1749,7 +1769,14 @@
 
 
 
+
+
+        restart(edge,links,force);
+
+
+
         function tick(e) {
+
             circle
                 .each(gravity(3 * e.alpha))
                 .each(collide(.2))
@@ -1760,7 +1787,8 @@
                     return d.y;
                 });
 
-            edges.attr("x1", function(d){ return d.source.x; })
+            edge.attr("x1", function(d){ return d.source.x;
+            })
                 .attr("y1", function(d){ return d.source.y; })
                 .attr("x2", function(d){ return d.target.x; })
                 .attr("y2", function(d){ return d.target.y; });
@@ -1917,6 +1945,28 @@
 //        });
 //
 //        restart();
+    }
+
+
+    function restart(link,links,force) {
+
+
+
+        console.log('restart links: ', links);
+
+        console.log('restart before link: ', link);
+
+        link = link.data(links);
+
+        console.log('restart link: ', link);
+
+
+        link.enter().insert("line", ".circle")
+            .attr("class", "edge");
+        link.exit()
+            .remove();
+
+        force.start();
     }
 
 
