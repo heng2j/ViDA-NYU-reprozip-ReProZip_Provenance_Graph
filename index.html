@@ -347,7 +347,7 @@
                 d3.select("body").transition().style("background-color", "#1c1c1c");
 
                 var links = force.links();
-               // var link = svg.selectAll(".link");
+                // var link = svg.selectAll(".link");
 
 
 
@@ -617,7 +617,7 @@
         //force.links().exit().remove();
 
         var links = force.links();
-       // var link = svg.selectAll(".edge");
+        // var link = svg.selectAll(".edge");
         var circles = svg.selectAll(".cirlce");
 
         console.log('click circles: ', circles);
@@ -716,8 +716,8 @@
         searchFilesInfoDiv.append('h4').text("Associated Packages:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
 
 
-        createPackageTooTip(searchFilesInfoDiv,d,"reads");
-        createPackageTooTip(searchFilesInfoDiv,d,"writes");
+        createPackageTooTip(searchFilesInfoDiv,d);
+
 
 
         // With the content in place, transition
@@ -975,86 +975,77 @@
 
     }
 
-    function createPackageTooTip(notes,source, associationString){
-
-        console.log('this source: ', source);
-
-        var readsList ;
-        var idString;
-        var idString_href;
-        var text_String ;
-
-        if(associationString == 'reads'){
-
-            idString = "pkg_readsToDiv";
-            idString_href = "#pkg_readsToDiv";
-            text_String = "Reads from:";
-            readsList = source.packages.reads.sort();
-        }
-        else if (associationString == 'writes'){
-
-            idString = "pkg_writesToDiv";
-            idString_href = "#pkg_writesToDiv";
-            text_String = "Writes to:";
-            readsList = source.packages.writes.sort();
-
-        }
 
 
 
-        notes.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", idString_href).text(text_String).style({'padding-left': 0, 'text-decoration': 'none' });
+    function createPackageTooTip(notes,source){
+
+        var idString = "package_Div";
+
+        var packageNames = source.packages.reads.sort().concat(source.packages.writes.sort());
+        var packages = {};
+
+
+        packageNames.forEach(function (package) {
+
+            packages[package] = [];
+
+
+        })
+
+
+
+        var fileList = source.reads.sort().concat(source.writes.sort());
+
+        fileList.forEach(function(file){
+
+
+            var keyName = "\"" + file + "\"";
+
+            if(keyName in fileDict){
+
+
+                var file = fileDict[keyName];
+
+                packages[file.package].push(file);
+
+
+            }
+
+
+        });
+
+
 
         var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
 
-        // var readsList = source.writes.sort();
-        var packagePath = '';
+
         var newDetails ;
         var newSummary;
         var currentUL ;
 
 
-        if(readsList.length !=0){
 
-            for (var i = 0; i < readsList.length; i++ ){
+        console.log("packages[package] after added files", Object.keys(packages).length);
 
-                // packagePath = setPackagePath(readsList, i , i + 1);
+        if(Object.keys(packages).length !=0){
+
+
+            Object.keys(packages).forEach(function(key) {
+
                 newDetails = readsFromDiv.append('details');
-                newSummary = newDetails.append('summary').text(source.name);
+                newSummary = newDetails.append('summary').text(key);
                 currentUL = newDetails.append('ul');
-                //currentUL = readsFromDiv.append('ul');
 
-                currentUL.append('li')
-                    .text(readsList[i]);
+                packages[key].forEach(function (file) {
 
-//                while(readsList[i].includes(packagePath) ){
-//
-//
-//                    var thisReadArray = ["\"" + readsList[i] + "\""];
-//
-//                    var fileName = readsList[i].replace(packagePath,"");
-//
-//                    currentUL.append('li')
-//                        .data(thisReadArray)
-//                        .text(fileName);
-//
-//                    if(readsList[i+1] == null){
-//
-//                        break;
-//                    }
-//
-//                    if(readsList[i+1].includes(packagePath) == false ){
-//
-//
-//                        break;
-//
-//
-//                    }
-//                    i++;
-//
-//                }
+                    currentUL.append('li')
+                        .text(file.name);
 
+                })
 
-            }
+            });
+
 
         }
         else {
@@ -1064,6 +1055,96 @@
 
 
     }
+
+//    function createPackageTooTip(notes,source, associationString){
+//
+//        console.log('this source: ', source);
+//
+//        var readsList ;
+//        var idString;
+//        var idString_href;
+//        var text_String ;
+//
+//        if(associationString == 'reads'){
+//
+//            idString = "pkg_readsToDiv";
+//            idString_href = "#pkg_readsToDiv";
+//            text_String = "Reads from:";
+//            readsList = source.packages.reads.sort();
+//        }
+//        else if (associationString == 'writes'){
+//
+//            idString = "pkg_writesToDiv";
+//            idString_href = "#pkg_writesToDiv";
+//            text_String = "Writes to:";
+//            readsList = source.packages.writes.sort();
+//
+//        }
+//
+//
+//
+//        notes.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", idString_href).text(text_String).style({'padding-left': 0, 'text-decoration': 'none' });
+//
+//        var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
+//
+//        // var readsList = source.writes.sort();
+//        var packagePath = '';
+//        var newDetails ;
+//        var newSummary;
+//        var currentUL ;
+//
+//
+//        if(readsList.length !=0){
+//
+//            for (var i = 0; i < readsList.length; i++ ){
+//
+//                // packagePath = setPackagePath(readsList, i , i + 1);
+//                newDetails = readsFromDiv.append('details');
+//                newSummary = newDetails.append('summary').text(source.name);
+//                currentUL = newDetails.append('ul');
+//                //currentUL = readsFromDiv.append('ul');
+//
+//                currentUL.append('li')
+//                    .text(readsList[i]);
+//
+////                while(readsList[i].includes(packagePath) ){
+////
+////
+////                    var thisReadArray = ["\"" + readsList[i] + "\""];
+////
+////                    var fileName = readsList[i].replace(packagePath,"");
+////
+////                    currentUL.append('li')
+////                        .data(thisReadArray)
+////                        .text(fileName);
+////
+////                    if(readsList[i+1] == null){
+////
+////                        break;
+////                    }
+////
+////                    if(readsList[i+1].includes(packagePath) == false ){
+////
+////
+////                        break;
+////
+////
+////                    }
+////                    i++;
+////
+////                }
+//
+//
+//            }
+//
+//        }
+//        else {
+//            readsFromDiv.append('details').append('summary').text("No associated package.");
+//
+//        }
+//
+//
+//    }
 
     //Create the files dictionary
     function createFileProfiles(jsonFile){
@@ -1085,6 +1166,7 @@
                     proccess["reads"] =[];
                     proccess["writes"] =[];
                     proccess["package"] = package.name;
+                    process["name"] = file;
 
                     fileDict[keyName] = proccess;
 
@@ -1103,6 +1185,7 @@
                 proccess["reads"] =[];
                 proccess["writes"] =[];
                 proccess["package"] ='other_files';
+                process["name"] = file;
 
                 fileDict[keyName] = proccess;
 
@@ -1209,6 +1292,7 @@
                     proccess["reads"] =[];
                     proccess["writes"] =[];
                     proccess["package"] = package.name;
+                    proccess["name"] = file;
 
                     fileDict[keyName] = proccess;
 
@@ -1227,6 +1311,7 @@
                 proccess["reads"] =[];
                 proccess["writes"] =[];
                 proccess["package"] ='other_files';
+                proccess["name"] = file;
 
                 fileDict[keyName] = proccess;
 
@@ -1321,9 +1406,9 @@
 
 
 
-              //  var color =  d3.scale.category20();
+                //  var color =  d3.scale.category20();
 
-               // thisPackage.color =  "pink";
+                // thisPackage.color =  "pink";
 
                 thisPackage.cx = tempPackageX;
                 thisPackage.OGX = tempPackageX;
@@ -1446,6 +1531,7 @@
                                     // console.log('filesDict[file] package Name:', fileDict[keyName].package);
 
                                     packages.reads.push(fileDict[keyName].package);
+                                    packagesName.push(fileDict[keyName].package);
                                     //filesDict[keyName].reads.push(_process.long_name);
 
                                 }
@@ -1468,6 +1554,7 @@
                                 if(keyName in fileDict){
 
                                     packages.writes.push(fileDict[keyName].package);
+                                    packagesName.push(fileDict[keyName].package);
 
                                 }
 
@@ -1479,6 +1566,9 @@
                         }
 
                         node.packages = packages;
+
+                        let uniq = [...new Set(packagesName)];
+                        node.packageNames = uniq;
 
 
                         if(_process.exit_time > tempMaxRunTime ){
@@ -1725,17 +1815,17 @@
 
     function forceDraw(data,thisNodes) {
 
-       // console.log('nodes: ,' , data);
+        // console.log('nodes: ,' , data);
 
         var nodes = data.packages;
 
 
 
 
-         force = d3.layout.force()
+        force = d3.layout.force()
             .nodes(nodes)
             .size([width, height])
-             .linkDistance(30)
+            .linkDistance(30)
             .gravity(0)
             .charge(0)
             .on("tick", tick)
@@ -1933,7 +2023,7 @@
 
         console.log('mouse_down position:', node);
 
-           // n = nodes.push(node);
+        // n = nodes.push(node);
 
 //        // add links to any nearby nodes
 //        nodes.forEach(function(target) {
