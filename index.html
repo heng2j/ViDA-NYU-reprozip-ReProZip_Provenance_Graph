@@ -11,10 +11,85 @@
     }
 
 
-    .searchFilesListDiv{
+    .searchFilesList{
 
         display: none;
 
+    }
+
+    .searchFilesList input
+    {
+        width: 100%;
+        height: 60px;
+        font-size: 20px;
+        background-color: #fff;
+        box-shadow: 0px 2px 4px rgba( 52, 67, 75, .2 );
+        display: block;
+        padding: 0 20px;
+        margin-bottom: 40px;
+
+        -webkit-transition: box-shadow .1s linear;
+        transition: box-shadow .1s linear;
+    }
+    .searchFilesList input::-webkit-input-placeholder	{ color: #a1bdcb !important; }
+    .searchFilesList input::-moz-placeholder			{ color: #a1bdcb !important; }
+    .searchFilesList input:-ms-input-placeholder		{ color: #a1bdcb !important; }
+    .searchFilesList input:focus
+    {
+        box-shadow: 0px 4px 8px rgba( 52, 67, 75, .4 );
+    }
+    .searchFilesList .highlight
+    {
+        background-color: #fffd77;
+    }
+    .searchFilesList > ul
+    {
+    }
+    .searchFilesList > ul > li
+    {
+    }
+    .searchFilesList > ul > li:not( :first-child )
+    {
+        border-top: 1px solid #dcebed;
+        margin-top: 20px;
+        padding-top: 20px;
+    }
+    .searchFilesList > ul > li.is-hidden
+    {
+        display: none;
+    }
+    .searchFilesList > ul > li h4
+    {
+        font-size: 14px;
+        font-weight: 700;
+    }
+    .searchFilesList > ul > li h4:hover,
+    .searchFilesList > ul > li h4:focus,
+    .searchFilesList > ul > li.is-active h4,
+    .searchFilesList > ul > li:target h4
+    {
+        color: #a664b7;
+    }
+    .searchFilesList > ul > li > div
+    {
+        display: none;
+    }
+    .searchFilesList > ul > li.is-active > div,
+    .searchFilesList > ul > li:target > div
+    {
+        display: block;
+        margin-top: 10px;
+    }
+
+    .searchFilesList__notfound
+    {
+        font-size: 20px;
+        font-style: italic;
+        display: none;
+    }
+    .searchFilesList__notfound.is-visible
+    {
+        display: block;
     }
 
     div.tooltip {
@@ -240,7 +315,7 @@
     var duration_total_ms;
 
     var searchFilesInfoDiv;
-    var searchFilesListDiv;
+    var searchFilesList;
 
     var i = 0,
         duration = 750,
@@ -927,7 +1002,7 @@
 
         searchFilesInfoDiv = notes.append('div').attr("class", "searchFilesInfoDiv");
 
-        searchFilesListDiv = notes.append('div').attr("class", "searchFilesListDiv");
+        searchFilesList = notes.append('div').attr("class", "searchFilesList");
 
 
         var filesList = [];
@@ -955,7 +1030,7 @@
 
         console.log('What is filesList: ',filesList );
 
-        var filelistUL = searchFilesListDiv.append('ul');
+        var filelistUL = searchFilesList.append('ul');
         var fileCount = 1;
 
         filesList.forEach(function(file){
@@ -1021,7 +1096,10 @@
         });
 
 
+        searchFilesList.append('div').attr("class", "searchFilesList__notfound").html(
+            "<p>No matches were found&hellip; Try &ldquo;bash&rdquo;.</p>"
 
+        );
 
 
         // associationString: "reads" or  "writes
@@ -1043,22 +1121,137 @@
 
         //filesSearch Code Block
 
+//        'use strict';
+//
+//        // search & highlight
+//
+//        ;( function( $, window, document, undefined )
+//        {
+//            var $container = $( '.fileSearch' );
+//            if( !$container.length ) return true;
+//
+//            var $input			= $container.find( '.fileSearch_input' ),
+//                $notfound		= $container.find( '.fileSearch__notfound' ),
+//                $items			= $container.find( '> ul > li' ),
+//                $item			= $(),
+//                itemsIndexed	= [];
+//
+//            //  console.log('$item : ', $item);
+//
+//            $items.each( function()
+//            {
+//                itemsIndexed.push( $( this ).text().replace( /\s{2,}/g, ' ' ).toLowerCase() );
+//            });
+//
+//            $input.on( 'keyup', function( e )
+//            {
+//
+//                console.log('keyup : ');
+//
+//                $(".searchFilesInfoDiv").hide();
+//                $(".searchFilesList").show();
+//                // searchFilesInfoDiv.selectAll('*').;
+//
+//
+//                if( e.keyCode == 13 ) // enter
+//                {
+//                    $input.trigger( 'blur' );
+//
+//
+//
+//                    //    console.log('Enter : ', itemsIndexed);
+//
+//
+//                    return true;
+//                }
+//
+//                $items.each( function()
+//                {
+//                    $item = $( this );
+//                    $item.html( $item.html().replace( /<span class="highlight">([^<]+)<\/span>/gi, '$1' ) );
+//                });
+//
+//                var searchVal = $.trim( $input.val() ).toLowerCase();
+//                if( searchVal.length )
+//                {
+//                    for( var i in itemsIndexed )
+//                    {
+//                        $item = $items.eq( i );
+//                        if( itemsIndexed[ i ].indexOf( searchVal ) != -1 )
+//                            $item.removeClass( 'is-hidden' ).html( $item.html().replace( new RegExp( searchVal+'(?!([^<]+)?>)', 'gi' ), '<span class="highlight">$&</span>' ) );
+//                        else
+//                            $item.addClass( 'is-hidden' );
+//                    }
+//                }
+//                else $items.removeClass( 'is-hidden' );
+//
+//                $notfound.toggleClass( 'is-visible', $items.not( '.is-hidden' ).length == 0 );
+//            });
+//        })( jQuery, window, document );
+//
+//
+//        // toggling items on title press
+//
+//        ;( function( $, window, document, undefined )
+//        {
+//            $( document ).on( 'click', '.fileSearch h2 a', function( e )
+//            {
+//                e.preventDefault();
+//                $( this ).parents( 'li' ).toggleClass( 'is-active' );
+//            });
+//        })( jQuery, window, document );
+//
+//
+//        // auto-show item content when show results reduces to single
+//
+//        ;( function( $, window, document, undefined )
+//        {
+//            var $container = $( '.fileSearch' );
+//            if( !$container.length ) return true;
+//
+//            var $input		= $container.find( 'input' ),
+//                $items		= $container.find( '> ul > li' ),
+//                $item		= $();
+//
+//            $input.on( 'keyup', function()
+//            {
+//                $item = $items.not( '.is-hidden' );
+//                if( $item.length == 1 )
+//                    $item.addClass( 'js--autoshown is-active' );
+//                else
+//                    $items.filter( '.js--autoshown' ).removeClass( 'js--autoshown is-active' );
+//            });
+//        })( jQuery, window, document );
+
+
+
+
+
+
         'use strict';
+
 
         // search & highlight
 
         ;( function( $, window, document, undefined )
         {
             var $container = $( '.fileSearch' );
+            var $searchFilesListContainer = $container.find( '.searchFilesList' );
+            
             if( !$container.length ) return true;
 
+
+
+
+
             var $input			= $container.find( '.fileSearch_input' ),
-                $notfound		= $container.find( '.fileSearch__notfound' ),
-                $items			= $container.find( '> ul > li' ),
+                $notfound		= $searchFilesListContainer.find( '.searchFilesList__notfound' ),
+                $items			= $searchFilesListContainer.find( '> ul > li' ),
                 $item			= $(),
                 itemsIndexed	= [];
 
-            //  console.log('$item : ', $item);
+            console.log("searchFilesListContainer:", $searchFilesListContainer);
+
 
             $items.each( function()
             {
@@ -1067,23 +1260,18 @@
 
             $input.on( 'keyup', function( e )
             {
-
                 console.log('keyup : ');
 
                 $(".searchFilesInfoDiv").hide();
-                $(".searchFilesListDiv").show();
+                $(".searchFilesList").show();
                 // searchFilesInfoDiv.selectAll('*').;
+
 
 
                 if( e.keyCode == 13 ) // enter
                 {
+
                     $input.trigger( 'blur' );
-
-
-
-                    //    console.log('Enter : ', itemsIndexed);
-
-
                     return true;
                 }
 
@@ -1116,7 +1304,7 @@
 
         ;( function( $, window, document, undefined )
         {
-            $( document ).on( 'click', '.fileSearch h2 a', function( e )
+            $( document ).on( 'click', '.searchFilesList h4 a', function( e )
             {
                 e.preventDefault();
                 $( this ).parents( 'li' ).toggleClass( 'is-active' );
@@ -1129,11 +1317,19 @@
         ;( function( $, window, document, undefined )
         {
             var $container = $( '.fileSearch' );
-            if( !$container.length ) return true;
+            var $searchFilesListContainer = $container.find( '.searchFilesList' );
 
-            var $input		= $container.find( 'input' ),
-                $items		= $container.find( '> ul > li' ),
-                $item		= $();
+            if( !$container.length ) return true;
+//
+//            var $input		= $container.find( 'input' ),
+//                $items		= $container.find( '> ul > li' ),
+//                $item		= $();
+
+
+
+            var $input			= $container.find( '.fileSearch_input' ),
+                $items			= $searchFilesListContainer.find( '> ul > li' ),
+                $item			= $();
 
             $input.on( 'keyup', function()
             {
@@ -1144,8 +1340,6 @@
                     $items.filter( '.js--autoshown' ).removeClass( 'js--autoshown is-active' );
             });
         })( jQuery, window, document );
-
-
 
 
     }
