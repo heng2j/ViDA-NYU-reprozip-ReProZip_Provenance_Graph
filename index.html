@@ -10,6 +10,13 @@
         cursor: pointer;
     }
 
+
+    .searchFilesListDiv{
+
+        display: none;
+
+    }
+
     div.tooltip {
         position: absolute;
         text-align: left;
@@ -233,6 +240,7 @@
     var duration_total_ms;
 
     var searchFilesInfoDiv;
+    var searchFilesListDiv;
 
     var i = 0,
         duration = 750,
@@ -252,8 +260,8 @@
     var svg = d3.select("#viz-graph").append("svg")
         .attr("width", width + margin.right + margin.left)
         .attr("height", height + margin.top + margin.bottom);
-//        .append("g")
-//        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    //        .append("g")
+    //        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // Select the container for the notes and dimension it.
     var notes = d3.select('#notes')
@@ -272,49 +280,49 @@
 
 
     // console.log('nodes: ,' , data);
-//
-//    var nodes = forceData.packages;
-//
+    //
+    //    var nodes = forceData.packages;
+    //
 
 
 
-//    force = d3.layout.force()
-//        .nodes(nodes)
-//        .size([width, height])
-//        .linkDistance(30)
-//        .gravity(0)
-//        .charge(0)
-//        .on("tick", tick);
+    //    force = d3.layout.force()
+    //        .nodes(nodes)
+    //        .size([width, height])
+    //        .linkDistance(30)
+    //        .gravity(0)
+    //        .charge(0)
+    //        .on("tick", tick);
 
 
 
-   // var links = force.links();
+    // var links = force.links();
 
 
 
     //var edge = svg.selectAll(".edge");
 
-//    var circle = svg.selectAll("circle")
-//        .data(nodes)
-//        .enter().append("circle")
-//        .attr("class", 'package')
-//        .attr("r", function (d) {
-//            return d.radius;
-//        })
-//        .style("fill",function() {
-//            return "hsl(" + Math.random() * 360 + ",60%,80%)";
-//        })
-//        .call(force.drag);
+    //    var circle = svg.selectAll("circle")
+    //        .data(nodes)
+    //        .enter().append("circle")
+    //        .attr("class", 'package')
+    //        .attr("r", function (d) {
+    //            return d.radius;
+    //        })
+    //        .style("fill",function() {
+    //            return "hsl(" + Math.random() * 360 + ",60%,80%)";
+    //        })
+    //        .call(force.drag);
 
-//    var label = svg.selectAll(".mytext")
-//        .data(nodes)
-//        .enter()
-//        .append("text")
-//        .text(function (d) { return d.name; })
-//        .style("text-anchor", "middle")
-//        .style("fill", "#555")
-//        .style("font-family", "Arial")
-//        .style("font-size", 18);
+    //    var label = svg.selectAll(".mytext")
+    //        .data(nodes)
+    //        .enter()
+    //        .append("text")
+    //        .text(function (d) { return d.name; })
+    //        .style("text-anchor", "middle")
+    //        .style("fill", "#555")
+    //        .style("font-family", "Arial")
+    //        .style("font-size", 18);
 
 
 
@@ -341,31 +349,31 @@
 
     // console.log('restart before link: ', edge);
 
-   // restart();
+    // restart();
 
 
 
-//    function tick(e) {
-//
-//        circle
-//            .each(gravity(3 * e.alpha))
-//            .each(collide(.2))
-//            .attr("cx", function (d) {
-//                return d.x;
-//            })
-//            .attr("cy", function (d) {
-//                return d.y;
-//            });
-//
-//        edge.attr("x1", function(d){ return d.source.x;
-//        })
-//            .attr("y1", function(d){ return d.source.y; })
-//            .attr("x2", function(d){ return d.target.x; })
-//            .attr("y2", function(d){ return d.target.y; });
-//
-//        label.attr("x", function(d){ return d.x; })
-//            .attr("y", function (d) {return d.y - 30; });
-//    }
+    //    function tick(e) {
+    //
+    //        circle
+    //            .each(gravity(3 * e.alpha))
+    //            .each(collide(.2))
+    //            .attr("cx", function (d) {
+    //                return d.x;
+    //            })
+    //            .attr("cy", function (d) {
+    //                return d.y;
+    //            });
+    //
+    //        edge.attr("x1", function(d){ return d.source.x;
+    //        })
+    //            .attr("y1", function(d){ return d.source.y; })
+    //            .attr("x2", function(d){ return d.target.x; })
+    //            .attr("y2", function(d){ return d.target.y; });
+    //
+    //        label.attr("x", function(d){ return d.x; })
+    //            .attr("y", function (d) {return d.y - 30; });
+    //    }
 
     function restart() {
 
@@ -385,7 +393,7 @@
             })
             .attr("y1", function(d){ return d.source.y; })
             .attr("x2", function(d){ return d.target.x; })
-            .attr("y2", function(d){ return d.target.y; });;
+            .attr("y2", function(d){ return d.target.y; });
 
 
         force.start();
@@ -466,7 +474,7 @@
 //                    if d.name
 //                });
 
-            //    console.log('force node', force.nodes());
+                //    console.log('force node', force.nodes());
 
 
                 d3.select("body").transition().style("background-color", "#1c1c1c");
@@ -592,7 +600,7 @@
                 return d.target.id;
             });
 
-      //  console.log('linktext',linktext);
+        //  console.log('linktext',linktext);
 
 
         linktext.enter()
@@ -660,7 +668,7 @@
 
             var tempDuration = 0;
 
-       //     console.log('d.children:', d.children);
+            //     console.log('d.children:', d.children);
 
             if (d.children != null){
 
@@ -683,7 +691,7 @@
 
             // console.log('tempLastNode:' , tempLastNode[0]);
 
-        //    console.log('tempDuration:' , tempDuration);
+            //    console.log('tempDuration:' , tempDuration);
 
 
 
@@ -722,13 +730,66 @@
 
 
 
+//        var node = {};
+//        node.x = 100;
+//        node.y = 100;
+//        node.cx = 100;
+//        node.cy = 100;
+//        node.px = 100;
+//        node.py = 100;
+//        node.weight = 10;
+//        node.style =
+//            ("fill" , function() {
+//                return "hsl(" + Math.random() * 360 + ",60%,80%)";
+//            });
+//        node.radius = 20;
+//
+//
+//
+//
+//
+//        var node2 = {};
+//        node2.x = 100 + 100;
+//        node2.y = 100 + 100 ;
+//        node2.cx = 100 + 100;
+//        node2.cy = 100 + 100 ;
+//        node2.px = 100 + 100;
+//        node2.py = 100 + 100;
+//        node2.weight = 10;
+//        node2.style =
+//            ("fill" , function() {
+//                return "hsl(" + Math.random() * 360 + ",60%,80%)";
+//            });
+//
+//        node2.radius = 20;
+//
+//        var nodes = force.nodes();
+//        nodes.push(node);
+//        nodes.push(node2);
+//
+//        links.push({source: node, target: node2});
+//
+//
+//        console.log('links:', links);
+//        console.log('force.nodes():', force.nodes());
+//
+
+
+        //console.log('restart after links: ', links);
+
+
+
+        var circles = svg.selectAll(".package");
+
+        console.log('click circles: ', circles);
+
+        // add links to any nearby nodes
+
         var node = {};
-        node.x = 100;
-        node.y = 100;
-        node.cx = 100;
-        node.cy = 100;
-        node.px = 100;
-        node.py = 100;
+        node.x = d.x;
+        node.y = d.y;
+        node.px = d.x;
+        node.py = d.y;
         node.weight = 10;
         node.style =
             ("fill" , function() {
@@ -737,39 +798,36 @@
         node.radius = 20;
 
 
+        console.log('click circles before push nodes: ', force.nodes());
+
+        force.nodes().push(node);
+
+        console.log('click circles after push nodes: ', force.nodes());
+
+        console.log('click circles before push links: ', links);
+
+
+        force.nodes().forEach(function(target) {
+
+            d.packages.reads.forEach(function (readFile) {
+
+                if(target.name == readFile){
+
+
+                    links.push({source: node, target: target});
+                }
+
+            })
 
 
 
-        var node2 = {};
-        node2.x = 100 + 100;
-        node2.y = 100 + 100 ;
-        node2.cx = 100 + 100;
-        node2.cy = 100 + 100 ;
-        node2.px = 100 + 100;
-        node2.py = 100 + 100;
-        node2.weight = 10;
-        node2.style =
-            ("fill" , function() {
-                return "hsl(" + Math.random() * 360 + ",60%,80%)";
-            });
+        });
 
-        node2.radius = 20;
-
-        var nodes = force.nodes();
-        nodes.push(node);
-        nodes.push(node2);
-
-        links.push({source: node, target: node2});
-
-
-        console.log('links:', links);
-        console.log('force.nodes():', force.nodes());
+        console.log('click circles after push links: ', links);
 
 
 
-       // console.log('restart after links: ', links);
 
-        console.log('restart after edge: ', edge);
 
         edge.data(links).enter().insert("line", ".package")
             .attr("class", "edge")
@@ -784,14 +842,14 @@
 
 
 
-     //   console.log('single click force.nodes()', force.nodes());
+        //   console.log('single click force.nodes()', force.nodes());
 
 
-      //  console.log('single click force.nodes().length', force.nodes().length);
+        //  console.log('single click force.nodes().length', force.nodes().length);
 
-      //  console.log('single click packagesNumber', packagesNumber);
+        //  console.log('single click packagesNumber', packagesNumber);
 
-    //    console.log('single click forceData.packages: ', forceData.packages);
+        //    console.log('single click forceData.packages: ', forceData.packages);
 
 //        if(force.nodes().length > packagesNumber){
 //
@@ -809,54 +867,10 @@
         //force.links().exit().remove();
 
         // var link = svg.selectAll(".edge");
-//        var circles = svg.selectAll(".package");
-//
-//        console.log('click circles: ', circles);
-//
-//        // add links to any nearby nodes
-//
-//        var node = {};
-//        node.x = d.x;
-//        node.y = d.y;
-//        node.px = d.x;
-//        node.py = d.y;
-//        node.weight = 10;
-//        node.style =
-//            ("fill" , function() {
-//                return "hsl(" + Math.random() * 360 + ",60%,80%)";
-//            });
-//        node.radius = 20;
-//
-//
-//        console.log('click circles before push nodes: ', force.nodes());
-//
-//        force.nodes().push(node);
-//
-//        console.log('click circles after push nodes: ', force.nodes());
-//
-//        console.log('click circles before push links: ', links);
-//
-//
-//        force.nodes().forEach(function(target) {
-//
-//            d.packages.reads.forEach(function (readFile) {
-//
-//                if(target.name == readFile){
-//
-//
-//                    links.push({source: node, target: target});
-//                }
-//
-//            })
-//
-//
-//
-//        });
-//
-//        console.log('click circles after push links: ', links);
 
 
-       // restart();
+
+        // restart();
 
 
 
@@ -896,29 +910,125 @@
 
 
         //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
-        notes.append('h4').text("Process:").style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
+        notes.append('h3').text("Process:").style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
         notes.append('h5').text(d.name); //.style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
 
 
         //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
-        notes.append('h4').text("Commands:").style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
+        notes.append('h3').text("Commands:").style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
         notes.append('h5').text(commands);
 
 
 
-        notes.append('h4').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
+        notes.append('h3').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
 
         notes.append('input').attr("type", "search").attr("class", "fileSearch_input").attr("placeholder", "Search for listing files")
             .style("margin-left", "10px;");
 
         searchFilesInfoDiv = notes.append('div').attr("class", "searchFilesInfoDiv");
 
+        searchFilesListDiv = notes.append('div').attr("class", "searchFilesListDiv");
+
+
+        var filesList = [];
+
+        var fileNamesList = d.reads.sort().concat(d.writes.sort());
+
+        fileNamesList.forEach(function(file){
+
+
+            var keyName = "\"" + file + "\"";
+
+            if(keyName in fileDict){
+
+
+                var file = fileDict[keyName];
+
+                filesList.push(file);
+
+            }
+
+
+        });
+
+
+
+        console.log('What is filesList: ',filesList );
+
+        var filelistUL = searchFilesListDiv.append('ul');
+        var fileCount = 1;
+
+        filesList.forEach(function(file){
+
+            var id = "faq-" + fileCount;
+            var href = "#" + id;
+
+           var fileLi =   filelistUL.append('li').attr("id",id );
+
+           var fileH2 =  fileLi.append('h5').text(file.name);
+           //var fileA =  fileH2.append('a').attr("href", href).text(file.name);
+
+           var fileDiv = fileLi.append('div');
+
+
+
+            var proccess_Read = "";
+            var proccess_Write = "";
+
+
+            if(file.reads.length != 0){
+                file.reads.forEach(function(process){
+                    proccess_Read += process + "<br/>"
+
+                });
+            }
+            else {
+
+                proccess_Read = "Not read by any process."
+            }
+
+            if(file.writes.length != 0){
+                file.writes.forEach(function(process){
+                    proccess_Write += process + "<br/>"
+
+                });
+            }
+            else {
+
+                proccess_Write = "Not written by any process."
+            }
+
+            fileDiv.html(
+                "<h5>From Package:  " +  file.package+ " </h5>" +
+
+                "<h5>Read By: </h5>" +
+                proccess_Read
+                +
+                "<br>"
+                +
+                "<h5>Written By: </h5>" +
+                proccess_Write
+
+            )
+
+
+           //var fileP = fileDiv.append('p');
+
+
+
+            fileCount++;
+
+        });
+
+
+
+
 
         // associationString: "reads" or  "writes
         createFileTooTip(searchFilesInfoDiv,d,"reads");
         createFileTooTip(searchFilesInfoDiv,d,"writes");
 
-        searchFilesInfoDiv.append('h4').text("Associated Packages:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
+        searchFilesInfoDiv.append('h3').text("Associated Packages:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
 
 
         createPackageTooTip(searchFilesInfoDiv,d);
@@ -948,7 +1058,7 @@
                 $item			= $(),
                 itemsIndexed	= [];
 
-          //  console.log('$item : ', $item);
+            //  console.log('$item : ', $item);
 
             $items.each( function()
             {
@@ -961,6 +1071,7 @@
                 console.log('keyup : ');
 
                 $(".searchFilesInfoDiv").hide();
+                $(".searchFilesListDiv").show();
                 // searchFilesInfoDiv.selectAll('*').;
 
 
@@ -970,7 +1081,7 @@
 
 
 
-                //    console.log('Enter : ', itemsIndexed);
+                    //    console.log('Enter : ', itemsIndexed);
 
 
                     return true;
@@ -1040,10 +1151,10 @@
     }
 
 
-    function createFileTooTip(notes,source, associationString){
+    function createFileTooTip(notesDiv,source, associationString){
 
 
-        var readsList ;
+        var readsList;
         var idString;
         var idString_href;
         var text_String ;
@@ -1066,9 +1177,12 @@
 
 
 
-        notes.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", idString_href).text(text_String).style({'padding-left': 0, 'text-decoration': 'none' });
 
-        var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
+
+
+        notesDiv.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", idString_href).text(text_String).style({'padding-left': 0, 'text-decoration': 'none', 'font': '8 px sans-serif' });
+
+        var readsFromDiv = notesDiv.append('div').attr("id", idString ).attr("class", "panel-collapse ");
 
         // var readsList = source.writes.sort();
         var packagePath = '';
@@ -1231,7 +1345,7 @@
 
 
 
-       // console.log("packages[package] after added files", Object.keys(packages).length);
+        // console.log("packages[package] after added files", Object.keys(packages).length);
 
         if(Object.keys(packages).length !=0){
 
@@ -1875,11 +1989,11 @@
 
             root.children.forEach(collapse);
 
-          //  console.log('timeLineLen_Total: ', timeLineLen_Total);
+            //  console.log('timeLineLen_Total: ', timeLineLen_Total);
 
             timeLineLen =  timeLineLen_Total * (duration_ms / duration_total_ms);
 
-         //   console.log('timeLineLen: ', timeLineLen);
+            //   console.log('timeLineLen: ', timeLineLen);
 
             if(isTreeRedrew == false){
 
@@ -1956,7 +2070,7 @@
 
     function timeLineDraw(length, durationLabel){
 
-      //  console.log('Draw an X to show that the size is correct');
+        //  console.log('Draw an X to show that the size is correct');
         // Draw an X to show that the size is correct.
         var lines = svg.append("g")
             .attr("class", "timeLineGroup")
@@ -1985,7 +2099,7 @@
 
     function totalTimeLineDraw(length, durationLabel){
 
-     //   console.log('Draw an X to show that the size is correct');
+        //   console.log('Draw an X to show that the size is correct');
         // Draw an X to show that the size is correct.
         var lines = svg.append("g")
             .attr("class", "TotalTimeLineGroup")
@@ -2022,6 +2136,7 @@
 
 
 
+
         force = d3.layout.force()
             .nodes(nodes)
             .size([width, height])
@@ -2035,8 +2150,48 @@
         var links = force.links();
 
 
+        var node = {};
+        node.x = 100;
+        node.y = 100;
+        node.cx = 100;
+        node.cy = 100;
+        node.px = 100;
+        node.py = 100;
+        node.weight = 10;
+        node.style =
+            ("fill" , function() {
+                return "hsl(" + Math.random() * 360 + ",60%,80%)";
+            });
+        node.radius = 20;
 
-     ///  var edge = svg.selectAll(".edge");
+
+
+        var node2 = {};
+        node2.x = 100 + 100;
+        node2.y = 100 + 100 ;
+        node2.cx = 100 + 100;
+        node2.cy = 100 + 100 ;
+        node2.px = 100 + 100;
+        node2.py = 100 + 100;
+        node2.weight = 10;
+        node2.style =
+            ("fill" , function() {
+                return "hsl(" + Math.random() * 360 + ",60%,80%)";
+            });
+
+        node2.radius = 20;
+
+        var nodes = force.nodes();
+        nodes.push(node);
+        nodes.push(node2);
+
+        links.push({source: node, target: node2});
+
+
+        console.log('links:', links);
+        console.log('force.nodes():', force.nodes());
+
+
 
         var circle = svg.selectAll("circle")
             .data(nodes)
@@ -2060,7 +2215,15 @@
             .style("font-family", "Arial")
             .style("font-size", 18);
 
+        edge.data(links).enter().insert("line", ".package")
+            .attr("class", "edge")
+            .attr("x1", function(d){ return d.source.x;
+            })
+            .attr("y1", function(d){ return d.source.y; })
+            .attr("x2", function(d){ return d.target.x; })
+            .attr("y2", function(d){ return d.target.y; });
 
+        ///  var edge = svg.selectAll(".edge");
 
 
 //        var newforceNodes = force.nodes().push(node);
@@ -2081,7 +2244,7 @@
 //            })
 //
 
-       // console.log('restart before link: ', edge);
+        // console.log('restart before link: ', edge);
 
 
 
@@ -2090,11 +2253,19 @@
 
 
 
-        restart(links);
+
+        restart();
 
 
 
         function tick(e) {
+
+            edge.attr("x1", function(d){ console.log("mapping link"); return d.source.x;
+            })
+                .attr("y1", function(d){ return d.source.y; })
+                .attr("x2", function(d){ return d.target.x; })
+                .attr("y2", function(d){ return d.target.y; });
+
 
             circle
                 .each(gravity(3 * e.alpha))
@@ -2106,11 +2277,6 @@
                     return d.y;
                 });
 
-            edge.attr("x1", function(d){ console.log("mapping link"); return d.source.x;
-            })
-                .attr("y1", function(d){ return d.source.y; })
-                .attr("x2", function(d){ return d.target.x; })
-                .attr("y2", function(d){ return d.target.y; });
 
             label.attr("x", function(d){ return d.x; })
                 .attr("y", function (d) {return d.y - 30; });
@@ -2250,7 +2416,7 @@
         var point = d3.mouse(this),
             node = {x: point[0], y: point[1]};
 
-     //   console.log('mouse_down position:', node);
+        //   console.log('mouse_down position:', node);
 
         // n = nodes.push(node);
 
@@ -2266,26 +2432,26 @@
 //        restart();
     }
 
-//
-//    function restart(link,links,force) {
-//
-//
-//
-//        console.log('restart links: ', links);
-//        console.log('restart before link: ', link);
-//
-//        link = link.data(links);
-//
-//        console.log('restart link: ', link);
-//
-//
-//        link.enter().insert("line", ".package")
-//            .attr("class", "edge");
-//        link.exit()
-//            .remove();
-//
-//        force.start();
-//    }
+    //
+    //    function restart(link,links,force) {
+    //
+    //
+    //
+    //        console.log('restart links: ', links);
+    //        console.log('restart before link: ', link);
+    //
+    //        link = link.data(links);
+    //
+    //        console.log('restart link: ', link);
+    //
+    //
+    //        link.enter().insert("line", ".package")
+    //            .attr("class", "edge");
+    //        link.exit()
+    //            .remove();
+    //
+    //        force.start();
+    //    }
 
 
 </script>
