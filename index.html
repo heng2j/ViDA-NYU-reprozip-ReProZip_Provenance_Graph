@@ -53,9 +53,9 @@
 
     // script for visualization
 
-    var jsonFile = "bash-count.json";
+    var currentJsonFile = "bash-count.json";
 
-    var data = ["bash-count.json", "stacked-up-website.json", "ache.json"];
+    var availableJsonFiles = ["bash-count.json", "stacked-up-website.json", "ache.json"];
 
     var forceData = {"packages": []};
 
@@ -65,12 +65,12 @@
 
     var packagesNumber = 0;
 
-    var isTreeRedrew = false;
+    var isTreeRedrawn = false;
 
     var tempLastNode;
 
     // add the tool tip
-    var div = d3.select("body").append("div")
+    var tooltip = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
 
@@ -120,34 +120,29 @@
 
     var edge = svg.selectAll(".edge");
 
-    treeDraw(jsonFile);
+    treeDraw(currentJsonFile);
 
 
     var select = d3.select('#jsonSelections')
         .append('select')
         .attr('class','select')
         .attr("x", 400)
-        .on('change',onchange);
+        .on('change',function onchange() {
+            selectValue = d3.select('select').property('value');
+
+            currentJsonFile = selectValue;
+
+            treeDraw(currentJsonFile);
+
+            isTreeRedrawn = true;
+        });
 
 
     var options = select
         .selectAll('option')
-        .data(data).enter()
+        .data(availableJsonFiles).enter()
         .append('option')
         .text(function (d) { return d; });
-
-    function onchange() {
-        selectValue = d3.select('select').property('value');
-
-        jsonFile = selectValue;
-
-        treeDraw(jsonFile);
-
-        isTreeRedrew = true;
-
-
-    };
-
 
     d3.select(self.frameElement).style("height", "800px");
 
@@ -189,17 +184,17 @@
 
             .on("mouseover", function(d) {
 
-                div.transition()
+                tooltip.transition()
                     .duration(200)
                     .style("opacity", .8);
-                div .html(
+                tooltip .html(
                     d.description
                 )
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY - 38) + "px");
             })
             .on("mouseout", function(d) {
-                div.transition()
+                tooltip.transition()
                     .duration(500)
                     .style("opacity", 0);
             });
@@ -897,10 +892,10 @@
                                 proccess_Write = "Not written by any process."
                             }
 
-                            div.transition()
+                            tooltip.transition()
                                 .duration(200)
                                 .style("opacity", .8);
-                            div.html(
+                            tooltip.html(
                                 "<h5>From Package:  " +  thisFile.package+ " </h5>" +
 
                                 "<h5>Read By: </h5>" +
@@ -917,7 +912,7 @@
 
                         })
                         .on("mouseout", function(d) {
-                            div.transition()
+                            tooltip.transition()
                                 .duration(500)
                                 .style("opacity", 0);
                         })
@@ -1027,10 +1022,10 @@
                     console.log("what is this d?:", d);
 
 
-                    div.transition()
+                    tooltip.transition()
                         .duration(200)
                         .style("opacity", .8);
-                    div.html(
+                    tooltip.html(
                         "<h5>Version:  " +  packages[key].version + " </h5>"
 
                     ).style("left", (d3.event.pageX) + "px")
@@ -1038,7 +1033,7 @@
 
 
                 }).on("mouseout", function(d) {
-                    div.transition()
+                    tooltip.transition()
                         .duration(500)
                         .style("opacity", 0);
                 });
@@ -1068,10 +1063,10 @@
 
 
 
-    function treeDraw(jsonFile){
+    function treeDraw(currentJsonFile){
 
         // d3.json block
-        d3.json(jsonFile, function(error, data){
+        d3.json(currentJsonFile, function(error, data){
 
             if (error) throw error;
 
@@ -1393,7 +1388,7 @@
                 if (d.children) {
 
 
-                    if(isTreeRedrew == false){
+                    if(isTreeRedrawn == false){
                         timeLineLen_Total =  timeLineLen_Total + (root.x0  / 2);
 
                     }
@@ -1444,7 +1439,7 @@
 
             //   console.log('timeLineLen: ', timeLineLen);
 
-            if(isTreeRedrew == false){
+            if(isTreeRedrawn == false){
 
 
                 totalTimeLineDraw(timeLineLen_Total, durationLabel_total);
