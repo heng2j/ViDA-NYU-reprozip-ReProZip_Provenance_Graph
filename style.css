@@ -1,89 +1,225 @@
+
 body {
-  background: url(texture-noise.png);
-  overflow: hidden;
-  margin: 0;
-  font-size: 14px;
-  font-family: "Helvetica Neue", Helvetica;
+  font-family: "Lato", sans-serif;
 }
 
-#chart, #header, #footer {
-  position: absolute;
-  top: 0;
+.node {
+  cursor: pointer;
 }
 
-#header, #footer {
-  z-index: 1;
+
+.searchFilesList{
+
+  display: none;
+
+}
+
+.searchFilesList input
+{
+  width: 100%;
+  height: 60px;
+  font-size: 20px;
+  background-color: #fff;
+  box-shadow: 0px 2px 4px rgba( 52, 67, 75, .2 );
   display: block;
-  font-size: 36px;
-  font-weight: 300;
-  text-shadow: 0 1px 0 #fff;
+  padding: 0 20px;
+  margin-bottom: 40px;
+
+  -webkit-transition: box-shadow .1s linear;
+  transition: box-shadow .1s linear;
+}
+.searchFilesList input::-webkit-input-placeholder	{ color: #a1bdcb !important; }
+.searchFilesList input::-moz-placeholder			{ color: #a1bdcb !important; }
+.searchFilesList input:-ms-input-placeholder		{ color: #a1bdcb !important; }
+.searchFilesList input:focus
+{
+  box-shadow: 0px 4px 8px rgba( 52, 67, 75, .4 );
+}
+.searchFilesList .highlight
+{
+  background-color: #fffd77;
+}
+.searchFilesList > ul
+{
+  margin-left: -50px;
+
+}
+.searchFilesList > ul > li
+{
+  list-style: none;
+  margin-left: 10px;
+
+}
+.searchFilesList > ul > li:not( :first-child )
+{
+  border-top: 1px solid #dcebed;
+  margin-top: 20px;
+  padding-top: 20px;
+}
+.searchFilesList > ul > li.is-hidden
+{
+  display: none;
+}
+.searchFilesList > ul > li h4
+{
+  font-size: 14px;
+  font-weight: 700;
+  margin-left: -30px;
+
+}
+.searchFilesList > ul > li h4:hover,
+.searchFilesList > ul > li h4:focus,
+.searchFilesList > ul > li.is-active h4,
+.searchFilesList > ul > li:target h4
+{
+  color: #a664b7;
+}
+.searchFilesList > ul > li > div
+{
+  display: none;
+}
+.searchFilesList > ul > li.is-active > div,
+.searchFilesList > ul > li:target > div
+{
+  display: block;
+  margin-top: 10px;
 }
 
-#header.inverted, #footer.inverted {
-  color: #fff;
-  text-shadow: 0 1px 4px #000;
+.searchFilesList__notfound
+{
+  font-size: 20px;
+  font-style: italic;
+  display: none;
+}
+.searchFilesList__notfound.is-visible
+{
+  display: block;
 }
 
-#header {
-  top: 80px;
-  left: 140px;
-  width: 1000px;
+div.tooltip {
+  position: absolute;
+  text-align: left;
+  flex: auto;
+
+  padding: 2px;
+  color: white;
+  font: 12px sans-serif;
+  background: black;
+  border: 0px;
+  border-radius: 4px;
+  pointer-events: none;
 }
 
-#footer {
-  top: 680px;
-  right: 140px;
-  text-align: right;
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 2.5px;
 }
 
-rect {
+.node text {
+  font: 15px sans-serif;
+  fill: #555;
+}
+
+.link {
   fill: none;
-  pointer-events: all;
-}
-
-pre {
-  font-size: 18px;
-}
-
-line {
-  stroke: #000;
+  stroke: #ccc;
   stroke-width: 1.5px;
 }
 
-.string, .regexp {
-  color: #f39;
+.link text {
+  font: 11px sans-serif;
+  fill: #555;
+  stroke-width: 0.5px;
+
+
+
+
 }
 
-.keyword {
-  color: #00c;
+.timeLineText , .totalTimeLineText {
+
+  fill: #555;
+  font-size: 15px;
+
 }
 
-.comment {
-  color: #777;
-  font-style: oblique;
+.edge {
+  stroke: #999;
+  stroke-width: 3px;
 }
 
-.number {
-  color: #369;
-}
 
-.class, .special {
-  color: #1181B8;
-}
+#notes {
+  float: left;
+  height: auto;
+  width: 75%;
 
-a:link, a:visited {
-  color: #000;
-  text-decoration: none;
-}
-
-a:hover {
-  color: #666;
-}
-
-.hint {
+  margin-left: 20px;
   position: absolute;
-  right: 0;
-  width: 1280px;
-  font-size: 12px;
-  color: #999;
+  display: block;
+  color: lightslategrey;
+  font: 13px sans-serif;
+
+}
+#container,
+#viz-graph {
+
+  transition: margin-left .5s;
+  padding: 16px;
+
+
+}
+
+#viz-graph {
+
+  margin-left: 15%;
+}
+
+
+.sidenav {
+  height: 100%;
+  width: 15%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+  overflow-x: hidden;
+  transition: 0.5s;
+  border-style: solid;
+  border-right-width: 3px;
+  border-top-width: 0px;
+  border-bottom-width: 0px;
+  border-right-color: #cdcfff;
+
+  overflow: auto;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 15px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+
+}
+
+.sidenav a:hover, .offcanvas a:focus{
+  color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 15px;}
 }
