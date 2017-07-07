@@ -277,6 +277,7 @@
         linktext.enter()
             .insert("g")
             .attr("class", "link")
+            .attr("transform", function(d) { return "translate(" + d.source.y + "," + d.source.x + ")"; })
             .append("text")
             .attr("dy", ".35em")
             .attr("text-anchor", "middle")
