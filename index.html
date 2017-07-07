@@ -1,414 +1,2470 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<style>
+    <!DOCTYPE html>
+    <meta charset="utf-8">
+    <style>
 
-    body {
-        font-family: "Lato", sans-serif;
-    }
+        body {
+            font-family: "Lato", sans-serif;
+        }
 
-    .node {
-        cursor: pointer;
-    }
-
-
-    .searchFilesList{
-
-        display: none;
-
-    }
-
-    .searchFilesList input
-    {
-        width: 100%;
-        height: 60px;
-        font-size: 20px;
-        background-color: #fff;
-        box-shadow: 0px 2px 4px rgba( 52, 67, 75, .2 );
-        display: block;
-        padding: 0 20px;
-        margin-bottom: 40px;
-
-        -webkit-transition: box-shadow .1s linear;
-        transition: box-shadow .1s linear;
-    }
-    .searchFilesList input::-webkit-input-placeholder	{ color: #a1bdcb !important; }
-    .searchFilesList input::-moz-placeholder			{ color: #a1bdcb !important; }
-    .searchFilesList input:-ms-input-placeholder		{ color: #a1bdcb !important; }
-    .searchFilesList input:focus
-    {
-        box-shadow: 0px 4px 8px rgba( 52, 67, 75, .4 );
-    }
-    .searchFilesList .highlight
-    {
-        background-color: #fffd77;
-    }
-    .searchFilesList > ul
-    {
-        margin-left: -50px;
-
-    }
-    .searchFilesList > ul > li
-    {
-        list-style: none;
-        margin-left: 10px;
-
-    }
-    .searchFilesList > ul > li:not( :first-child )
-    {
-        border-top: 1px solid #dcebed;
-        margin-top: 20px;
-        padding-top: 20px;
-    }
-    .searchFilesList > ul > li.is-hidden
-    {
-        display: none;
-    }
-    .searchFilesList > ul > li h4
-    {
-        font-size: 14px;
-        font-weight: 700;
-        margin-left: -30px;
-
-    }
-    .searchFilesList > ul > li h4:hover,
-    .searchFilesList > ul > li h4:focus,
-    .searchFilesList > ul > li.is-active h4,
-    .searchFilesList > ul > li:target h4
-    {
-        color: #a664b7;
-    }
-    .searchFilesList > ul > li > div
-    {
-        display: none;
-    }
-    .searchFilesList > ul > li.is-active > div,
-    .searchFilesList > ul > li:target > div
-    {
-        display: block;
-        margin-top: 10px;
-    }
-
-    .searchFilesList__notfound
-    {
-        font-size: 20px;
-        font-style: italic;
-        display: none;
-    }
-    .searchFilesList__notfound.is-visible
-    {
-        display: block;
-    }
-
-    div.tooltip {
-        position: absolute;
-        text-align: left;
-        flex: auto;
-
-        padding: 2px;
-        color: white;
-        font: 12px sans-serif;
-        background: black;
-        border: 0px;
-        border-radius: 4px;
-        pointer-events: none;
-    }
-
-    .node circle {
-        fill: #fff;
-        stroke: steelblue;
-        stroke-width: 2.5px;
-    }
-
-    .node text {
-        font: 15px sans-serif;
-        fill: #555;
-    }
-
-    .link {
-        fill: none;
-        stroke: #ccc;
-        stroke-width: 1.5px;
-    }
-
-    .link text {
-        font: 11px sans-serif;
-        fill: #555;
-        stroke-width: 0.5px;
+        .node {
+            cursor: pointer;
+        }
 
 
+        .searchFilesList{
 
+            display: none;
 
-    }
+        }
 
-    .timeLineText , .totalTimeLineText {
+        .searchFilesList input
+        {
+            width: 100%;
+            height: 60px;
+            font-size: 20px;
+            background-color: #fff;
+            box-shadow: 0px 2px 4px rgba( 52, 67, 75, .2 );
+            display: block;
+            padding: 0 20px;
+            margin-bottom: 40px;
 
-        fill: #555;
-        font-size: 15px;
+            -webkit-transition: box-shadow .1s linear;
+            transition: box-shadow .1s linear;
+        }
+        .searchFilesList input::-webkit-input-placeholder	{ color: #a1bdcb !important; }
+        .searchFilesList input::-moz-placeholder			{ color: #a1bdcb !important; }
+        .searchFilesList input:-ms-input-placeholder		{ color: #a1bdcb !important; }
+        .searchFilesList input:focus
+        {
+            box-shadow: 0px 4px 8px rgba( 52, 67, 75, .4 );
+        }
+        .searchFilesList .highlight
+        {
+            background-color: #fffd77;
+        }
+        .searchFilesList > ul
+        {
+            margin-left: -50px;
 
+        }
+        .searchFilesList > ul > li
+        {
+            list-style: none;
+            margin-left: 10px;
 
-    }
+        }
+        .searchFilesList > ul > li:not( :first-child )
+        {
+            border-top: 1px solid #dcebed;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+        .searchFilesList > ul > li.is-hidden
+        {
+            display: none;
+        }
+        .searchFilesList > ul > li h4
+        {
+            font-size: 14px;
+            font-weight: 700;
+            margin-left: -30px;
 
-    .edge {
-        stroke: #999;
-        stroke-width: 3px;
-    }
+        }
+        .searchFilesList > ul > li h4:hover,
+        .searchFilesList > ul > li h4:focus,
+        .searchFilesList > ul > li.is-active h4,
+        .searchFilesList > ul > li:target h4
+        {
+            color: #a664b7;
+        }
+        .searchFilesList > ul > li > div
+        {
+            display: none;
+        }
+        .searchFilesList > ul > li.is-active > div,
+        .searchFilesList > ul > li:target > div
+        {
+            display: block;
+            margin-top: 10px;
+        }
+
+        .searchFilesList__notfound
+        {
+            font-size: 20px;
+            font-style: italic;
+            display: none;
+        }
+        .searchFilesList__notfound.is-visible
+        {
+            display: block;
+        }
+
+        div.tooltip {
+            position: absolute;
+            text-align: left;
+            flex: auto;
+
+            padding: 2px;
+            color: white;
+            font: 12px sans-serif;
+            background: black;
+            border: 0px;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+
+        .node circle {
+            fill: #fff;
+            stroke: steelblue;
+            stroke-width: 2.5px;
+        }
+
+        .node text {
+            font: 15px sans-serif;
+            fill: #555;
+        }
+
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 1.5px;
+        }
+
+        .link text {
+            font: 11px sans-serif;
+            fill: #555;
+            stroke-width: 0.5px;
 
 
 
-    #notes {
-        float: left;
-        height: auto;
-        width: 15%;
 
-        margin-left: 20px;
-        position: absolute;
-        display: block;
-        color: lightslategrey;
-        font: 13px sans-serif;
+        }
 
-    }
-    #container,
-    #viz-graph {
+        .timeLineText , .totalTimeLineText {
 
-        transition: margin-left .5s;
-        padding: 16px;
+            fill: #555;
+            font-size: 15px;
 
 
-    }
+        }
 
-    #viz-graph {
-
-        margin-left: 15%;
-    }
-
-
-    .sidenav {
-        height: 100%;
-        width: 15%;
-        position: fixed;
-        z-index: 1;
-        top: 0;
-        left: 0;
-        background-color: #fff;
-        overflow-x: hidden;
-        transition: 0.5s;
-        border-style: solid;
-        border-right-width: 3px;
-        border-top-width: 0px;
-        border-bottom-width: 0px;
-        border-right-color: #cdcfff;
-
-        overflow: auto;
-    }
-
-    .sidenav a {
-        padding: 8px 8px 8px 32px;
-        text-decoration: none;
-        font-size: 15px;
-        color: #818181;
-        display: block;
-        transition: 0.3s;
-
-    }
-
-    .sidenav a:hover, .offcanvas a:focus{
-        color: #f1f1f1;
-    }
-
-    .sidenav .closebtn {
-        position: absolute;
-        top: 0;
-        right: 25px;
-        font-size: 36px;
-        margin-left: 50px;
-    }
-
-    #main {
-        transition: margin-left .5s;
-        padding: 16px;
-    }
-
-    @media screen and (max-height: 450px) {
-        .sidenav {padding-top: 15px;}
-        .sidenav a {font-size: 15px;}
-    }
+        .edge {
+            stroke: #999;
+            stroke-width: 3px;
+        }
 
 
-</style>
-<body>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-<script src="https://momentjs.com/downloads/moment.js"></script>
+        #notes {
+            float: left;
+            height: auto;
+            width: 75%;
 
-<!--
+            margin-left: 20px;
+            position: absolute;
+            display: block;
+            color: lightslategrey;
+            font: 13px sans-serif;
 
-<script src="https://d3js.org/d3.v4.min.js"></script>
--->
-<script src="//d3js.org/d3.v3.min.js"></script>
+        }
+        #container,
+        #viz-graph {
 
-<div id="mySidenav" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            transition: margin-left .5s;
+            padding: 16px;
 
-    <div id='notes' class="fileSearch">
-        <span style="font-size:20px;cursor:pointer" onclick="openNav()">Please select a process</span>
+
+        }
+
+        #viz-graph {
+
+            margin-left: 15%;
+        }
+
+
+        .sidenav {
+            height: 100%;
+            width: 15%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #fff;
+            overflow-x: hidden;
+            transition: 0.5s;
+            border-style: solid;
+            border-right-width: 3px;
+            border-top-width: 0px;
+            border-bottom-width: 0px;
+            border-right-color: #cdcfff;
+
+            overflow: auto;
+        }
+
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 15px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+
+        }
+
+        .sidenav a:hover, .offcanvas a:focus{
+            color: #f1f1f1;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        #main {
+            transition: margin-left .5s;
+            padding: 16px;
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {padding-top: 15px;}
+            .sidenav a {font-size: 15px;}
+        }
+
+
+    </style>
+    <body>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://momentjs.com/downloads/moment.js"></script>
+
+    <!--
+
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    -->
+    <script src="//d3js.org/d3.v3.min.js"></script>
+
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+
+        <div id='notes' class="fileSearch">
+            <h3>Please select a process</h3>
+
+        </div>
 
     </div>
 
-</div>
+
+    <div id='container'>
+        <div id='sidePanel'>
+            <div id = 'jsonSelections'></div>
+            <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Process Info</span>
+        </div>
 
 
-<div id='container'>
-    <div id='sidePanel'>
-        <div id = 'jsonSelections'></div>
-        <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Process Info</span>
+        <div id='viz-graph'></div>
+
     </div>
 
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "15%";
+            document.getElementById("viz-graph").style.marginLeft = "15%";
+        }
 
-    <div id='viz-graph'></div>
-
-</div>
-
-<script>
-    function openNav() {
-        document.getElementById("mySidenav").style.width = "15%";
-        document.getElementById("viz-graph").style.marginLeft = "15%";
-    }
-
-    function closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-        document.getElementById("viz-graph").style.marginLeft= "0";
-    }
-</script>
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+            document.getElementById("viz-graph").style.marginLeft= "0";
+        }
+    </script>
 
 
-<script>
+    <script>
 
 
-    var jsonFile = "bash-count.json";
+        var jsonFile = "bash-count.json";
 
-    //var jsonFile = "stacked-up-website.json";
+        //var jsonFile = "stacked-up-website.json";
 
-    var data = ["bash-count.json", "stacked-up-website.json", "ache.json"];
+        var data = ["bash-count.json", "stacked-up-website.json", "ache.json"];
 
-    var forceData = {"packages": []};
+        var forceData = {"packages": []};
 
-    var force = d3.layout.force();
-    var links = force.links();
-
-
-    var packagesNumber = 0;
-
-    var isTreeRedrew = false;
-
-    var tempLastNode;
-
-    // add the tool tip
-    var div = d3.select("body").append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0);
+        var force = d3.layout.force();
+        var links = force.links();
 
 
-    var margin = {top: 20, right: 120, bottom: 20, left: 100},
-        width = 1422 - margin.right - margin.left,
-        height = 800 - margin.top - margin.bottom,
-        padding = 3.5, // separation between same-color nodes
-        clusterPadding = 40, // separation between different-color nodes
-        maxRadius = 20;
+        var packagesNumber = 0;
 
-    var timeLineLen;
-    var timeLineLen_Total;
-    var duration_total_ms;
+        var isTreeRedrew = false;
 
-    var searchFilesInfoDiv;
-    var searchFilesList;
+        var tempLastNode;
 
-    var i = 0,
-        duration = 750,
-        rootStartTime,
-        root,
-        n = 200,
-        m = 15; // number of distinct clusters;
+        // add the tool tip
+        var div = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+
+        var margin = {top: 20, right: 120, bottom: 20, left: 100},
+            width = 1422 - margin.right - margin.left,
+            height = 800 - margin.top - margin.bottom,
+            padding = 3.5, // separation between same-color nodes
+            clusterPadding = 40, // separation between different-color nodes
+            maxRadius = 20;
+
+        var timeLineLen;
+        var timeLineLen_Total;
+        var duration_total_ms;
+
+        var searchFilesInfoDiv;
+        var searchFilesList;
+
+        var i = 0,
+            duration = 750,
+            rootStartTime,
+            root,
+            n = 200,
+            m = 15; // number of distinct clusters;
 
 
 
-    var tree = d3.layout.tree()
-        .size([height, width]);
+        var tree = d3.layout.tree()
+            .size([height, width]);
 
-    var diagonal = d3.svg.diagonal()
-        .projection(function(d) { return [d.y, d.x]; });
+        var diagonal = d3.svg.diagonal()
+            .projection(function(d) { return [d.y, d.x]; });
 
-    var svg = d3.select("#viz-graph").append("svg")
-        .attr("width", width + margin.right + margin.left)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var svg = d3.select("#viz-graph").append("svg")
+            .attr("width", width + margin.right + margin.left)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // Select the container for the notes and dimension it.
-    var notes = d3.select('#notes')
-        .style({
-            'width': 620-width + 'px',
-            'height': height + 'px'
-        });
+        // Select the container for the notes and dimension it.
+        var notes = d3.select('#notes')
+            .style({
+                'width': 620-width + 'px',
+                'height': height + 'px'
+            });
 
-    var fileDict = {};
-
-
-    var edge = svg.selectAll(".edge");
-
-    treeDraw(jsonFile);
+        var fileDict = {};
 
 
+        var edge = svg.selectAll(".edge");
 
-    // console.log('nodes: ,' , data);
+        treeDraw(jsonFile);
+
+
+
+        // console.log('nodes: ,' , data);
+        //
+        //    var nodes = forceData.packages;
+        //
+
+
+
+        //    force = d3.layout.force()
+        //        .nodes(nodes)
+        //        .size([width, height])
+        //        .linkDistance(30)
+        //        .gravity(0)
+        //        .charge(0)
+        //        .on("tick", tick);
+
+
+
+        // var links = force.links();
+
+
+
+        //var edge = svg.selectAll(".edge");
+
+        //    var circle = svg.selectAll("circle")
+        //        .data(nodes)
+        //        .enter().append("circle")
+        //        .attr("class", 'package')
+        //        .attr("r", function (d) {
+        //            return d.radius;
+        //        })
+        //        .style("fill",function() {
+        //            return "hsl(" + Math.random() * 360 + ",60%,80%)";
+        //        })
+        //        .call(force.drag);
+
+        //    var label = svg.selectAll(".mytext")
+        //        .data(nodes)
+        //        .enter()
+        //        .append("text")
+        //        .text(function (d) { return d.name; })
+        //        .style("text-anchor", "middle")
+        //        .style("fill", "#555")
+        //        .style("font-family", "Arial")
+        //        .style("font-size", 18);
+
+
+
+
+
+
+        //        var newforceNodes = force.nodes().push(node);
+        //
+        //
+        //
+        //
+        //        force.nodes().forEach(function(target) {
+        //
+        //            d.packages.reads.forEach(function (readFile) {
+        //
+        //                if(target.name == readFile){
+        //
+        //
+        //                    links.push({source: node, target: target});
+        //                }
+        //
+        //            })
+        //
+
+        // console.log('restart before link: ', edge);
+
+        // restart();
+
+
+
+        //    function tick(e) {
+        //
+        //        circle
+        //            .each(gravity(3 * e.alpha))
+        //            .each(collide(.2))
+        //            .attr("cx", function (d) {
+        //                return d.x;
+        //            })
+        //            .attr("cy", function (d) {
+        //                return d.y;
+        //            });
+        //
+        //        edge.attr("x1", function(d){ return d.source.x;
+        //        })
+        //            .attr("y1", function(d){ return d.source.y; })
+        //            .attr("x2", function(d){ return d.target.x; })
+        //            .attr("y2", function(d){ return d.target.y; });
+        //
+        //        label.attr("x", function(d){ return d.x; })
+        //            .attr("y", function (d) {return d.y - 30; });
+        //    }
+
+        function restart() {
+
+            console.log('restart before links: ', links);
+
+            console.log('restart before link: ', edge);
+
+            edge = svg.selectAll(".edge");
+
+            console.log('restart after links: ', links);
+
+            console.log('restart after link: ', edge);
+
+            edge.data(links).enter().insert("line", ".package")
+                .attr("class", "edge")
+                .attr("x1", function(d){ return d.source.x;
+                })
+                .attr("y1", function(d){ return d.source.y; })
+                .attr("x2", function(d){ return d.target.x; })
+                .attr("y2", function(d){ return d.target.y; });
+
+
+            force.start();
+        }
+
+
+
+
+
+        var select = d3.select('#jsonSelections')
+            .append('select')
+            .attr('class','select')
+            .attr("x", 400)
+            .on('change',onchange);
+
+        //$("svg").css({top: 800, left: 0, position:'absolute'});
+
+        var options = select
+            .selectAll('option')
+            .data(data).enter()
+            .append('option')
+            .text(function (d) { return d; });
+
+        function onchange() {
+            selectValue = d3.select('select').property('value');
+
+            jsonFile = selectValue;
+
+            treeDraw(jsonFile);
+
+            isTreeRedrew = true;
+
+            // d3.select('body')
+            //   .append('p')
+            //   .text(selectValue + ' is the last selected option.')
+
+
+        };
+
+
+
+
+        d3.select(self.frameElement).style("height", "800px");
+
+
+        // update Tree function
+        function update(source) {
+
+
+
+            // Compute the new tree layout.
+            var nodes = tree.nodes(root).reverse(),
+                links = tree.links(nodes);
+
+
+            // Normalize for fixed-depth.
+            nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+            // Update the nodes…
+            var node = svg.selectAll("g.node")
+                .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+            // Enter any new nodes at the parent's previous position.
+            var nodeEnter = node.enter().append("g")
+                .attr("class", "node")
+                .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+                .on("dblclick", dblclick)
+                .on("click", click)
+                .on("mousedown", function(d){
+
+                    //mousedownOnNode_Canvas();
+
+    //                var point = d3.mouse(this),
+    //                    node = {x: point[0], y: point[1]};
+
+    //                forceData.packages.forEach(function (package) {
     //
-    //    var nodes = forceData.packages;
+    //                    if d.name
+    //                });
+
+                    //    console.log('force node', force.nodes());
+
+
+                    d3.select("body").transition().style("background-color", "#1c1c1c");
+
+                    var links = force.links();
+                    // var link = svg.selectAll(".link");
+
+
+
+
+                })
+                .on("mouseup", function(d){
+
+                    console.log("mouseUP");
+                    d3.select("body").transition().style("background-color", "white");
+
+                })
+
+                .on("mouseover", function(d) {
+
+                    div.transition()
+                        .duration(200)
+                        .style("opacity", .8);
+                    div .html(
+                        d.description
+                    )
+                        .style("left", (d3.event.pageX) + "px")
+                        .style("top", (d3.event.pageY - 38) + "px");
+                })
+                .on("mouseout", function(d) {
+                    div.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                });
+
+            nodeEnter.append("circle")
+                .attr("r", 1e-6)
+                .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+            nodeEnter.append("text")
+                .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+                .attr("dy", ".35em")
+                .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+                .text(function(d) { return d.name; })
+                .style("fill-opacity", 1e-6);
+
+
+
+
+
+            // Transition nodes to their new position.
+            var nodeUpdate = node.transition()
+                .duration(duration)
+                .attr("transform", function(d) {
+
+
+
+                    return "translate(" + d.y + "," + d.x + ")"; });
+
+            nodeUpdate.select("circle")
+                .attr("r", 8)
+                .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+            nodeUpdate.select("text")
+                .style("fill-opacity", 1);
+
+            // Transition exiting nodes to the parent's new position.
+            var nodeExit = node.exit().transition()
+                .duration(duration)
+                .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+                .remove();
+
+            nodeExit.select("circle")
+                .attr("r", 1e-6);
+
+            nodeExit.select("text")
+                .style("fill-opacity", 1e-6);
+
+            // Update the links…
+            var link = svg.selectAll("path.link")
+                .data(links, function(d) { return d.target.id; });
+
+            // Enter any new links at the parent's previous position.
+            link.enter().insert("path", "g")
+                .attr("class", "link")
+                .attr("d", function(d) {
+                    var o = {x: source.x0, y: source.y0};
+                    return diagonal({source: o, target: o});
+                });
+
+
+
+
+
+
+            // Transition links to their new position.
+            link.transition()
+                .duration(duration)
+                .attr("d", diagonal);
+
+            // Transition exiting nodes to the parent's new position.
+            link.exit().transition()
+                .duration(duration)
+                .attr("d", function(d) {
+                    var o = {x: source.x, y: source.y};
+                    return diagonal({source: o, target: o});
+                })
+                .remove();
+
+
+
+            // //update the timeLine
+
+            // var timeLine = svg.selectAll("line");
+
+            // timeLine.transition()
+            //       .duration(duration)
+
+
+            // Update the link text
+            var linktext = svg.selectAll("g.link")
+                .data(links, function (d) {
+                    return d.target.id;
+                });
+
+            //  console.log('linktext',linktext);
+
+
+            linktext.enter()
+                .insert("g")
+                .attr("class", "link")
+                .append("text")
+                .attr("dy", ".35em")
+                .attr("text-anchor", "middle")
+                .style("font-size", 15)
+                .text(function (d) {
+                    return d.target.rule;
+                });
+
+            // Transition link text to their new positions
+
+            linktext.transition()
+                .duration(duration)
+                .attr("transform", function (d) {
+                    return "translate(" + ((d.source.y + d.target.y) / 2) + "," + ((d.source.x + d.target.x) / 2) + ")";
+                })
+
+
+            //Transition exiting link text to the parent's new position.
+            linktext.exit().transition()
+                .remove();
+
+
+            // Stash the old positions for transition.
+            nodes.forEach(function(d) {
+                d.x0 = d.x;
+                d.y0 = d.y;
+            });
+        }
+
+        // Toggle children on click.
+        function dblclick(d) {
+
+
+            var duration;
+
+            if (d.children) {
+
+
+    //            d.children.forEach(collapse);
+
+                d._children = d.children;
+                d.children = null;
+
+                decreaseTimeLineLen(d.y );
+
+                console.log('Close');
+
+                duration = (d.start_time - rootStartTime) / 1000000;
+
+
+            } else {
+
+
+                d.children = d._children;
+                d._children = null;
+
+                console.log('Open');
+
+
+
+                var tempDuration = 0;
+
+                //     console.log('d.children:', d.children);
+
+                if (d.children != null){
+
+                    d.children.forEach(function(node) {
+
+                        if ((node.start_time - rootStartTime) > tempDuration) {
+
+                            tempDuration = node.start_time - rootStartTime;
+                            tempLastNode = node;
+                        };
+
+
+                    });
+                }
+                else{
+                    tempDuration = d.exit_time - rootStartTime;
+
+                }
+
+
+                // console.log('tempLastNode:' , tempLastNode[0]);
+
+                //    console.log('tempDuration:' , tempDuration);
+
+
+
+                //  increaseTimeLineLen(d.y );
+
+                //increaseTimeLineLen(tempLastNode.y );
+
+                duration = tempDuration / 1000000;  //d.children[0].start_time - rootStartTime;
+                // duration =  d.children[0].start_time - rootStartTime;
+
+
+            }
+
+            timeLineLen =  timeLineLen_Total * (duration / duration_total_ms);
+
+            //  var durationLabel  = "Took " + (duration / 1000000).toFixed(2) + " milliseconds";
+
+            updateTimeLine(timeLineLen, getTimeLineLabel(duration));
+
+
+
+            update(d);
+        }
+
+
+        // Toggle children on click.
+        function click(d) {
+
+
+
+            console.log('single click');
+
+
+
+            var links = force.links();
+
+
+
+    //        var node = {};
+    //        node.x = 100;
+    //        node.y = 100;
+    //        node.cx = 100;
+    //        node.cy = 100;
+    //        node.px = 100;
+    //        node.py = 100;
+    //        node.weight = 10;
+    //        node.style =
+    //            ("fill" , function() {
+    //                return "hsl(" + Math.random() * 360 + ",60%,80%)";
+    //            });
+    //        node.radius = 20;
+    //
+    //
+    //
+    //
+    //
+    //        var node2 = {};
+    //        node2.x = 100 + 100;
+    //        node2.y = 100 + 100 ;
+    //        node2.cx = 100 + 100;
+    //        node2.cy = 100 + 100 ;
+    //        node2.px = 100 + 100;
+    //        node2.py = 100 + 100;
+    //        node2.weight = 10;
+    //        node2.style =
+    //            ("fill" , function() {
+    //                return "hsl(" + Math.random() * 360 + ",60%,80%)";
+    //            });
+    //
+    //        node2.radius = 20;
+    //
+    //        var nodes = force.nodes();
+    //        nodes.push(node);
+    //        nodes.push(node2);
+    //
+    //        links.push({source: node, target: node2});
+    //
+    //
+    //        console.log('links:', links);
+    //        console.log('force.nodes():', force.nodes());
     //
 
 
-
-    //    force = d3.layout.force()
-    //        .nodes(nodes)
-    //        .size([width, height])
-    //        .linkDistance(30)
-    //        .gravity(0)
-    //        .charge(0)
-    //        .on("tick", tick);
+            //console.log('restart after links: ', links);
 
 
 
-    // var links = force.links();
+            var circles = svg.selectAll(".package");
+
+            console.log('click circles: ', circles);
+
+            // add links to any nearby nodes
+
+            var node = {};
+            node.x = d.x;
+            node.y = d.y;
+            node.px = d.x;
+            node.py = d.y;
+            node.weight = 10;
+            node.style =
+                ("fill" , function() {
+                    return "hsl(" + Math.random() * 360 + ",60%,80%)";
+                });
+            node.radius = 20;
+
+
+            console.log('click circles before push nodes: ', force.nodes());
+
+            force.nodes().push(node);
+
+            console.log('click circles after push nodes: ', force.nodes());
+
+            console.log('click circles before push links: ', links);
+
+
+            force.nodes().forEach(function(target) {
+
+                d.packages.reads.forEach(function (readFile) {
+
+                    if(target.name == readFile){
+
+
+                        links.push({source: node, target: target});
+                    }
+
+                })
 
 
 
-    //var edge = svg.selectAll(".edge");
+            });
 
-    //    var circle = svg.selectAll("circle")
-    //        .data(nodes)
-    //        .enter().append("circle")
-    //        .attr("class", 'package')
-    //        .attr("r", function (d) {
-    //            return d.radius;
-    //        })
-    //        .style("fill",function() {
-    //            return "hsl(" + Math.random() * 360 + ",60%,80%)";
-    //        })
-    //        .call(force.drag);
-
-    //    var label = svg.selectAll(".mytext")
-    //        .data(nodes)
-    //        .enter()
-    //        .append("text")
-    //        .text(function (d) { return d.name; })
-    //        .style("text-anchor", "middle")
-    //        .style("fill", "#555")
-    //        .style("font-family", "Arial")
-    //        .style("font-size", 18);
+            console.log('click circles after push links: ', links);
 
 
 
 
+
+            edge.data(links).enter().insert("line", ".package")
+                .attr("class", "edge")
+                .attr("x1", function(d){ console.log("mapping link"); return d.source.x;
+                })
+                .attr("y1", function(d){ return d.source.y; })
+                .attr("x2", function(d){ return d.target.x; })
+                .attr("y2", function(d){ return d.target.y; });
+
+
+            force.start();
+
+
+
+            //   console.log('single click force.nodes()', force.nodes());
+
+
+            //  console.log('single click force.nodes().length', force.nodes().length);
+
+            //  console.log('single click packagesNumber', packagesNumber);
+
+            //    console.log('single click forceData.packages: ', forceData.packages);
+
+    //        if(force.nodes().length > packagesNumber){
+    //
+    //            force.nodes().pop();
+    //
+    //        //    console.log('single click force.nodes() after pop', force.nodes());
+    //
+    //        }
+
+
+            // Delete the current links section to prepare
+            // for new links.
+
+
+            //force.links().exit().remove();
+
+            // var link = svg.selectAll(".edge");
+
+
+
+            // restart();
+
+
+
+
+
+            // Delete the current notes section to prepare
+            // for new information.
+
+
+            notes.selectAll('*').remove();
+
+            var commands = '';
+
+
+            if(d.argv != null){
+
+                d.argv.forEach(function(argv){
+
+                    commands += argv;//.concat(argv.toString());
+                    commands += ' ';
+
+                });
+            }
+            else{
+
+                commands = 'No argument for this process'
+            }
+
+
+            // Fill in the notes section with informationm
+            // from the node. Because we want to transition
+            // this to match the transitions on the graph,
+            // we first set it's opacity to 0.
+
+            notes.style({'opacity': 0});
+    // Now add the notes content.
+
+
+            //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
+            notes.append('h3').text("Process:").style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
+            notes.append('h5').text(d.name); //.style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
+
+
+            //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
+            notes.append('h3').text("Commands:").style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
+            notes.append('h5').text(commands);
+
+
+
+            notes.append('h3').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
+
+            notes.append('input').attr("type", "search").attr("class", "fileSearch_input").attr("placeholder", "Search for listing files")
+                .style("margin-left", "10px;");
+
+            searchFilesInfoDiv = notes.append('div').attr("class", "searchFilesInfoDiv");
+
+            searchFilesList = notes.append('div').attr("class", "searchFilesList");
+
+
+            var filesList = [];
+
+            var fileNamesList = d.reads.sort().concat(d.writes.sort());
+
+            fileNamesList.forEach(function(file){
+
+
+                var keyName = "\"" + file + "\"";
+
+                if(keyName in fileDict){
+
+
+                    var file = fileDict[keyName];
+
+                    filesList.push(file);
+
+                }
+
+
+            });
+
+
+
+            console.log('What is filesList: ',filesList );
+
+            var filelistUL = searchFilesList.append('ul');
+            var fileCount = 1;
+
+            filesList.forEach(function(file){
+
+                var id = "faq-" + fileCount;
+                var href = "#" + id;
+
+                var fileLi =   filelistUL.append('li').attr("id",id );
+
+                var fileH2 =  fileLi.append('h4');//.text(file.name);
+                var fileA =  fileH2.append('a').attr("href", href).text(file.name);
+
+                var fileDiv = fileLi.append('div');
+
+
+
+                var proccess_Read = "";
+                var proccess_Write = "";
+
+
+                if(file.reads.length != 0){
+                    file.reads.forEach(function(process){
+                        proccess_Read += process + "<br/>"
+
+                    });
+                }
+                else {
+
+                    proccess_Read = "Not read by any process."
+                }
+
+                if(file.writes.length != 0){
+                    file.writes.forEach(function(process){
+                        proccess_Write += process + "<br/>"
+
+                    });
+                }
+                else {
+
+                    proccess_Write = "Not written by any process."
+                }
+
+                fileDiv.html(
+                    "<br>" +
+                    "<h5>From Package:  " +  file.package+ " </h5>" +
+
+                    "<h5>Read By: </h5>" +
+                    proccess_Read
+                    +
+                    "<br>"
+                    +
+                    "<h5>Written By: </h5>" +
+                    proccess_Write
+
+                )
+
+
+                //var fileP = fileDiv.append('p');
+
+
+
+                fileCount++;
+
+            });
+
+
+            searchFilesList.append('div').attr("class", "searchFilesList__notfound").html(
+                "<p>No matches were found&hellip; Try &ldquo;bash&rdquo;.</p>"
+
+            );
+
+
+            // associationString: "reads" or  "writes
+            createFileTooTip(searchFilesInfoDiv,d,"reads");
+            createFileTooTip(searchFilesInfoDiv,d,"writes");
+
+            searchFilesInfoDiv.append('h3').text("Associated Packages:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
+
+
+            createPackageTooTip(searchFilesInfoDiv,d);
+
+
+
+            // With the content in place, transition
+            // the opacity to make it visible.
+
+            notes.transition().style({'opacity': 1});
+
+
+            //filesSearch Code Block
+
+    //        'use strict';
+    //
+    //        // search & highlight
+    //
+    //        ;( function( $, window, document, undefined )
+    //        {
+    //            var $container = $( '.fileSearch' );
+    //            if( !$container.length ) return true;
+    //
+    //            var $input			= $container.find( '.fileSearch_input' ),
+    //                $notfound		= $container.find( '.fileSearch__notfound' ),
+    //                $items			= $container.find( '> ul > li' ),
+    //                $item			= $(),
+    //                itemsIndexed	= [];
+    //
+    //            //  console.log('$item : ', $item);
+    //
+    //            $items.each( function()
+    //            {
+    //                itemsIndexed.push( $( this ).text().replace( /\s{2,}/g, ' ' ).toLowerCase() );
+    //            });
+    //
+    //            $input.on( 'keyup', function( e )
+    //            {
+    //
+    //                console.log('keyup : ');
+    //
+    //                $(".searchFilesInfoDiv").hide();
+    //                $(".searchFilesList").show();
+    //                // searchFilesInfoDiv.selectAll('*').;
+    //
+    //
+    //                if( e.keyCode == 13 ) // enter
+    //                {
+    //                    $input.trigger( 'blur' );
+    //
+    //
+    //
+    //                    //    console.log('Enter : ', itemsIndexed);
+    //
+    //
+    //                    return true;
+    //                }
+    //
+    //                $items.each( function()
+    //                {
+    //                    $item = $( this );
+    //                    $item.html( $item.html().replace( /<span class="highlight">([^<]+)<\/span>/gi, '$1' ) );
+    //                });
+    //
+    //                var searchVal = $.trim( $input.val() ).toLowerCase();
+    //                if( searchVal.length )
+    //                {
+    //                    for( var i in itemsIndexed )
+    //                    {
+    //                        $item = $items.eq( i );
+    //                        if( itemsIndexed[ i ].indexOf( searchVal ) != -1 )
+    //                            $item.removeClass( 'is-hidden' ).html( $item.html().replace( new RegExp( searchVal+'(?!([^<]+)?>)', 'gi' ), '<span class="highlight">$&</span>' ) );
+    //                        else
+    //                            $item.addClass( 'is-hidden' );
+    //                    }
+    //                }
+    //                else $items.removeClass( 'is-hidden' );
+    //
+    //                $notfound.toggleClass( 'is-visible', $items.not( '.is-hidden' ).length == 0 );
+    //            });
+    //        })( jQuery, window, document );
+    //
+    //
+    //        // toggling items on title press
+    //
+    //        ;( function( $, window, document, undefined )
+    //        {
+    //            $( document ).on( 'click', '.fileSearch h2 a', function( e )
+    //            {
+    //                e.preventDefault();
+    //                $( this ).parents( 'li' ).toggleClass( 'is-active' );
+    //            });
+    //        })( jQuery, window, document );
+    //
+    //
+    //        // auto-show item content when show results reduces to single
+    //
+    //        ;( function( $, window, document, undefined )
+    //        {
+    //            var $container = $( '.fileSearch' );
+    //            if( !$container.length ) return true;
+    //
+    //            var $input		= $container.find( 'input' ),
+    //                $items		= $container.find( '> ul > li' ),
+    //                $item		= $();
+    //
+    //            $input.on( 'keyup', function()
+    //            {
+    //                $item = $items.not( '.is-hidden' );
+    //                if( $item.length == 1 )
+    //                    $item.addClass( 'js--autoshown is-active' );
+    //                else
+    //                    $items.filter( '.js--autoshown' ).removeClass( 'js--autoshown is-active' );
+    //            });
+    //        })( jQuery, window, document );
+
+
+
+
+
+
+            'use strict';
+
+
+            // search & highlight
+
+            ;( function( $, window, document, undefined )
+            {
+                var $container = $( '.fileSearch' );
+                var $searchFilesListContainer = $container.find( '.searchFilesList' );
+
+                if( !$container.length ) return true;
+
+
+
+
+
+                var $input			= $container.find( '.fileSearch_input' ),
+                    $notfound		= $searchFilesListContainer.find( '.searchFilesList__notfound' ),
+                    $items			= $searchFilesListContainer.find( '> ul > li' ),
+                    $item			= $(),
+                    itemsIndexed	= [];
+
+                console.log("searchFilesListContainer:", $searchFilesListContainer);
+
+
+                $items.each( function()
+                {
+                    itemsIndexed.push( $( this ).text().replace( /\s{2,}/g, ' ' ).toLowerCase() );
+                });
+
+                $input.on( 'keyup', function( e )
+                {
+                    console.log('keyup : ');
+
+                    $(".searchFilesInfoDiv").hide();
+                    $(".searchFilesList").show();
+                    // searchFilesInfoDiv.selectAll('*').;
+
+
+
+                    if( e.keyCode == 13 ) // enter
+                    {
+
+                        $input.trigger( 'blur' );
+                        return true;
+                    }
+
+                    $items.each( function()
+                    {
+                        $item = $( this );
+                        $item.html( $item.html().replace( /<span class="highlight">([^<]+)<\/span>/gi, '$1' ) );
+                    });
+
+                    var searchVal = $.trim( $input.val() ).toLowerCase();
+                    if( searchVal.length )
+                    {
+                        for( var i in itemsIndexed )
+                        {
+                            $item = $items.eq( i );
+                            if( itemsIndexed[ i ].indexOf( searchVal ) != -1 )
+                                $item.removeClass( 'is-hidden' ).html( $item.html().replace( new RegExp( searchVal+'(?!([^<]+)?>)', 'gi' ), '<span class="highlight">$&</span>' ) );
+                            else
+                                $item.addClass( 'is-hidden' );
+                        }
+                    }
+                    else {
+                        $items.removeClass('is-hidden');
+
+                        $(".searchFilesInfoDiv").show();
+                        $(".searchFilesList").hide();
+
+                    }
+
+                    $notfound.toggleClass( 'is-visible', $items.not( '.is-hidden' ).length == 0 );
+                });
+            })( jQuery, window, document );
+
+
+            // toggling items on title press
+
+            ;( function( $, window, document, undefined )
+            {
+                $( document ).on( 'click', '.searchFilesList h4 a', function( e )
+                {
+                    e.preventDefault();
+                    $( this ).parents( 'li' ).toggleClass( 'is-active' );
+                });
+            })( jQuery, window, document );
+
+
+            // auto-show item content when show results reduces to single
+
+            ;( function( $, window, document, undefined )
+            {
+                var $container = $( '.fileSearch' );
+                var $searchFilesListContainer = $container.find( '.searchFilesList' );
+
+                if( !$container.length ) return true;
+    //
+    //            var $input		= $container.find( 'input' ),
+    //                $items		= $container.find( '> ul > li' ),
+    //                $item		= $();
+
+
+
+                var $input			= $container.find( '.fileSearch_input' ),
+                    $items			= $searchFilesListContainer.find( '> ul > li' ),
+                    $item			= $();
+
+                $input.on( 'keyup', function()
+                {
+                    $item = $items.not( '.is-hidden' );
+                    if( $item.length == 1 )
+                        $item.addClass( 'js--autoshown is-active' );
+                    else
+                        $items.filter( '.js--autoshown' ).removeClass( 'js--autoshown is-active' );
+                });
+            })( jQuery, window, document );
+
+
+        }
+
+
+        function createFileTooTip(notesDiv,source, associationString){
+
+
+            var readsList;
+            var idString;
+            var idString_href;
+            var text_String ;
+
+            if(associationString == 'reads'){
+
+                idString = "readsToDiv";
+                idString_href = "#readsToDiv";
+                text_String = "Reads from:";
+                readsList = source.reads.sort();
+            }
+            else if (associationString == 'writes'){
+
+                idString = "writesToDiv";
+                idString_href = "#writesToDiv";
+                text_String = "Writes to:";
+                readsList = source.writes.sort();
+
+            }
+
+
+
+
+
+
+            notesDiv.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", idString_href).text(text_String).style({'padding-left': 0, 'text-decoration': 'none', 'font': '8 px sans-serif' });
+
+            var readsFromDiv = notesDiv.append('div').attr("id", idString ).attr("class", "panel-collapse ");
+
+            // var readsList = source.writes.sort();
+            var packagePath = '';
+            var newDetails ;
+            var newSummary;
+            var currentUL ;
+
+
+            if(readsList.length !=0){
+
+                for (var i = 0; i < readsList.length; i++ ){
+
+                    packagePath = setPackagePath(readsList, i , i + 1);
+                    newDetails = readsFromDiv.append('details');
+                    newSummary = newDetails.append('summary').text(packagePath);
+                    currentUL = newDetails.append('ul');
+
+                    while(readsList[i].includes(packagePath) ){
+
+
+                        var thisReadArray = ["\"" + readsList[i] + "\""];
+
+                        var fileName = readsList[i].replace(packagePath,"");
+
+                        currentUL.append('li')
+                            .data(thisReadArray)
+                            .on("mouseover", function(d) {
+
+
+                                var thisFile =  fileDict[d];
+
+                                var proccess_Read = "";
+                                var proccess_Write = "";
+
+
+                                if(thisFile.reads.length != 0){
+                                    thisFile.reads.forEach(function(process){
+                                        proccess_Read += process + "<br/>"
+
+                                    });
+                                }
+                                else {
+
+                                    proccess_Read = "Not read by any process."
+                                }
+
+                                if(thisFile.writes.length != 0){
+                                    thisFile.writes.forEach(function(process){
+                                        proccess_Write += process + "<br/>"
+
+                                    });
+                                }
+                                else {
+
+                                    proccess_Write = "Not written by any process."
+                                }
+
+                                div.transition()
+                                    .duration(200)
+                                    .style("opacity", .8);
+                                div.html(
+                                    "<h5>From Package:  " +  thisFile.package+ " </h5>" +
+
+                                    "<h5>Read By: </h5>" +
+                                    proccess_Read
+                                    +
+                                    "<br>"
+                                    +
+                                    "<h5>Written By: </h5>" +
+                                    proccess_Write
+
+                                )
+                                    .style("left", (d3.event.pageX) + "px")
+                                    .style("top", (d3.event.pageY - 28) + "px");
+
+                            })
+                            .on("mouseout", function(d) {
+                                div.transition()
+                                    .duration(500)
+                                    .style("opacity", 0);
+                            })
+                            .text(fileName);
+
+                        if(readsList[i+1] == null){
+
+                            break;
+                        }
+
+                        if(readsList[i+1].includes(packagePath) == false ){
+
+
+                            break;
+
+
+                        }
+                        i++;
+
+                    }
+
+
+                }
+
+            }
+            else {
+                readsFromDiv.append('details').append('summary').text("No associated file.");
+
+            }
+
+
+        }
+
+
+
+
+        function createPackageTooTip(notes,source){
+
+
+
+            var idString = "package_Div";
+
+            var packageNames = source.packages.reads.sort().concat(source.packages.writes.sort());
+            var packages = {};
+
+
+            packageNames.forEach(function (package) {
+
+                packages[package] = {["version"]:"", ["files"]:[]};
+
+                forceData.packages.forEach(function(forceDataPackage){
+
+                    if(forceDataPackage.name == package){
+
+                        packages[package].version = forceDataPackage.version;
+                    }
+                })
+
+
+            });
+
+
+
+            var fileList = source.reads.sort().concat(source.writes.sort());
+
+            fileList.forEach(function(file){
+
+
+                var keyName = "\"" + file + "\"";
+
+                if(keyName in fileDict){
+
+
+                    var file = fileDict[keyName];
+
+                    packages[file.package].files.push(file);
+
+
+                }
+
+
+            });
+
+
+
+            var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
+
+
+            var newDetails ;
+            var newSummary;
+            var currentUL ;
+
+
+            console.log("packages details:", packages);
+            // console.log("packages[package] after added files", Object.keys(packages).length);
+
+            if(Object.keys(packages).length !=0){
+
+
+                Object.keys(packages).forEach(function(key) {
+
+                    newDetails = readsFromDiv.append('details');
+                    newSummary = newDetails.append('summary').text(key);
+
+                    newSummary.on("mouseover", function(d) {
+
+                            console.log("what is this d?:", d);
+
+
+                        div.transition()
+                            .duration(200)
+                            .style("opacity", .8);
+                        div.html(
+                            "<h5>Version:  " +  packages[key].version + " </h5>" 
+
+                        ).style("left", (d3.event.pageX) + "px")
+                            .style("top", (d3.event.pageY - 28) + "px");
+
+
+                    }).on("mouseout", function(d) {
+                            div.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                        });
+
+
+                    currentUL = newDetails.append('ul');
+
+                    packages[key].files.forEach(function (file) {
+
+                        currentUL.append('li')
+                            .text(file.name);
+
+                    })
+
+                });
+
+
+            }
+            else {
+                readsFromDiv.append('details').append('summary').text("No associated package.");
+
+            }
+
+
+        }
+
+        //    function createPackageTooTip(notes,source, associationString){
+        //
+        //        console.log('this source: ', source);
+        //
+        //        var readsList ;
+        //        var idString;
+        //        var idString_href;
+        //        var text_String ;
+        //
+        //        if(associationString == 'reads'){
+        //
+        //            idString = "pkg_readsToDiv";
+        //            idString_href = "#pkg_readsToDiv";
+        //            text_String = "Reads from:";
+        //            readsList = source.packages.reads.sort();
+        //        }
+        //        else if (associationString == 'writes'){
+        //
+        //            idString = "pkg_writesToDiv";
+        //            idString_href = "#pkg_writesToDiv";
+        //            text_String = "Writes to:";
+        //            readsList = source.packages.writes.sort();
+        //
+        //        }
+        //
+        //
+        //
+        //        notes.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", idString_href).text(text_String).style({'padding-left': 0, 'text-decoration': 'none' });
+        //
+        //        var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
+        //
+        //        // var readsList = source.writes.sort();
+        //        var packagePath = '';
+        //        var newDetails ;
+        //        var newSummary;
+        //        var currentUL ;
+        //
+        //
+        //        if(readsList.length !=0){
+        //
+        //            for (var i = 0; i < readsList.length; i++ ){
+        //
+        //                // packagePath = setPackagePath(readsList, i , i + 1);
+        //                newDetails = readsFromDiv.append('details');
+        //                newSummary = newDetails.append('summary').text(source.name);
+        //                currentUL = newDetails.append('ul');
+        //                //currentUL = readsFromDiv.append('ul');
+        //
+        //                currentUL.append('li')
+        //                    .text(readsList[i]);
+        //
+        ////                while(readsList[i].includes(packagePath) ){
+        ////
+        ////
+        ////                    var thisReadArray = ["\"" + readsList[i] + "\""];
+        ////
+        ////                    var fileName = readsList[i].replace(packagePath,"");
+        ////
+        ////                    currentUL.append('li')
+        ////                        .data(thisReadArray)
+        ////                        .text(fileName);
+        ////
+        ////                    if(readsList[i+1] == null){
+        ////
+        ////                        break;
+        ////                    }
+        ////
+        ////                    if(readsList[i+1].includes(packagePath) == false ){
+        ////
+        ////
+        ////                        break;
+        ////
+        ////
+        ////                    }
+        ////                    i++;
+        ////
+        ////                }
+        //
+        //
+        //            }
+        //
+        //        }
+        //        else {
+        //            readsFromDiv.append('details').append('summary').text("No associated package.");
+        //
+        //        }
+        //
+        //
+        //    }
+
+        //Create the files dictionary
+        function createFileProfiles(jsonFile){
+
+            // var filesDict;
+
+            // d3.json block
+            d3.json(jsonFile, function(error, data) {
+
+                if (error) throw error;
+
+                data.packages.forEach(function (package) {
+
+                    package.files.forEach(function (file) {
+
+                        var keyName = "\"" + file + "\"";
+
+                        var proccess = [];
+                        proccess["reads"] =[];
+                        proccess["writes"] =[];
+                        proccess["package"] = package.name;
+                        process["name"] = file;
+
+                        fileDict[keyName] = proccess;
+
+
+
+                    })
+                });
+
+
+                data.other_files.forEach(function (file) {
+
+
+                    var keyName = "\"" + file + "\"";
+
+                    var proccess = [];
+                    proccess["reads"] =[];
+                    proccess["writes"] =[];
+                    proccess["package"] ='other_files';
+                    process["name"] = file;
+
+                    fileDict[keyName] = proccess;
+
+
+                });
+
+
+
+                data.runs.forEach(function (run) {
+
+                    run.processes.forEach(function(_process) {
+
+
+                        if(_process.reads != null){
+
+                            _process.reads.forEach(function(file){
+
+                                var keyName = "\"" + file + "\"";
+
+
+
+                                if( keyName in fileDict){
+
+                                    //console.log('filesDict[file]:', filesDict[keyName]);
+
+                                    fileDict[keyName].reads.push(_process.long_name);
+
+                                }
+
+                            });
+
+                        };
+
+
+                        if (_process.writes != null){
+                            _process.writes.forEach(function(file){
+
+
+
+                                var keyName = "\"" + file + "\"";
+
+                                if(keyName in fileDict){
+
+
+                                    fileDict[keyName].writes.push(_process.long_name);
+
+                                }
+
+
+                            });
+                        }
+
+
+                    })
+
+
+                });
+
+
+                console.log('internal filesDict ', fileDict);
+                console.log('inner query with keyName:', fileDict["\"/usr/bin/cut\""]);
+
+
+
+            });
+
+
+
+
+
+        }
+
+        function treeDraw(jsonFile){
+
+
+
+            // d3.json block
+            d3.json(jsonFile, function(error, data){
+
+                if (error) throw error;
+
+                var tempMaxRunTime = 0;
+
+                var rawData = [] ;
+                var treeData = [];
+
+                var forceNodes = {"nodes" : []};
+
+
+
+                //fileDict  = createFileProfiles(jsonFile);
+
+
+
+                // createFileProfiles(jsonFile);
+
+                data.packages.forEach(function (package) {
+
+                    package.files.forEach(function (file) {
+
+                        var keyName = "\"" + file + "\"";
+
+                        var proccess = [];
+                        proccess["reads"] =[];
+                        proccess["writes"] =[];
+                        proccess["package"] = package.name;
+                        proccess["name"] = file;
+
+                        fileDict[keyName] = proccess;
+
+
+
+                    })
+                });
+
+
+                data.other_files.forEach(function (file) {
+
+
+                    var keyName = "\"" + file + "\"";
+
+                    var proccess = [];
+                    proccess["reads"] =[];
+                    proccess["writes"] =[];
+                    proccess["package"] ='other_files';
+                    proccess["name"] = file;
+
+                    fileDict[keyName] = proccess;
+
+
+                });
+
+
+
+                data.runs.forEach(function (run) {
+
+                    run.processes.forEach(function(_process) {
+
+
+                        if(_process.reads != null){
+
+                            _process.reads.forEach(function(file){
+
+                                var keyName = "\"" + file + "\"";
+
+
+
+                                if( keyName in fileDict){
+
+                                    //console.log('filesDict[file]:', filesDict[keyName]);
+
+                                    fileDict[keyName].reads.push(_process.long_name);
+
+                                }
+
+                            });
+
+                        };
+
+
+                        if (_process.writes != null){
+                            _process.writes.forEach(function(file){
+
+
+
+                                var keyName = "\"" + file + "\"";
+
+                                if(keyName in fileDict){
+
+
+                                    fileDict[keyName].writes.push(_process.long_name);
+
+                                }
+
+
+                            });
+                        }
+
+
+                    })
+
+
+                });
+
+
+
+
+
+                var tempPackageX = 0;
+                var tempPackageY = 50;
+
+                //Handle Packages
+                data.packages.forEach(function (package) {
+
+                    //m++;
+
+
+
+
+
+
+                    var thisPackage = {["name"]: package.name, ["version"]: package.version, ["files"] : [] , ["cx"]: 0, ["cy"]: tempPackageY , ["OGy"]: tempPackageY, ["color"]: "" , ["radius"] : maxRadius};
+
+                    package.files.forEach(function (file) {
+
+
+                        var keyName = "\"" + file + "\"";
+
+                        //console.log('fileDict[file]:', fileDict[keyName]);
+
+                        //  n++;
+                        var thisFile =  fileDict[keyName]; //{["name"]: file,  ["parent"]: package.name };
+                        thisPackage.files.push(thisFile);
+
+                        forceNodes.nodes.push(thisFile);
+
+                    });
+
+
+
+                    //  var color =  d3.scale.category20();
+
+                    // thisPackage.color =  "pink";
+
+                    thisPackage.cx = tempPackageX;
+                    thisPackage.OGX = tempPackageX;
+                    tempPackageX = tempPackageX + (width / data.packages.length); // 200;
+
+                    packagesNumber++;
+
+
+                    forceData.packages.push(thisPackage);
+
+
+                });
+
+                console.log('forceData:' , forceData);
+
+
+
+
+
+
+
+                //Handle runs
+                data.runs.forEach(function(run){
+
+
+                    run.processes.forEach(function(_process){
+
+                        var packages = {["reads"]:[], ["writes"]: []};
+                        var packagesName = [];
+
+
+                        if(_process.parent == null){
+
+                            var node = {["name"]: _process.long_name, ["parent"]: "null", ["rule"] : "null", ["description"]: _process.description, ["reads"]: _process.reads ,  ["writes"]: _process.writes  ,["argv"]: _process.argv  , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
+
+                            // var filesDict = {} ;
+
+                            if(_process.reads != null){
+
+                                _process.reads.forEach(function(file){
+
+                                    var keyName = "\"" + file + "\"";
+
+                                    //console.log('Inner keyName:', fileDict[keyName]);
+                                    //console.log('keyName:', keyName);
+
+                                    if( keyName in fileDict){
+
+                                        // console.log('filesDict[file] package Name:', fileDict[keyName].package);
+
+                                        packages.reads.push(fileDict[keyName].package);
+                                        packagesName.push(fileDict[keyName].package);
+                                        //filesDict[keyName].reads.push(_process.long_name);
+
+                                    }
+
+                                });
+
+                                let uniq = [...new Set(packages.reads)];
+                                packages.reads = uniq;
+                            };
+
+
+
+                            if (_process.writes != null){
+                                _process.writes.forEach(function(file){
+
+
+
+                                    var keyName = "\"" + file + "\"";
+
+                                    if(keyName in fileDict){
+
+                                        packages.writes.push(fileDict[keyName].package);
+                                        packagesName.push(fileDict[keyName].package);
+
+                                    }
+
+
+                                });
+
+                                let uniq = [...new Set(packages.writes)];
+                                packages.writes = uniq;
+                            }
+
+                            node.packages = packages;
+
+                            let uniq = [...new Set(packagesName)];
+                            node.packageNames = uniq;
+
+
+                            if(_process.exit_time > tempMaxRunTime ){
+
+                                tempMaxRunTime = _process.exit_time;
+                            }
+
+                            rawData.push(node);
+
+                        }
+                        else {
+
+                            var parentProcess = run.processes[ ( _process.parent[0] ) ];
+
+                            var node = {["name"]: _process.long_name, ["parent"]: parentProcess.long_name, ["rule"] : _process.parent[1], ["description"]: _process.description ,  ["reads"]: _process.reads ,  ["writes"]: _process.writes ,["argv"]: _process.argv , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
+
+
+                            // var filesDict = {} ;
+
+                            if(_process.reads != null){
+
+                                _process.reads.forEach(function(file){
+
+                                    var keyName = "\"" + file + "\"";
+
+                                    //console.log('Inner keyName:', fileDict[keyName]);
+                                    //console.log('keyName:', keyName);
+
+                                    if( keyName in fileDict){
+
+                                        // console.log('filesDict[file] package Name:', fileDict[keyName].package);
+
+                                        packages.reads.push(fileDict[keyName].package);
+                                        packagesName.push(fileDict[keyName].package);
+                                        //filesDict[keyName].reads.push(_process.long_name);
+
+                                    }
+
+                                });
+
+                                let uniq = [...new Set(packages.reads)];
+                                packages.reads = uniq;
+                            };
+
+
+
+                            if (_process.writes != null){
+                                _process.writes.forEach(function(file){
+
+
+
+                                    var keyName = "\"" + file + "\"";
+
+                                    if(keyName in fileDict){
+
+                                        packages.writes.push(fileDict[keyName].package);
+                                        packagesName.push(fileDict[keyName].package);
+
+                                    }
+
+
+                                });
+
+                                let uniq = [...new Set(packages.writes)];
+                                packages.writes = uniq;
+                            }
+
+                            node.packages = packages;
+
+                            let uniq = [...new Set(packagesName)];
+                            node.packageNames = uniq;
+
+
+                            if(_process.exit_time > tempMaxRunTime ){
+
+                                tempMaxRunTime = _process.exit_time;
+                            }
+
+                            rawData.push(node);
+
+
+                        }
+
+
+                    })
+
+                    console.log('rawData', rawData);
+
+
+                    var dataMap = rawData.reduce(function(map, node) {
+                        map[node.name] = node;
+                        return map;
+                    }, {});
+
+
+                    rawData.forEach(function(node) {
+                        // add to parent
+                        var parent = dataMap[node.parent];
+                        if (parent) {
+                            // create child array if it doesn't exist
+                            (parent.children || (parent.children = []))
+                            // add node to child array
+                                .push(node);
+                        } else {
+                            // parent is null or missing
+                            treeData.push(node);
+                        }
+                    });
+
+
+                    console.log('treeData', treeData);
+
+
+                })
+
+
+                root = treeData[0];
+                root.x0 = height / 2;
+                root.y0 = 0;
+
+                rootStartTime = root.start_time;
+
+
+
+
+                forceDraw(forceData);
+
+
+
+
+                // Default timeline length for root
+
+
+                function collapse(d) {
+
+                    if (d.children) {
+
+
+                        if(isTreeRedrew == false){
+                            timeLineLen_Total =  timeLineLen_Total + (root.x0  / 2);
+
+                        }
+
+
+                        d._children = d.children;
+                        d._children.forEach(collapse);
+                        d.children = null;
+                    }
+
+
+                }
+
+
+
+                var duration_ms = (root.children[0].start_time - rootStartTime) / 1000000;
+
+                var duration = new moment.duration(duration_ms);
+
+                var durationLabel  = "Took " + duration.asMilliseconds().toFixed(2) + " milliseconds";
+
+
+                duration_total_ms =  (tempMaxRunTime - rootStartTime) / 1000000 ;
+
+                var durationLabel_total  = getTimeLineLabel(duration_total_ms,"total");
+
+
+                // timeLineLen = root.x0 / 2;
+                timeLineLen_Total = root.x0 / 2;
+
+
+                root.children.forEach(collapse);
+
+                //  console.log('timeLineLen_Total: ', timeLineLen_Total);
+
+                timeLineLen =  timeLineLen_Total * (duration_ms / duration_total_ms);
+
+                //   console.log('timeLineLen: ', timeLineLen);
+
+                if(isTreeRedrew == false){
+
+
+                    totalTimeLineDraw(timeLineLen_Total, durationLabel_total);
+                    timeLineDraw(timeLineLen, durationLabel);
+
+
+                }
+                else{
+
+                    updateTimeLine(timeLineLen,durationLabel);
+
+                }
+
+
+
+
+
+                update(root);
+
+            })
+
+
+
+        }
+
+        function getTimeLineLabel(duration_ms, isTotalString){
+
+            var duration_total = new moment.duration(duration_ms);
+
+            var durationLabel_total  = '';
+
+
+            if(duration_total.asMilliseconds() < 60000){
+
+                durationLabel_total =  duration_total.asMilliseconds().toFixed(2) + " milliseconds";
+
+            }
+            else if (duration_total.asSeconds() < 60 && duration_total.asSeconds() > 0){
+
+                durationLabel_total =  duration_total.asSeconds().toFixed(2) + " seconds";
+
+            }
+
+            else if (duration_total.asMinutes() < 60 && duration_total.asMinutes() > 0){
+
+                durationLabel_total =  duration_total.asMinutes().toFixed(2) + " minutes"; //+ " and " + duration.asSeconds().toFixed(0) + " seconds";
+
+            }
+            else if (duration_total.asHours() < 24 && duration_total.asHours() > 0){
+
+                durationLabel_total =   duration_total.asHours().toFixed(2) + " hours" ;
+
+            }
+            else if (duration_total.asDays() < 28 && duration_total.asDays() > 0){
+
+                durationLabel_total =  duration_total.asDays().toFixed(2) + " days" ;
+
+            }
+
+            if (isTotalString == "total"){
+
+                durationLabel_total = "Total " + durationLabel_total;
+            }else{
+
+                durationLabel_total = "Took " + durationLabel_total;
+            }
+
+            return durationLabel_total;
+
+
+        }
+
+        function timeLineDraw(length, durationLabel){
+
+            //  console.log('Draw an X to show that the size is correct');
+            // Draw an X to show that the size is correct.
+            var lines = svg.append("g")
+                .attr("class", "timeLineGroup")
+                .append("line")
+                .attr("class", "timeLine2")
+                .attr("x1", 0)
+                .attr("y1", height )
+                .attr("x2", length)
+                .attr("y2", height )
+                .attr("stroke-width", 5)
+                .attr("stroke", "#dbbd5a");
+
+
+
+            // Update the link text
+            var timeLineText = svg.selectAll(".timeLineGroup").append("text")
+                .attr("y", height + 20)//magic number here
+                .attr("x", length / 2)
+                .attr('text-anchor', 'middle')
+                .attr("class", "timeLineText")//easy to style with CSS
+                .text(durationLabel);
+
+
+
+        }
+
+        function totalTimeLineDraw(length, durationLabel){
+
+            //   console.log('Draw an X to show that the size is correct');
+            // Draw an X to show that the size is correct.
+            var lines = svg.append("g")
+                .attr("class", "TotalTimeLineGroup")
+                .append("line")
+                .attr("class", "timeLine1")
+                .attr("x1", 0)
+                .attr("y1", height )
+                .attr("x2", length)
+                .attr("y2", height )
+                .attr("stroke-width", 5)
+                .attr("stroke", "#5adbbd");
+
+
+
+            // Update the link text
+            var timeLineText = svg.selectAll(".TotalTimeLineGroup").append("text")
+                .attr("y", height + 20)//magic number here
+                .attr("x", length )
+                .attr('text-anchor', 'middle')
+                .attr("class", "totalTimeLineText")//easy to style with CSS
+                .text(durationLabel);
+
+
+
+        }
+
+
+        function forceDraw(data) {
+
+            // console.log('nodes: ,' , data);
+
+            var nodes = data.packages;
+
+
+
+
+
+            force = d3.layout.force()
+                .nodes(nodes)
+                .size([width, height])
+                .linkDistance(30)
+                .gravity(0)
+                .charge(0)
+                .on("tick", tick);
+
+
+
+            var links = force.links();
+
+
+            var node = {};
+            node.x = 100;
+            node.y = 100;
+            node.cx = 100;
+            node.cy = 100;
+            node.px = 100;
+            node.py = 100;
+            node.weight = 10;
+            node.style =
+                ("fill" , function() {
+                    return "hsl(" + Math.random() * 360 + ",60%,80%)";
+                });
+            node.radius = 20;
+
+
+
+            var node2 = {};
+            node2.x = 100 + 100;
+            node2.y = 100 + 100 ;
+            node2.cx = 100 + 100;
+            node2.cy = 100 + 100 ;
+            node2.px = 100 + 100;
+            node2.py = 100 + 100;
+            node2.weight = 10;
+            node2.style =
+                ("fill" , function() {
+                    return "hsl(" + Math.random() * 360 + ",60%,80%)";
+                });
+
+            node2.radius = 20;
+
+            var nodes = force.nodes();
+            nodes.push(node);
+            nodes.push(node2);
+
+            links.push({source: node, target: node2});
+
+
+            console.log('links:', links);
+            console.log('force.nodes():', force.nodes());
+
+
+
+            var circle = svg.selectAll("circle")
+                .data(nodes)
+                .enter().append("circle")
+                .attr("class", 'package')
+                .attr("r", function (d) {
+                    return d.radius;
+                })
+                .style("fill",function() {
+                    return "hsl(" + Math.random() * 360 + ",60%,80%)";
+                })
+                .call(force.drag);
+
+            var label = svg.selectAll(".mytext")
+                .data(nodes)
+                .enter()
+                .append("text")
+                .text(function (d) { return d.name; })
+                .style("text-anchor", "middle")
+                .style("fill", "#555")
+                .style("font-family", "Arial")
+                .style("font-size", 18);
+
+            edge.data(links).enter().insert("line", ".package")
+                .attr("class", "edge")
+                .attr("x1", function(d){ return d.source.x;
+                })
+                .attr("y1", function(d){ return d.source.y; })
+                .attr("x2", function(d){ return d.target.x; })
+                .attr("y2", function(d){ return d.target.y; });
+
+            ///  var edge = svg.selectAll(".edge");
 
 
     //        var newforceNodes = force.nodes().push(node);
@@ -429,2237 +2485,214 @@
     //            })
     //
 
-    // console.log('restart before link: ', edge);
+            // console.log('restart before link: ', edge);
 
-    // restart();
 
 
 
-    //    function tick(e) {
-    //
-    //        circle
-    //            .each(gravity(3 * e.alpha))
-    //            .each(collide(.2))
-    //            .attr("cx", function (d) {
-    //                return d.x;
-    //            })
-    //            .attr("cy", function (d) {
-    //                return d.y;
-    //            });
-    //
-    //        edge.attr("x1", function(d){ return d.source.x;
-    //        })
-    //            .attr("y1", function(d){ return d.source.y; })
-    //            .attr("x2", function(d){ return d.target.x; })
-    //            .attr("y2", function(d){ return d.target.y; });
-    //
-    //        label.attr("x", function(d){ return d.x; })
-    //            .attr("y", function (d) {return d.y - 30; });
-    //    }
 
-    function restart() {
 
-        console.log('restart before links: ', links);
 
-        console.log('restart before link: ', edge);
 
-        edge = svg.selectAll(".edge");
 
-        console.log('restart after links: ', links);
+            restart();
 
-        console.log('restart after link: ', edge);
 
-        edge.data(links).enter().insert("line", ".package")
-            .attr("class", "edge")
-            .attr("x1", function(d){ return d.source.x;
-            })
-            .attr("y1", function(d){ return d.source.y; })
-            .attr("x2", function(d){ return d.target.x; })
-            .attr("y2", function(d){ return d.target.y; });
 
+            function tick(e) {
 
-        force.start();
-    }
+                edge.attr("x1", function(d){ console.log("mapping link"); return d.source.x;
+                })
+                    .attr("y1", function(d){ return d.source.y; })
+                    .attr("x2", function(d){ return d.target.x; })
+                    .attr("y2", function(d){ return d.target.y; });
 
 
+                circle
+                    .each(gravity(3 * e.alpha))
+                    .each(collide(.2))
+                    .attr("cx", function (d) {
+                        return d.x;
+                    })
+                    .attr("cy", function (d) {
+                        return d.y;
+                    });
 
 
-
-    var select = d3.select('#jsonSelections')
-        .append('select')
-        .attr('class','select')
-        .attr("x", 400)
-        .on('change',onchange);
-
-    //$("svg").css({top: 800, left: 0, position:'absolute'});
-
-    var options = select
-        .selectAll('option')
-        .data(data).enter()
-        .append('option')
-        .text(function (d) { return d; });
-
-    function onchange() {
-        selectValue = d3.select('select').property('value');
-
-        jsonFile = selectValue;
-
-        treeDraw(jsonFile);
-
-        isTreeRedrew = true;
-
-        // d3.select('body')
-        //   .append('p')
-        //   .text(selectValue + ' is the last selected option.')
-
-
-    };
-
-
-
-
-    d3.select(self.frameElement).style("height", "800px");
-
-
-    // update Tree function
-    function update(source) {
-
-
-
-        // Compute the new tree layout.
-        var nodes = tree.nodes(root).reverse(),
-            links = tree.links(nodes);
-
-
-        // Normalize for fixed-depth.
-        nodes.forEach(function(d) { d.y = d.depth * 180; });
-
-        // Update the nodes…
-        var node = svg.selectAll("g.node")
-            .data(nodes, function(d) { return d.id || (d.id = ++i); });
-
-        // Enter any new nodes at the parent's previous position.
-        var nodeEnter = node.enter().append("g")
-            .attr("class", "node")
-            .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-            .on("dblclick", dblclick)
-            .on("click", click)
-            .on("mousedown", function(d){
-
-                //mousedownOnNode_Canvas();
-
-//                var point = d3.mouse(this),
-//                    node = {x: point[0], y: point[1]};
-
-//                forceData.packages.forEach(function (package) {
-//
-//                    if d.name
-//                });
-
-                //    console.log('force node', force.nodes());
-
-
-                d3.select("body").transition().style("background-color", "#1c1c1c");
-
-                var links = force.links();
-                // var link = svg.selectAll(".link");
-
-
-
-
-            })
-            .on("mouseup", function(d){
-
-                console.log("mouseUP");
-                d3.select("body").transition().style("background-color", "white");
-
-            })
-
-            .on("mouseover", function(d) {
-
-                div.transition()
-                    .duration(200)
-                    .style("opacity", .8);
-                div .html(
-                    d.description
-                )
-                    .style("left", (d3.event.pageX) + "px")
-                    .style("top", (d3.event.pageY - 38) + "px");
-            })
-            .on("mouseout", function(d) {
-                div.transition()
-                    .duration(500)
-                    .style("opacity", 0);
-            });
-
-        nodeEnter.append("circle")
-            .attr("r", 1e-6)
-            .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
-
-        nodeEnter.append("text")
-            .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
-            .attr("dy", ".35em")
-            .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-            .text(function(d) { return d.name; })
-            .style("fill-opacity", 1e-6);
-
-
-
-
-
-        // Transition nodes to their new position.
-        var nodeUpdate = node.transition()
-            .duration(duration)
-            .attr("transform", function(d) {
-
-
-
-                return "translate(" + d.y + "," + d.x + ")"; });
-
-        nodeUpdate.select("circle")
-            .attr("r", 8)
-            .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
-
-        nodeUpdate.select("text")
-            .style("fill-opacity", 1);
-
-        // Transition exiting nodes to the parent's new position.
-        var nodeExit = node.exit().transition()
-            .duration(duration)
-            .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
-            .remove();
-
-        nodeExit.select("circle")
-            .attr("r", 1e-6);
-
-        nodeExit.select("text")
-            .style("fill-opacity", 1e-6);
-
-        // Update the links…
-        var link = svg.selectAll("path.link")
-            .data(links, function(d) { return d.target.id; });
-
-        // Enter any new links at the parent's previous position.
-        link.enter().insert("path", "g")
-            .attr("class", "link")
-            .attr("d", function(d) {
-                var o = {x: source.x0, y: source.y0};
-                return diagonal({source: o, target: o});
-            });
-
-
-
-
-
-
-        // Transition links to their new position.
-        link.transition()
-            .duration(duration)
-            .attr("d", diagonal);
-
-        // Transition exiting nodes to the parent's new position.
-        link.exit().transition()
-            .duration(duration)
-            .attr("d", function(d) {
-                var o = {x: source.x, y: source.y};
-                return diagonal({source: o, target: o});
-            })
-            .remove();
-
-
-
-        // //update the timeLine
-
-        // var timeLine = svg.selectAll("line");
-
-        // timeLine.transition()
-        //       .duration(duration)
-
-
-        // Update the link text
-        var linktext = svg.selectAll("g.link")
-            .data(links, function (d) {
-                return d.target.id;
-            });
-
-        //  console.log('linktext',linktext);
-
-
-        linktext.enter()
-            .insert("g")
-            .attr("class", "link")
-            .append("text")
-            .attr("dy", ".35em")
-            .attr("text-anchor", "middle")
-            .style("font-size", 15)
-            .text(function (d) {
-                return d.target.rule;
-            });
-
-        // Transition link text to their new positions
-
-        linktext.transition()
-            .duration(duration)
-            .attr("transform", function (d) {
-                return "translate(" + ((d.source.y + d.target.y) / 2) + "," + ((d.source.x + d.target.x) / 2) + ")";
-            })
-
-
-        //Transition exiting link text to the parent's new position.
-        linktext.exit().transition()
-            .remove();
-
-
-        // Stash the old positions for transition.
-        nodes.forEach(function(d) {
-            d.x0 = d.x;
-            d.y0 = d.y;
-        });
-    }
-
-    // Toggle children on click.
-    function dblclick(d) {
-
-
-        var duration;
-
-        if (d.children) {
-
-
-//            d.children.forEach(collapse);
-
-            d._children = d.children;
-            d.children = null;
-
-            decreaseTimeLineLen(d.y );
-
-            console.log('Close');
-
-            duration = (d.start_time - rootStartTime) / 1000000;
-
-
-        } else {
-
-
-            d.children = d._children;
-            d._children = null;
-
-            console.log('Open');
-
-
-
-            var tempDuration = 0;
-
-            //     console.log('d.children:', d.children);
-
-            if (d.children != null){
-
-                d.children.forEach(function(node) {
-
-                    if ((node.start_time - rootStartTime) > tempDuration) {
-
-                        tempDuration = node.start_time - rootStartTime;
-                        tempLastNode = node;
-                    };
-
-
-                });
-            }
-            else{
-                tempDuration = d.exit_time - rootStartTime;
-
+                label.attr("x", function(d){ return d.x; })
+                    .attr("y", function (d) {return d.y - 30; });
             }
 
 
-            // console.log('tempLastNode:' , tempLastNode[0]);
+    // Move nodes toward cluster focus.
+            function gravity(alpha) {
+                return function (d) {
+                    d.y += (d.cy - d.y) * alpha;
+                    d.x += (d.cx - d.x) * alpha;
+                };
+            }
 
-            //    console.log('tempDuration:' , tempDuration);
+
+            // Resolve collisions between nodes.
+            function collide(alpha) {
+                var quadtree = d3.geom.quadtree(nodes);
+                return function (d) {
+                    var r = d.radius + maxRadius + padding,
+                        nx1 = d.x - r,
+                        nx2 = d.x + r,
+                        ny1 = d.y - r,
+                        ny2 = d.y + r;
+                    quadtree.visit(function (quad, x1, y1, x2, y2) {
+                        if (quad.point && (quad.point !== d)) {
+                            var x = d.x - quad.point.x,
+                                y = d.y - quad.point.y,
+                                l = Math.sqrt(x * x + y * y),
+                                r = d.radius + quad.point.radius + (d.color !== quad.point.color) * padding;
+                            if (l < r) {
+                                l = (l - r) / l * alpha;
+                                d.x -= x *= l;
+                                d.y -= y *= l;
+                                quad.point.x += x;
+                                quad.point.y += y;
+                            }
+                        }
+                        return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+                    });
+                };
+
+            }
+        }
 
 
 
-            //  increaseTimeLineLen(d.y );
 
-            //increaseTimeLineLen(tempLastNode.y );
+        function updateTimeLine(length, durationLabel){
 
-            duration = tempDuration / 1000000;  //d.children[0].start_time - rootStartTime;
-            // duration =  d.children[0].start_time - rootStartTime;
+            var timeline =  svg.selectAll(".timeLine2");
+
+            timeline.transition()
+            //.attr("x1", 0)
+                .attr("x2", length);
+
+            // var timeLineText = svg.
+
+            var timeLineText = d3.selectAll(".timeLineText")
+                .transition()
+                .attr("x", timeLineLen / 2)
+                .attr('text-anchor', 'middle')
+                .attr("class", "timeLineText")//easy to style with CSS
+
+                .text(durationLabel);
+
+
+
 
 
         }
 
-        timeLineLen =  timeLineLen_Total * (duration / duration_total_ms);
+        function increaseTimeLineLen(length){
 
-        //  var durationLabel  = "Took " + (duration / 1000000).toFixed(2) + " milliseconds";
+            timeLineLen =  length + (root.x0  / 2); //timeLineLen + ( length );
 
-        updateTimeLine(timeLineLen, getTimeLineLabel(duration));
+        }
 
+        function decreaseTimeLineLen(length){
 
+            if((timeLineLen - ( length) >= 0)) {
 
-        update(d);
-    }
+                timeLineLen =  length //timeLineLen - ( length);
+            }
 
+        }
 
-    // Toggle children on click.
-    function click(d) {
+        function setPackagePath (fileList, index, nextIndex){
 
+            // console.log('nextIndex: ', nextIndex);
 
+            var TestingPackagePath = '';
 
-        console.log('single click');
-
-
-
-        var links = force.links();
-
-
-
-//        var node = {};
-//        node.x = 100;
-//        node.y = 100;
-//        node.cx = 100;
-//        node.cy = 100;
-//        node.px = 100;
-//        node.py = 100;
-//        node.weight = 10;
-//        node.style =
-//            ("fill" , function() {
-//                return "hsl(" + Math.random() * 360 + ",60%,80%)";
-//            });
-//        node.radius = 20;
-//
-//
-//
-//
-//
-//        var node2 = {};
-//        node2.x = 100 + 100;
-//        node2.y = 100 + 100 ;
-//        node2.cx = 100 + 100;
-//        node2.cy = 100 + 100 ;
-//        node2.px = 100 + 100;
-//        node2.py = 100 + 100;
-//        node2.weight = 10;
-//        node2.style =
-//            ("fill" , function() {
-//                return "hsl(" + Math.random() * 360 + ",60%,80%)";
-//            });
-//
-//        node2.radius = 20;
-//
-//        var nodes = force.nodes();
-//        nodes.push(node);
-//        nodes.push(node2);
-//
-//        links.push({source: node, target: node2});
-//
-//
-//        console.log('links:', links);
-//        console.log('force.nodes():', force.nodes());
-//
+            if(fileList[nextIndex] != null){
 
 
-        //console.log('restart after links: ', links);
+                a1_Len =  fileList[index].length;
+                var i = 0;
 
+                while(i < a1_Len && fileList[index].charAt(i)===fileList[nextIndex].charAt(i)){
 
-
-        var circles = svg.selectAll(".package");
-
-        console.log('click circles: ', circles);
-
-        // add links to any nearby nodes
-
-        var node = {};
-        node.x = d.x;
-        node.y = d.y;
-        node.px = d.x;
-        node.py = d.y;
-        node.weight = 10;
-        node.style =
-            ("fill" , function() {
-                return "hsl(" + Math.random() * 360 + ",60%,80%)";
-            });
-        node.radius = 20;
-
-
-        console.log('click circles before push nodes: ', force.nodes());
-
-        force.nodes().push(node);
-
-        console.log('click circles after push nodes: ', force.nodes());
-
-        console.log('click circles before push links: ', links);
-
-
-        force.nodes().forEach(function(target) {
-
-            d.packages.reads.forEach(function (readFile) {
-
-                if(target.name == readFile){
-
-
-                    links.push({source: node, target: target});
+                    i++
                 }
 
-            })
+                if (fileList[index].substring(0,i) == '/'){
 
 
+                    // console.log('different character: ',fileList[index].substring(0,i));
 
-        });
+                    TestingPackagePath = fileList[index].substring(0, fileList[index].lastIndexOf('/'));
+                    //  console.log('TestingPackagePath: ',TestingPackagePath);
 
-        console.log('click circles after push links: ', links);
-
-
-
-
-
-        edge.data(links).enter().insert("line", ".package")
-            .attr("class", "edge")
-            .attr("x1", function(d){ console.log("mapping link"); return d.source.x;
-            })
-            .attr("y1", function(d){ return d.source.y; })
-            .attr("x2", function(d){ return d.target.x; })
-            .attr("y2", function(d){ return d.target.y; });
-
-
-        force.start();
-
-
-
-        //   console.log('single click force.nodes()', force.nodes());
-
-
-        //  console.log('single click force.nodes().length', force.nodes().length);
-
-        //  console.log('single click packagesNumber', packagesNumber);
-
-        //    console.log('single click forceData.packages: ', forceData.packages);
-
-//        if(force.nodes().length > packagesNumber){
-//
-//            force.nodes().pop();
-//
-//        //    console.log('single click force.nodes() after pop', force.nodes());
-//
-//        }
-
-
-        // Delete the current links section to prepare
-        // for new links.
-
-
-        //force.links().exit().remove();
-
-        // var link = svg.selectAll(".edge");
-
-
-
-        // restart();
-
-
-
-
-
-        // Delete the current notes section to prepare
-        // for new information.
-
-
-        notes.selectAll('*').remove();
-
-        var commands = '';
-
-
-        if(d.argv != null){
-
-            d.argv.forEach(function(argv){
-
-                commands += argv;//.concat(argv.toString());
-                commands += ' ';
-
-            });
-        }
-        else{
-
-            commands = 'No argument for this process'
-        }
-
-
-        // Fill in the notes section with informationm
-        // from the node. Because we want to transition
-        // this to match the transitions on the graph,
-        // we first set it's opacity to 0.
-
-        notes.style({'opacity': 0});
-// Now add the notes content.
-
-
-        //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
-        notes.append('h3').text("Process:").style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
-        notes.append('h5').text(d.name); //.style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
-
-
-        //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
-        notes.append('h3').text("Commands:").style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
-        notes.append('h5').text(commands);
-
-
-
-        notes.append('h3').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
-
-        notes.append('input').attr("type", "search").attr("class", "fileSearch_input").attr("placeholder", "Search for listing files")
-            .style("margin-left", "10px;");
-
-        searchFilesInfoDiv = notes.append('div').attr("class", "searchFilesInfoDiv");
-
-        searchFilesList = notes.append('div').attr("class", "searchFilesList");
-
-
-        var filesList = [];
-
-        var fileNamesList = d.reads.sort().concat(d.writes.sort());
-
-        fileNamesList.forEach(function(file){
-
-
-            var keyName = "\"" + file + "\"";
-
-            if(keyName in fileDict){
-
-
-                var file = fileDict[keyName];
-
-                filesList.push(file);
-
-            }
-
-
-        });
-
-
-
-        console.log('What is filesList: ',filesList );
-
-        var filelistUL = searchFilesList.append('ul');
-        var fileCount = 1;
-
-        filesList.forEach(function(file){
-
-            var id = "faq-" + fileCount;
-            var href = "#" + id;
-
-            var fileLi =   filelistUL.append('li').attr("id",id );
-
-            var fileH2 =  fileLi.append('h4');//.text(file.name);
-            var fileA =  fileH2.append('a').attr("href", href).text(file.name);
-
-            var fileDiv = fileLi.append('div');
-
-
-
-            var proccess_Read = "";
-            var proccess_Write = "";
-
-
-            if(file.reads.length != 0){
-                file.reads.forEach(function(process){
-                    proccess_Read += process + "<br/>"
-
-                });
-            }
-            else {
-
-                proccess_Read = "Not read by any process."
-            }
-
-            if(file.writes.length != 0){
-                file.writes.forEach(function(process){
-                    proccess_Write += process + "<br/>"
-
-                });
-            }
-            else {
-
-                proccess_Write = "Not written by any process."
-            }
-
-            fileDiv.html(
-                "<br>" +
-                "<h5>From Package:  " +  file.package+ " </h5>" +
-
-                "<h5>Read By: </h5>" +
-                proccess_Read
-                +
-                "<br>"
-                +
-                "<h5>Written By: </h5>" +
-                proccess_Write
-
-            )
-
-
-            //var fileP = fileDiv.append('p');
-
-
-
-            fileCount++;
-
-        });
-
-
-        searchFilesList.append('div').attr("class", "searchFilesList__notfound").html(
-            "<p>No matches were found&hellip; Try &ldquo;bash&rdquo;.</p>"
-
-        );
-
-
-        // associationString: "reads" or  "writes
-        createFileTooTip(searchFilesInfoDiv,d,"reads");
-        createFileTooTip(searchFilesInfoDiv,d,"writes");
-
-        searchFilesInfoDiv.append('h3').text("Associated Packages:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
-
-
-        createPackageTooTip(searchFilesInfoDiv,d);
-
-
-
-        // With the content in place, transition
-        // the opacity to make it visible.
-
-        notes.transition().style({'opacity': 1});
-
-
-        //filesSearch Code Block
-
-//        'use strict';
-//
-//        // search & highlight
-//
-//        ;( function( $, window, document, undefined )
-//        {
-//            var $container = $( '.fileSearch' );
-//            if( !$container.length ) return true;
-//
-//            var $input			= $container.find( '.fileSearch_input' ),
-//                $notfound		= $container.find( '.fileSearch__notfound' ),
-//                $items			= $container.find( '> ul > li' ),
-//                $item			= $(),
-//                itemsIndexed	= [];
-//
-//            //  console.log('$item : ', $item);
-//
-//            $items.each( function()
-//            {
-//                itemsIndexed.push( $( this ).text().replace( /\s{2,}/g, ' ' ).toLowerCase() );
-//            });
-//
-//            $input.on( 'keyup', function( e )
-//            {
-//
-//                console.log('keyup : ');
-//
-//                $(".searchFilesInfoDiv").hide();
-//                $(".searchFilesList").show();
-//                // searchFilesInfoDiv.selectAll('*').;
-//
-//
-//                if( e.keyCode == 13 ) // enter
-//                {
-//                    $input.trigger( 'blur' );
-//
-//
-//
-//                    //    console.log('Enter : ', itemsIndexed);
-//
-//
-//                    return true;
-//                }
-//
-//                $items.each( function()
-//                {
-//                    $item = $( this );
-//                    $item.html( $item.html().replace( /<span class="highlight">([^<]+)<\/span>/gi, '$1' ) );
-//                });
-//
-//                var searchVal = $.trim( $input.val() ).toLowerCase();
-//                if( searchVal.length )
-//                {
-//                    for( var i in itemsIndexed )
-//                    {
-//                        $item = $items.eq( i );
-//                        if( itemsIndexed[ i ].indexOf( searchVal ) != -1 )
-//                            $item.removeClass( 'is-hidden' ).html( $item.html().replace( new RegExp( searchVal+'(?!([^<]+)?>)', 'gi' ), '<span class="highlight">$&</span>' ) );
-//                        else
-//                            $item.addClass( 'is-hidden' );
-//                    }
-//                }
-//                else $items.removeClass( 'is-hidden' );
-//
-//                $notfound.toggleClass( 'is-visible', $items.not( '.is-hidden' ).length == 0 );
-//            });
-//        })( jQuery, window, document );
-//
-//
-//        // toggling items on title press
-//
-//        ;( function( $, window, document, undefined )
-//        {
-//            $( document ).on( 'click', '.fileSearch h2 a', function( e )
-//            {
-//                e.preventDefault();
-//                $( this ).parents( 'li' ).toggleClass( 'is-active' );
-//            });
-//        })( jQuery, window, document );
-//
-//
-//        // auto-show item content when show results reduces to single
-//
-//        ;( function( $, window, document, undefined )
-//        {
-//            var $container = $( '.fileSearch' );
-//            if( !$container.length ) return true;
-//
-//            var $input		= $container.find( 'input' ),
-//                $items		= $container.find( '> ul > li' ),
-//                $item		= $();
-//
-//            $input.on( 'keyup', function()
-//            {
-//                $item = $items.not( '.is-hidden' );
-//                if( $item.length == 1 )
-//                    $item.addClass( 'js--autoshown is-active' );
-//                else
-//                    $items.filter( '.js--autoshown' ).removeClass( 'js--autoshown is-active' );
-//            });
-//        })( jQuery, window, document );
-
-
-
-
-
-
-        'use strict';
-
-
-        // search & highlight
-
-        ;( function( $, window, document, undefined )
-        {
-            var $container = $( '.fileSearch' );
-            var $searchFilesListContainer = $container.find( '.searchFilesList' );
-
-            if( !$container.length ) return true;
-
-
-
-
-
-            var $input			= $container.find( '.fileSearch_input' ),
-                $notfound		= $searchFilesListContainer.find( '.searchFilesList__notfound' ),
-                $items			= $searchFilesListContainer.find( '> ul > li' ),
-                $item			= $(),
-                itemsIndexed	= [];
-
-            console.log("searchFilesListContainer:", $searchFilesListContainer);
-
-
-            $items.each( function()
-            {
-                itemsIndexed.push( $( this ).text().replace( /\s{2,}/g, ' ' ).toLowerCase() );
-            });
-
-            $input.on( 'keyup', function( e )
-            {
-                console.log('keyup : ');
-
-                $(".searchFilesInfoDiv").hide();
-                $(".searchFilesList").show();
-                // searchFilesInfoDiv.selectAll('*').;
-
-
-
-                if( e.keyCode == 13 ) // enter
-                {
-
-                    $input.trigger( 'blur' );
-                    return true;
-                }
-
-                $items.each( function()
-                {
-                    $item = $( this );
-                    $item.html( $item.html().replace( /<span class="highlight">([^<]+)<\/span>/gi, '$1' ) );
-                });
-
-                var searchVal = $.trim( $input.val() ).toLowerCase();
-                if( searchVal.length )
-                {
-                    for( var i in itemsIndexed )
-                    {
-                        $item = $items.eq( i );
-                        if( itemsIndexed[ i ].indexOf( searchVal ) != -1 )
-                            $item.removeClass( 'is-hidden' ).html( $item.html().replace( new RegExp( searchVal+'(?!([^<]+)?>)', 'gi' ), '<span class="highlight">$&</span>' ) );
-                        else
-                            $item.addClass( 'is-hidden' );
-                    }
                 }
                 else {
-                    $items.removeClass('is-hidden');
-
-                    $(".searchFilesInfoDiv").show();
-                    $(".searchFilesList").hide();
-
-                }
-
-                $notfound.toggleClass( 'is-visible', $items.not( '.is-hidden' ).length == 0 );
-            });
-        })( jQuery, window, document );
 
 
-        // toggling items on title press
-
-        ;( function( $, window, document, undefined )
-        {
-            $( document ).on( 'click', '.searchFilesList h4 a', function( e )
-            {
-                e.preventDefault();
-                $( this ).parents( 'li' ).toggleClass( 'is-active' );
-            });
-        })( jQuery, window, document );
-
-
-        // auto-show item content when show results reduces to single
-
-        ;( function( $, window, document, undefined )
-        {
-            var $container = $( '.fileSearch' );
-            var $searchFilesListContainer = $container.find( '.searchFilesList' );
-
-            if( !$container.length ) return true;
-//
-//            var $input		= $container.find( 'input' ),
-//                $items		= $container.find( '> ul > li' ),
-//                $item		= $();
-
-
-
-            var $input			= $container.find( '.fileSearch_input' ),
-                $items			= $searchFilesListContainer.find( '> ul > li' ),
-                $item			= $();
-
-            $input.on( 'keyup', function()
-            {
-                $item = $items.not( '.is-hidden' );
-                if( $item.length == 1 )
-                    $item.addClass( 'js--autoshown is-active' );
-                else
-                    $items.filter( '.js--autoshown' ).removeClass( 'js--autoshown is-active' );
-            });
-        })( jQuery, window, document );
-
-
-    }
-
-
-    function createFileTooTip(notesDiv,source, associationString){
-
-
-        var readsList;
-        var idString;
-        var idString_href;
-        var text_String ;
-
-        if(associationString == 'reads'){
-
-            idString = "readsToDiv";
-            idString_href = "#readsToDiv";
-            text_String = "Reads from:";
-            readsList = source.reads.sort();
-        }
-        else if (associationString == 'writes'){
-
-            idString = "writesToDiv";
-            idString_href = "#writesToDiv";
-            text_String = "Writes to:";
-            readsList = source.writes.sort();
-
-        }
-
-
-
-
-
-
-        notesDiv.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", idString_href).text(text_String).style({'padding-left': 0, 'text-decoration': 'none', 'font': '8 px sans-serif' });
-
-        var readsFromDiv = notesDiv.append('div').attr("id", idString ).attr("class", "panel-collapse ");
-
-        // var readsList = source.writes.sort();
-        var packagePath = '';
-        var newDetails ;
-        var newSummary;
-        var currentUL ;
-
-
-        if(readsList.length !=0){
-
-            for (var i = 0; i < readsList.length; i++ ){
-
-                packagePath = setPackagePath(readsList, i , i + 1);
-                newDetails = readsFromDiv.append('details');
-                newSummary = newDetails.append('summary').text(packagePath);
-                currentUL = newDetails.append('ul');
-
-                while(readsList[i].includes(packagePath) ){
-
-
-                    var thisReadArray = ["\"" + readsList[i] + "\""];
-
-                    var fileName = readsList[i].replace(packagePath,"");
-
-                    currentUL.append('li')
-                        .data(thisReadArray)
-                        .on("mouseover", function(d) {
-
-
-                            var thisFile =  fileDict[d];
-
-                            var proccess_Read = "";
-                            var proccess_Write = "";
-
-
-                            if(thisFile.reads.length != 0){
-                                thisFile.reads.forEach(function(process){
-                                    proccess_Read += process + "<br/>"
-
-                                });
-                            }
-                            else {
-
-                                proccess_Read = "Not read by any process."
-                            }
-
-                            if(thisFile.writes.length != 0){
-                                thisFile.writes.forEach(function(process){
-                                    proccess_Write += process + "<br/>"
-
-                                });
-                            }
-                            else {
-
-                                proccess_Write = "Not written by any process."
-                            }
-
-                            div.transition()
-                                .duration(200)
-                                .style("opacity", .8);
-                            div.html(
-                                "<h5>From Package:  " +  thisFile.package+ " </h5>" +
-
-                                "<h5>Read By: </h5>" +
-                                proccess_Read
-                                +
-                                "<br>"
-                                +
-                                "<h5>Written By: </h5>" +
-                                proccess_Write
-
-                            )
-                                .style("left", (d3.event.pageX) + "px")
-                                .style("top", (d3.event.pageY - 28) + "px");
-
-                        })
-                        .on("mouseout", function(d) {
-                            div.transition()
-                                .duration(500)
-                                .style("opacity", 0);
-                        })
-                        .text(fileName);
-
-                    if(readsList[i+1] == null){
-
-                        break;
-                    }
-
-                    if(readsList[i+1].includes(packagePath) == false ){
-
-
-                        break;
-
-
-                    }
-                    i++;
+                    TestingPackagePath = fileList[index].substring(0,i);
+                    TestingPackagePath = TestingPackagePath.substring(0, TestingPackagePath.lastIndexOf('/'));
+                    // console.log('TestingPackagePath: ',TestingPackagePath);
 
                 }
 
-
-            }
-
-        }
-        else {
-            readsFromDiv.append('details').append('summary').text("No associated file.");
-
-        }
-
-
-    }
-
-
-
-
-    function createPackageTooTip(notes,source){
-
-        var idString = "package_Div";
-
-        var packageNames = source.packages.reads.sort().concat(source.packages.writes.sort());
-        var packages = {};
-
-
-        packageNames.forEach(function (package) {
-
-            packages[package] = [];
-
-
-        })
-
-
-
-        var fileList = source.reads.sort().concat(source.writes.sort());
-
-        fileList.forEach(function(file){
-
-
-            var keyName = "\"" + file + "\"";
-
-            if(keyName in fileDict){
-
-
-                var file = fileDict[keyName];
-
-                packages[file.package].push(file);
-
-
-            }
-
-
-        });
-
-
-
-        var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
-
-
-        var newDetails ;
-        var newSummary;
-        var currentUL ;
-
-
-
-        // console.log("packages[package] after added files", Object.keys(packages).length);
-
-        if(Object.keys(packages).length !=0){
-
-
-            Object.keys(packages).forEach(function(key) {
-
-                newDetails = readsFromDiv.append('details');
-                newSummary = newDetails.append('summary').text(key);
-                currentUL = newDetails.append('ul');
-
-                packages[key].forEach(function (file) {
-
-                    currentUL.append('li')
-                        .text(file.name);
-
-                })
-
-            });
-
-
-        }
-        else {
-            readsFromDiv.append('details').append('summary').text("No associated package.");
-
-        }
-
-
-    }
-
-    //    function createPackageTooTip(notes,source, associationString){
-    //
-    //        console.log('this source: ', source);
-    //
-    //        var readsList ;
-    //        var idString;
-    //        var idString_href;
-    //        var text_String ;
-    //
-    //        if(associationString == 'reads'){
-    //
-    //            idString = "pkg_readsToDiv";
-    //            idString_href = "#pkg_readsToDiv";
-    //            text_String = "Reads from:";
-    //            readsList = source.packages.reads.sort();
-    //        }
-    //        else if (associationString == 'writes'){
-    //
-    //            idString = "pkg_writesToDiv";
-    //            idString_href = "#pkg_writesToDiv";
-    //            text_String = "Writes to:";
-    //            readsList = source.packages.writes.sort();
-    //
-    //        }
-    //
-    //
-    //
-    //        notes.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", idString_href).text(text_String).style({'padding-left': 0, 'text-decoration': 'none' });
-    //
-    //        var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
-    //
-    //        // var readsList = source.writes.sort();
-    //        var packagePath = '';
-    //        var newDetails ;
-    //        var newSummary;
-    //        var currentUL ;
-    //
-    //
-    //        if(readsList.length !=0){
-    //
-    //            for (var i = 0; i < readsList.length; i++ ){
-    //
-    //                // packagePath = setPackagePath(readsList, i , i + 1);
-    //                newDetails = readsFromDiv.append('details');
-    //                newSummary = newDetails.append('summary').text(source.name);
-    //                currentUL = newDetails.append('ul');
-    //                //currentUL = readsFromDiv.append('ul');
-    //
-    //                currentUL.append('li')
-    //                    .text(readsList[i]);
-    //
-    ////                while(readsList[i].includes(packagePath) ){
-    ////
-    ////
-    ////                    var thisReadArray = ["\"" + readsList[i] + "\""];
-    ////
-    ////                    var fileName = readsList[i].replace(packagePath,"");
-    ////
-    ////                    currentUL.append('li')
-    ////                        .data(thisReadArray)
-    ////                        .text(fileName);
-    ////
-    ////                    if(readsList[i+1] == null){
-    ////
-    ////                        break;
-    ////                    }
-    ////
-    ////                    if(readsList[i+1].includes(packagePath) == false ){
-    ////
-    ////
-    ////                        break;
-    ////
-    ////
-    ////                    }
-    ////                    i++;
-    ////
-    ////                }
-    //
-    //
-    //            }
-    //
-    //        }
-    //        else {
-    //            readsFromDiv.append('details').append('summary').text("No associated package.");
-    //
-    //        }
-    //
-    //
-    //    }
-
-    //Create the files dictionary
-    function createFileProfiles(jsonFile){
-
-        // var filesDict;
-
-        // d3.json block
-        d3.json(jsonFile, function(error, data) {
-
-            if (error) throw error;
-
-            data.packages.forEach(function (package) {
-
-                package.files.forEach(function (file) {
-
-                    var keyName = "\"" + file + "\"";
-
-                    var proccess = [];
-                    proccess["reads"] =[];
-                    proccess["writes"] =[];
-                    proccess["package"] = package.name;
-                    process["name"] = file;
-
-                    fileDict[keyName] = proccess;
-
-
-
-                })
-            });
-
-
-            data.other_files.forEach(function (file) {
-
-
-                var keyName = "\"" + file + "\"";
-
-                var proccess = [];
-                proccess["reads"] =[];
-                proccess["writes"] =[];
-                proccess["package"] ='other_files';
-                process["name"] = file;
-
-                fileDict[keyName] = proccess;
-
-
-            });
-
-
-
-            data.runs.forEach(function (run) {
-
-                run.processes.forEach(function(_process) {
-
-
-                    if(_process.reads != null){
-
-                        _process.reads.forEach(function(file){
-
-                            var keyName = "\"" + file + "\"";
-
-
-
-                            if( keyName in fileDict){
-
-                                //console.log('filesDict[file]:', filesDict[keyName]);
-
-                                fileDict[keyName].reads.push(_process.long_name);
-
-                            }
-
-                        });
-
-                    };
-
-
-                    if (_process.writes != null){
-                        _process.writes.forEach(function(file){
-
-
-
-                            var keyName = "\"" + file + "\"";
-
-                            if(keyName in fileDict){
-
-
-                                fileDict[keyName].writes.push(_process.long_name);
-
-                            }
-
-
-                        });
-                    }
-
-
-                })
-
-
-            });
-
-
-            console.log('internal filesDict ', fileDict);
-            console.log('inner query with keyName:', fileDict["\"/usr/bin/cut\""]);
-
-
-
-        });
-
-
-
-
-
-    }
-
-    function treeDraw(jsonFile){
-
-
-
-        // d3.json block
-        d3.json(jsonFile, function(error, data){
-
-            if (error) throw error;
-
-            var tempMaxRunTime = 0;
-
-            var rawData = [] ;
-            var treeData = [];
-
-            var forceNodes = {"nodes" : []};
-
-
-
-            //fileDict  = createFileProfiles(jsonFile);
-
-
-
-            // createFileProfiles(jsonFile);
-
-            data.packages.forEach(function (package) {
-
-                package.files.forEach(function (file) {
-
-                    var keyName = "\"" + file + "\"";
-
-                    var proccess = [];
-                    proccess["reads"] =[];
-                    proccess["writes"] =[];
-                    proccess["package"] = package.name;
-                    proccess["name"] = file;
-
-                    fileDict[keyName] = proccess;
-
-
-
-                })
-            });
-
-
-            data.other_files.forEach(function (file) {
-
-
-                var keyName = "\"" + file + "\"";
-
-                var proccess = [];
-                proccess["reads"] =[];
-                proccess["writes"] =[];
-                proccess["package"] ='other_files';
-                proccess["name"] = file;
-
-                fileDict[keyName] = proccess;
-
-
-            });
-
-
-
-            data.runs.forEach(function (run) {
-
-                run.processes.forEach(function(_process) {
-
-
-                    if(_process.reads != null){
-
-                        _process.reads.forEach(function(file){
-
-                            var keyName = "\"" + file + "\"";
-
-
-
-                            if( keyName in fileDict){
-
-                                //console.log('filesDict[file]:', filesDict[keyName]);
-
-                                fileDict[keyName].reads.push(_process.long_name);
-
-                            }
-
-                        });
-
-                    };
-
-
-                    if (_process.writes != null){
-                        _process.writes.forEach(function(file){
-
-
-
-                            var keyName = "\"" + file + "\"";
-
-                            if(keyName in fileDict){
-
-
-                                fileDict[keyName].writes.push(_process.long_name);
-
-                            }
-
-
-                        });
-                    }
-
-
-                })
-
-
-            });
-
-
-
-
-
-            var tempPackageX = 0;
-            var tempPackageY = 50;
-
-            //Handle Packages
-            data.packages.forEach(function (package) {
-
-                //m++;
-
-
-
-
-
-
-                var thisPackage = {["name"]: package.name, ["version"]: package.version, ["files"] : [] , ["cx"]: 0, ["cy"]: tempPackageY , ["OGy"]: tempPackageY, ["color"]: "" , ["radius"] : maxRadius};
-
-                package.files.forEach(function (file) {
-
-
-                    var keyName = "\"" + file + "\"";
-
-                    //console.log('fileDict[file]:', fileDict[keyName]);
-
-                    //  n++;
-                    var thisFile =  fileDict[keyName]; //{["name"]: file,  ["parent"]: package.name };
-                    thisPackage.files.push(thisFile);
-
-                    forceNodes.nodes.push(thisFile);
-
-                });
-
-
-
-                //  var color =  d3.scale.category20();
-
-                // thisPackage.color =  "pink";
-
-                thisPackage.cx = tempPackageX;
-                thisPackage.OGX = tempPackageX;
-                tempPackageX = tempPackageX + (width / data.packages.length); // 200;
-
-                packagesNumber++;
-
-
-                forceData.packages.push(thisPackage);
-
-
-            });
-
-            console.log('forceData:' , forceData);
-
-
-
-
-
-
-
-            //Handle runs
-            data.runs.forEach(function(run){
-
-
-                run.processes.forEach(function(_process){
-
-                    var packages = {["reads"]:[], ["writes"]: []};
-                    var packagesName = [];
-
-
-                    if(_process.parent == null){
-
-                        var node = {["name"]: _process.long_name, ["parent"]: "null", ["rule"] : "null", ["description"]: _process.description, ["reads"]: _process.reads ,  ["writes"]: _process.writes  ,["argv"]: _process.argv  , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
-
-                        // var filesDict = {} ;
-
-                        if(_process.reads != null){
-
-                            _process.reads.forEach(function(file){
-
-                                var keyName = "\"" + file + "\"";
-
-                                //console.log('Inner keyName:', fileDict[keyName]);
-                                //console.log('keyName:', keyName);
-
-                                if( keyName in fileDict){
-
-                                    // console.log('filesDict[file] package Name:', fileDict[keyName].package);
-
-                                    packages.reads.push(fileDict[keyName].package);
-                                    packagesName.push(fileDict[keyName].package);
-                                    //filesDict[keyName].reads.push(_process.long_name);
-
-                                }
-
-                            });
-
-                            let uniq = [...new Set(packages.reads)];
-                            packages.reads = uniq;
-                        };
-
-
-
-                        if (_process.writes != null){
-                            _process.writes.forEach(function(file){
-
-
-
-                                var keyName = "\"" + file + "\"";
-
-                                if(keyName in fileDict){
-
-                                    packages.writes.push(fileDict[keyName].package);
-                                    packagesName.push(fileDict[keyName].package);
-
-                                }
-
-
-                            });
-
-                            let uniq = [...new Set(packages.writes)];
-                            packages.writes = uniq;
-                        }
-
-                        node.packages = packages;
-
-                        let uniq = [...new Set(packagesName)];
-                        node.packageNames = uniq;
-
-
-                        if(_process.exit_time > tempMaxRunTime ){
-
-                            tempMaxRunTime = _process.exit_time;
-                        }
-
-                        rawData.push(node);
-
-                    }
-                    else {
-
-                        var parentProcess = run.processes[ ( _process.parent[0] ) ];
-
-                        var node = {["name"]: _process.long_name, ["parent"]: parentProcess.long_name, ["rule"] : _process.parent[1], ["description"]: _process.description ,  ["reads"]: _process.reads ,  ["writes"]: _process.writes ,["argv"]: _process.argv , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
-
-
-                        // var filesDict = {} ;
-
-                        if(_process.reads != null){
-
-                            _process.reads.forEach(function(file){
-
-                                var keyName = "\"" + file + "\"";
-
-                                //console.log('Inner keyName:', fileDict[keyName]);
-                                //console.log('keyName:', keyName);
-
-                                if( keyName in fileDict){
-
-                                    // console.log('filesDict[file] package Name:', fileDict[keyName].package);
-
-                                    packages.reads.push(fileDict[keyName].package);
-                                    packagesName.push(fileDict[keyName].package);
-                                    //filesDict[keyName].reads.push(_process.long_name);
-
-                                }
-
-                            });
-
-                            let uniq = [...new Set(packages.reads)];
-                            packages.reads = uniq;
-                        };
-
-
-
-                        if (_process.writes != null){
-                            _process.writes.forEach(function(file){
-
-
-
-                                var keyName = "\"" + file + "\"";
-
-                                if(keyName in fileDict){
-
-                                    packages.writes.push(fileDict[keyName].package);
-                                    packagesName.push(fileDict[keyName].package);
-
-                                }
-
-
-                            });
-
-                            let uniq = [...new Set(packages.writes)];
-                            packages.writes = uniq;
-                        }
-
-                        node.packages = packages;
-
-                        let uniq = [...new Set(packagesName)];
-                        node.packageNames = uniq;
-
-
-                        if(_process.exit_time > tempMaxRunTime ){
-
-                            tempMaxRunTime = _process.exit_time;
-                        }
-
-                        rawData.push(node);
-
-
-                    }
-
-
-                })
-
-                console.log('rawData', rawData);
-
-
-                var dataMap = rawData.reduce(function(map, node) {
-                    map[node.name] = node;
-                    return map;
-                }, {});
-
-
-                rawData.forEach(function(node) {
-                    // add to parent
-                    var parent = dataMap[node.parent];
-                    if (parent) {
-                        // create child array if it doesn't exist
-                        (parent.children || (parent.children = []))
-                        // add node to child array
-                            .push(node);
-                    } else {
-                        // parent is null or missing
-                        treeData.push(node);
-                    }
-                });
-
-
-                console.log('treeData', treeData);
-
-
-            })
-
-
-            root = treeData[0];
-            root.x0 = height / 2;
-            root.y0 = 0;
-
-            rootStartTime = root.start_time;
-
-
-
-
-            forceDraw(forceData);
-
-
-
-
-            // Default timeline length for root
-
-
-            function collapse(d) {
-
-                if (d.children) {
-
-
-                    if(isTreeRedrew == false){
-                        timeLineLen_Total =  timeLineLen_Total + (root.x0  / 2);
-
-                    }
-
-
-                    d._children = d.children;
-                    d._children.forEach(collapse);
-                    d.children = null;
-                }
-
-
-            }
-
-
-
-            var duration_ms = (root.children[0].start_time - rootStartTime) / 1000000;
-
-            var duration = new moment.duration(duration_ms);
-
-            var durationLabel  = "Took " + duration.asMilliseconds().toFixed(2) + " milliseconds";
-
-
-            duration_total_ms =  (tempMaxRunTime - rootStartTime) / 1000000 ;
-
-            var durationLabel_total  = getTimeLineLabel(duration_total_ms,"total");
-
-
-            // timeLineLen = root.x0 / 2;
-            timeLineLen_Total = root.x0 / 2;
-
-
-            root.children.forEach(collapse);
-
-            //  console.log('timeLineLen_Total: ', timeLineLen_Total);
-
-            timeLineLen =  timeLineLen_Total * (duration_ms / duration_total_ms);
-
-            //   console.log('timeLineLen: ', timeLineLen);
-
-            if(isTreeRedrew == false){
-
-
-                totalTimeLineDraw(timeLineLen_Total, durationLabel_total);
-                timeLineDraw(timeLineLen, durationLabel);
-
-
-            }
-            else{
-
-                updateTimeLine(timeLineLen,durationLabel);
-
-            }
-
-
-
-
-
-            update(root);
-
-        })
-
-
-
-    }
-
-    function getTimeLineLabel(duration_ms, isTotalString){
-
-        var duration_total = new moment.duration(duration_ms);
-
-        var durationLabel_total  = '';
-
-
-        if(duration_total.asMilliseconds() < 60000){
-
-            durationLabel_total =  duration_total.asMilliseconds().toFixed(2) + " milliseconds";
-
-        }
-        else if (duration_total.asSeconds() < 60 && duration_total.asSeconds() > 0){
-
-            durationLabel_total =  duration_total.asSeconds().toFixed(2) + " seconds";
-
-        }
-
-        else if (duration_total.asMinutes() < 60 && duration_total.asMinutes() > 0){
-
-            durationLabel_total =  duration_total.asMinutes().toFixed(2) + " minutes"; //+ " and " + duration.asSeconds().toFixed(0) + " seconds";
-
-        }
-        else if (duration_total.asHours() < 24 && duration_total.asHours() > 0){
-
-            durationLabel_total =   duration_total.asHours().toFixed(2) + " hours" ;
-
-        }
-        else if (duration_total.asDays() < 28 && duration_total.asDays() > 0){
-
-            durationLabel_total =  duration_total.asDays().toFixed(2) + " days" ;
-
-        }
-
-        if (isTotalString == "total"){
-
-            durationLabel_total = "Total " + durationLabel_total;
-        }else{
-
-            durationLabel_total = "Took " + durationLabel_total;
-        }
-
-        return durationLabel_total;
-
-
-    }
-
-    function timeLineDraw(length, durationLabel){
-
-        //  console.log('Draw an X to show that the size is correct');
-        // Draw an X to show that the size is correct.
-        var lines = svg.append("g")
-            .attr("class", "timeLineGroup")
-            .append("line")
-            .attr("class", "timeLine2")
-            .attr("x1", 0)
-            .attr("y1", height )
-            .attr("x2", length)
-            .attr("y2", height )
-            .attr("stroke-width", 5)
-            .attr("stroke", "#dbbd5a");
-
-
-
-        // Update the link text
-        var timeLineText = svg.selectAll(".timeLineGroup").append("text")
-            .attr("y", height + 20)//magic number here
-            .attr("x", length / 2)
-            .attr('text-anchor', 'middle')
-            .attr("class", "timeLineText")//easy to style with CSS
-            .text(durationLabel);
-
-
-
-    }
-
-    function totalTimeLineDraw(length, durationLabel){
-
-        //   console.log('Draw an X to show that the size is correct');
-        // Draw an X to show that the size is correct.
-        var lines = svg.append("g")
-            .attr("class", "TotalTimeLineGroup")
-            .append("line")
-            .attr("class", "timeLine1")
-            .attr("x1", 0)
-            .attr("y1", height )
-            .attr("x2", length)
-            .attr("y2", height )
-            .attr("stroke-width", 5)
-            .attr("stroke", "#5adbbd");
-
-
-
-        // Update the link text
-        var timeLineText = svg.selectAll(".TotalTimeLineGroup").append("text")
-            .attr("y", height + 20)//magic number here
-            .attr("x", length )
-            .attr('text-anchor', 'middle')
-            .attr("class", "totalTimeLineText")//easy to style with CSS
-            .text(durationLabel);
-
-
-
-    }
-
-
-    function forceDraw(data) {
-
-        // console.log('nodes: ,' , data);
-
-        var nodes = data.packages;
-
-
-
-
-
-        force = d3.layout.force()
-            .nodes(nodes)
-            .size([width, height])
-            .linkDistance(30)
-            .gravity(0)
-            .charge(0)
-            .on("tick", tick);
-
-
-
-        var links = force.links();
-
-
-        var node = {};
-        node.x = 100;
-        node.y = 100;
-        node.cx = 100;
-        node.cy = 100;
-        node.px = 100;
-        node.py = 100;
-        node.weight = 10;
-        node.style =
-            ("fill" , function() {
-                return "hsl(" + Math.random() * 360 + ",60%,80%)";
-            });
-        node.radius = 20;
-
-
-
-        var node2 = {};
-        node2.x = 100 + 100;
-        node2.y = 100 + 100 ;
-        node2.cx = 100 + 100;
-        node2.cy = 100 + 100 ;
-        node2.px = 100 + 100;
-        node2.py = 100 + 100;
-        node2.weight = 10;
-        node2.style =
-            ("fill" , function() {
-                return "hsl(" + Math.random() * 360 + ",60%,80%)";
-            });
-
-        node2.radius = 20;
-
-        var nodes = force.nodes();
-        nodes.push(node);
-        nodes.push(node2);
-
-        links.push({source: node, target: node2});
-
-
-        console.log('links:', links);
-        console.log('force.nodes():', force.nodes());
-
-
-
-        var circle = svg.selectAll("circle")
-            .data(nodes)
-            .enter().append("circle")
-            .attr("class", 'package')
-            .attr("r", function (d) {
-                return d.radius;
-            })
-            .style("fill",function() {
-                return "hsl(" + Math.random() * 360 + ",60%,80%)";
-            })
-            .call(force.drag);
-
-        var label = svg.selectAll(".mytext")
-            .data(nodes)
-            .enter()
-            .append("text")
-            .text(function (d) { return d.name; })
-            .style("text-anchor", "middle")
-            .style("fill", "#555")
-            .style("font-family", "Arial")
-            .style("font-size", 18);
-
-        edge.data(links).enter().insert("line", ".package")
-            .attr("class", "edge")
-            .attr("x1", function(d){ return d.source.x;
-            })
-            .attr("y1", function(d){ return d.source.y; })
-            .attr("x2", function(d){ return d.target.x; })
-            .attr("y2", function(d){ return d.target.y; });
-
-        ///  var edge = svg.selectAll(".edge");
-
-
-//        var newforceNodes = force.nodes().push(node);
-//
-//
-//
-//
-//        force.nodes().forEach(function(target) {
-//
-//            d.packages.reads.forEach(function (readFile) {
-//
-//                if(target.name == readFile){
-//
-//
-//                    links.push({source: node, target: target});
-//                }
-//
-//            })
-//
-
-        // console.log('restart before link: ', edge);
-
-
-
-
-
-
-
-
-
-        restart();
-
-
-
-        function tick(e) {
-
-            edge.attr("x1", function(d){ console.log("mapping link"); return d.source.x;
-            })
-                .attr("y1", function(d){ return d.source.y; })
-                .attr("x2", function(d){ return d.target.x; })
-                .attr("y2", function(d){ return d.target.y; });
-
-
-            circle
-                .each(gravity(3 * e.alpha))
-                .each(collide(.2))
-                .attr("cx", function (d) {
-                    return d.x;
-                })
-                .attr("cy", function (d) {
-                    return d.y;
-                });
-
-
-            label.attr("x", function(d){ return d.x; })
-                .attr("y", function (d) {return d.y - 30; });
-        }
-
-
-// Move nodes toward cluster focus.
-        function gravity(alpha) {
-            return function (d) {
-                d.y += (d.cy - d.y) * alpha;
-                d.x += (d.cx - d.x) * alpha;
-            };
-        }
-
-
-        // Resolve collisions between nodes.
-        function collide(alpha) {
-            var quadtree = d3.geom.quadtree(nodes);
-            return function (d) {
-                var r = d.radius + maxRadius + padding,
-                    nx1 = d.x - r,
-                    nx2 = d.x + r,
-                    ny1 = d.y - r,
-                    ny2 = d.y + r;
-                quadtree.visit(function (quad, x1, y1, x2, y2) {
-                    if (quad.point && (quad.point !== d)) {
-                        var x = d.x - quad.point.x,
-                            y = d.y - quad.point.y,
-                            l = Math.sqrt(x * x + y * y),
-                            r = d.radius + quad.point.radius + (d.color !== quad.point.color) * padding;
-                        if (l < r) {
-                            l = (l - r) / l * alpha;
-                            d.x -= x *= l;
-                            d.y -= y *= l;
-                            quad.point.x += x;
-                            quad.point.y += y;
-                        }
-                    }
-                    return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-                });
-            };
-
-        }
-    }
-
-
-
-
-    function updateTimeLine(length, durationLabel){
-
-        var timeline =  svg.selectAll(".timeLine2");
-
-        timeline.transition()
-        //.attr("x1", 0)
-            .attr("x2", length);
-
-        // var timeLineText = svg.
-
-        var timeLineText = d3.selectAll(".timeLineText")
-            .transition()
-            .attr("x", timeLineLen / 2)
-            .attr('text-anchor', 'middle')
-            .attr("class", "timeLineText")//easy to style with CSS
-
-            .text(durationLabel);
-
-
-
-
-
-    }
-
-    function increaseTimeLineLen(length){
-
-        timeLineLen =  length + (root.x0  / 2); //timeLineLen + ( length );
-
-    }
-
-    function decreaseTimeLineLen(length){
-
-        if((timeLineLen - ( length) >= 0)) {
-
-            timeLineLen =  length //timeLineLen - ( length);
-        }
-
-    }
-
-    function setPackagePath (fileList, index, nextIndex){
-
-        // console.log('nextIndex: ', nextIndex);
-
-        var TestingPackagePath = '';
-
-        if(fileList[nextIndex] != null){
-
-
-            a1_Len =  fileList[index].length;
-            var i = 0;
-
-            while(i < a1_Len && fileList[index].charAt(i)===fileList[nextIndex].charAt(i)){
-
-                i++
-            }
-
-            if (fileList[index].substring(0,i) == '/'){
-
-
-                // console.log('different character: ',fileList[index].substring(0,i));
-
-                TestingPackagePath = fileList[index].substring(0, fileList[index].lastIndexOf('/'));
-                //  console.log('TestingPackagePath: ',TestingPackagePath);
 
             }
             else {
 
-
-                TestingPackagePath = fileList[index].substring(0,i);
-                TestingPackagePath = TestingPackagePath.substring(0, TestingPackagePath.lastIndexOf('/'));
-                // console.log('TestingPackagePath: ',TestingPackagePath);
+                TestingPackagePath = fileList[index].substring(0, fileList[index].lastIndexOf('/'));
 
             }
 
-
-        }
-        else {
-
-            TestingPackagePath = fileList[index].substring(0, fileList[index].lastIndexOf('/'));
+            return TestingPackagePath;
 
         }
 
-        return TestingPackagePath;
 
-    }
+        function mousedownOnNode_Canvas() {
+            var point = d3.mouse(this),
+                node = {x: point[0], y: point[1]};
 
+            //   console.log('mouse_down position:', node);
 
-    function mousedownOnNode_Canvas() {
-        var point = d3.mouse(this),
-            node = {x: point[0], y: point[1]};
+            // n = nodes.push(node);
 
-        //   console.log('mouse_down position:', node);
+    //        // add links to any nearby nodes
+    //        nodes.forEach(function(target) {
+    //            var x = target.x - node.x,
+    //                y = target.y - node.y;
+    //            if (Math.sqrt(x * x + y * y) < 30) {
+    //                links.push({source: node, target: target});
+    //            }
+    //        });
+    //
+    //        restart();
+        }
 
-        // n = nodes.push(node);
-
-//        // add links to any nearby nodes
-//        nodes.forEach(function(target) {
-//            var x = target.x - node.x,
-//                y = target.y - node.y;
-//            if (Math.sqrt(x * x + y * y) < 30) {
-//                links.push({source: node, target: target});
-//            }
-//        });
-//
-//        restart();
-    }
-
-    //
-    //    function restart(link,links,force) {
-    //
-    //
-    //
-    //        console.log('restart links: ', links);
-    //        console.log('restart before link: ', link);
-    //
-    //        link = link.data(links);
-    //
-    //        console.log('restart link: ', link);
-    //
-    //
-    //        link.enter().insert("line", ".package")
-    //            .attr("class", "edge");
-    //        link.exit()
-    //            .remove();
-    //
-    //        force.start();
-    //    }
+        //
+        //    function restart(link,links,force) {
+        //
+        //
+        //
+        //        console.log('restart links: ', links);
+        //        console.log('restart before link: ', link);
+        //
+        //        link = link.data(links);
+        //
+        //        console.log('restart link: ', link);
+        //
+        //
+        //        link.enter().insert("line", ".package")
+        //            .attr("class", "edge");
+        //        link.exit()
+        //            .remove();
+        //
+        //        force.start();
+        //    }
 
 
-</script>
+    </script>
