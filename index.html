@@ -155,14 +155,10 @@
 
 
 
-    #viz-graph {
-        float: right;
-        position: relative;
-    }
     #notes {
         float: left;
         height: auto;
-        width: 180px;
+        width: 15%;
 
         margin-left: 20px;
         position: absolute;
@@ -172,19 +168,27 @@
 
     }
     #container,
-    #viz-graph{
+    #viz-graph {
+
+        transition: margin-left .5s;
+        padding: 16px;
 
 
+    }
+
+    #viz-graph {
+
+        margin-left: 15%;
     }
 
 
     .sidenav {
         height: 100%;
-        width: 300px;
+        width: 15%;
         position: fixed;
         z-index: 1;
         top: 0;
-        left: -10px;
+        left: 0;
         background-color: #fff;
         overflow-x: hidden;
         transition: 0.5s;
@@ -247,17 +251,13 @@
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 
-
     <div id='notes' class="fileSearch">
-        <span style="font-size:30px;cursor:pointer" onclick="openNav()">Please select a process</span>
-
-
-
+        <span style="font-size:20px;cursor:pointer" onclick="openNav()">Please select a process</span>
 
     </div>
 
-
 </div>
+
 
 <div id='container'>
     <div id='sidePanel'>
@@ -272,13 +272,13 @@
 
 <script>
     function openNav() {
-        document.getElementById("mySidenav").style.width = "300px";
-        //   document.getElementById("main").style.marginLeft = "300px";
+        document.getElementById("mySidenav").style.width = "15%";
+        document.getElementById("viz-graph").style.marginLeft = "15%";
     }
 
     function closeNav() {
         document.getElementById("mySidenav").style.width = "0";
-        //  document.getElementById("main").style.marginLeft= "0";
+        document.getElementById("viz-graph").style.marginLeft= "0";
     }
 </script>
 
@@ -310,7 +310,7 @@
         .style("opacity", 0);
 
 
-    var margin = {top: 20, right: 120, bottom: 20, left: 200},
+    var margin = {top: 20, right: 120, bottom: 20, left: 100},
         width = 1422 - margin.right - margin.left,
         height = 800 - margin.top - margin.bottom,
         padding = 3.5, // separation between same-color nodes
@@ -341,9 +341,9 @@
 
     var svg = d3.select("#viz-graph").append("svg")
         .attr("width", width + margin.right + margin.left)
-        .attr("height", height + margin.top + margin.bottom);
-    //        .append("g")
-    //        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // Select the container for the notes and dimension it.
     var notes = d3.select('#notes')
@@ -1045,12 +1045,12 @@
             var id = "faq-" + fileCount;
             var href = "#" + id;
 
-           var fileLi =   filelistUL.append('li').attr("id",id );
+            var fileLi =   filelistUL.append('li').attr("id",id );
 
-           var fileH2 =  fileLi.append('h4');//.text(file.name);
-           var fileA =  fileH2.append('a').attr("href", href).text(file.name);
+            var fileH2 =  fileLi.append('h4');//.text(file.name);
+            var fileA =  fileH2.append('a').attr("href", href).text(file.name);
 
-           var fileDiv = fileLi.append('div');
+            var fileDiv = fileLi.append('div');
 
 
 
@@ -1095,7 +1095,7 @@
             )
 
 
-           //var fileP = fileDiv.append('p');
+            //var fileP = fileDiv.append('p');
 
 
 
