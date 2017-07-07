@@ -67,8 +67,6 @@
 
     var isTreeRedrawn = false;
 
-    var tempLastNode;
-
     // add the tool tip
     var tooltip = d3.select("body").append("div")
         .attr("class", "tooltip")
@@ -346,7 +344,6 @@
                     if ((node.start_time - rootStartTime) > tempDuration) {
 
                         tempDuration = node.start_time - rootStartTime;
-                        tempLastNode = node;
                     };
 
 
