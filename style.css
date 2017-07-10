@@ -173,13 +173,14 @@ div.tooltip {
 
 #viz-graph {
 
-  margin-left: 15%;
+  margin-left: 20%;
+  zoom: 65%
 }
 
 
 .sidenav {
   height: 100%;
-  width: 15%;
+  width: 20%;
   position: fixed;
   z-index: 1;
   top: 0;
