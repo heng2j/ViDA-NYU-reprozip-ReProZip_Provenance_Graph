@@ -17,7 +17,7 @@
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 
     <div id='notes' class="fileSearch">
-        <h3>Please select a process</h3>
+        <h4 style="margin-top: 25px; font-size: 15px">Please select a process</h4>
 
     </div>
 
@@ -26,7 +26,11 @@
 
 <div id='container'>
     <div id='sidePanel'>
+
         <div id = 'jsonSelections'></div>
+
+
+
         <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Process Info</span>
     </div>
 
@@ -38,8 +42,8 @@
 <script>
     //script for Sidebar
     function openNav() {
-        document.getElementById("mySidenav").style.width = "15%";
-        document.getElementById("viz-graph").style.marginLeft = "15%";
+        document.getElementById("mySidenav").style.width = "20%";
+        document.getElementById("viz-graph").style.marginLeft = "20%";
     }
 
     function closeNav() {
@@ -48,19 +52,32 @@
     }
 </script>
 
+<script>
+
+    // script to prepare data
+    var fileDict = {};
+    var rawData = [] ;
+    var treeData = [];
+    var forceNodes = {"nodes" : []};
+
+</script>
+
 
 <script>
 
     // script for visualization
 
-    var currentJsonFile = "bash-count.json";
+    //var currentJsonFile = "bash-count.json";
+    //var currentJsonFile = "stacked-up-website.json";
+    var currentJsonFile = "ache.json";
+
 
     var availableJsonFiles = ["bash-count.json", "stacked-up-website.json", "ache.json"];
 
     var forceData = {"packages": []};
 
     var force = d3.layout.force();
-    var links = force.links();
+    //var links = force.links();
 
 
     var packagesNumber = 0;
@@ -74,8 +91,8 @@
 
 
     var margin = {top: 20, right: 120, bottom: 20, left: 100},
-        width = 1422 - margin.right - margin.left,
-        height = 800 - margin.top - margin.bottom,
+        width = 4500 - margin.right - margin.left,
+        height = 1100 - margin.top - margin.bottom,
         padding = 3.5, // separation between same-color nodes
         maxRadius = 20 // radious for each package ;
 
@@ -95,7 +112,10 @@
 
 
     var tree = d3.layout.tree()
-        .size([height, width]);
+        .size([height , width + 100]);
+
+
+
 
     var diagonal = d3.svg.diagonal()
         .projection(function(d) { return [d.y, d.x]; });
@@ -113,7 +133,7 @@
             'height': height + 'px'
         });
 
-    var fileDict = {};
+
 
 
     var edge = svg.selectAll(".edge");
@@ -150,6 +170,7 @@
 
 
 
+
         // Compute the new tree layout.
         var nodes = tree.nodes(root).reverse(),
             links = tree.links(nodes);
@@ -179,7 +200,6 @@
                 d3.select("body").transition().style("background-color", "white");
 
             })
-
             .on("mouseover", function(d) {
 
                 tooltip.transition()
@@ -384,6 +404,25 @@
 
         var links = force.links();
 
+        links = [];
+        //edge = [];
+
+       // console.log("edge before:  ", edge.innerHTML);
+
+        var edge = svg.selectAll(".edge").data(links);
+
+        var edgeExit = edge.exit().remove();
+
+
+        if(force.nodes().length > packagesNumber){
+
+            console.log('single click force.nodes() before pop', force.nodes());
+
+            force.nodes().pop();
+
+                console.log('single click force.nodes() after pop', force.nodes());
+
+        }
 
 
         //        var node = {};
@@ -442,10 +481,10 @@
         // add links to any nearby nodes
 
         var node = {};
-        node.x = d.x;
-        node.y = d.y;
-        node.px = d.x;
-        node.py = d.y;
+        node.x = d.y;
+        node.y = d.x;
+        node.px = d.y;
+        node.py = d.x;
         node.weight = 10;
         node.style =
             ("fill" , function() {
@@ -479,41 +518,36 @@
 
         });
 
-//        console.log('click circles after push links: ', links);
-//
-//
-//
-//
-//
-//        edge.data(links).enter().insert("line", ".package")
-//            .attr("class", "edge")
-//            .attr("x1", function(d){ console.log("mapping link"); return d.source.x;
-//            })
-//            .attr("y1", function(d){ return d.source.y; })
-//            .attr("x2", function(d){ return d.target.x; })
-//            .attr("y2", function(d){ return d.target.y; });
+        console.log('click circles after push links: ', links);
+
+
+
+        var edgeEnter = edge.data(links).enter().insert("line", ".package")
+            .attr("class", "edge")
+            .attr("x1", function(d){ console.log("mapping link"); return d.source.x;
+            })
+            .attr("y1", function(d){ return d.source.y; })
+            .attr("x2", function(d){ return d.target.x; })
+            .attr("y2", function(d){ return d.target.y; });
+
+       // console.log("edge after:  ", edge.innerHTML);
+
 
 
         force.start();
 
 
+//
+//           console.log('single click force.nodes()', force.nodes());
+//
+//
+//          console.log('single click force.nodes().length', force.nodes().length);
+//
+//          console.log('single click packagesNumber', packagesNumber);
+//
+//            console.log('single click forceData.packages: ', forceData.packages);
 
-        //   console.log('single click force.nodes()', force.nodes());
 
-
-        //  console.log('single click force.nodes().length', force.nodes().length);
-
-        //  console.log('single click packagesNumber', packagesNumber);
-
-        //    console.log('single click forceData.packages: ', forceData.packages);
-
-        //        if(force.nodes().length > packagesNumber){
-        //
-        //            force.nodes().pop();
-        //
-        //        //    console.log('single click force.nodes() after pop', force.nodes());
-        //
-        //        }
 
 
         // Delete the current links section to prepare
@@ -565,12 +599,12 @@
 
 
         //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
-        notes.append('h3').text("Process:").style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
-        notes.append('h5').text(d.name); //.style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
+        notes.append('h3').text("Process:").attr("href", "#ProcessName").attr("class", "panel-title").attr("data-toggle", "collapse").style({'padding-left': 0, 'font-size': '24px','text-decoration': 'none', 'color':'black' });
+        notes.append('h5').text(d.name).attr("id", "ProcessName" ).attr("class", "panel-collapse "); //.style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
 
 
-        notes.append('h3').text("Commands:").style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
-        notes.append('h5').text(commands);
+        notes.append('h3').text("Commands:").attr("href", "#Commands").attr("class", "panel-title").attr("data-toggle", "collapse").style({'padding-left': 0, 'font-size': '24px','text-decoration': 'none', 'color':'black' });
+        notes.append('h5').text(commands).attr("id", "Commands" ).attr("class", "panel-collapse ");
 
         notes.append('h3').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
 
@@ -963,9 +997,9 @@
 
             forceData.packages.forEach(function(forceDataPackage){
 
-                if(forceDataPackage.name == package){
+                if(forceDataPackage.name == package && forceDataPackage.name != "other_files" ){
 
-                    packages[package].version = forceDataPackage.version;
+                    packages[package].version = "Version: " + forceDataPackage.version;
                 }
             })
 
@@ -1024,7 +1058,7 @@
                         .duration(200)
                         .style("opacity", .8);
                     tooltip.html(
-                        "<h5>Version:  " +  packages[key].version + " </h5>"
+                        "<h5>" +  packages[key].version + " </h5>"
 
                     ).style("left", (d3.event.pageX) + "px")
                         .style("top", (d3.event.pageY - 28) + "px");
@@ -1063,6 +1097,9 @@
 
     function treeDraw(currentJsonFile){
 
+
+        svg.selectAll(".package").remove();
+
         // d3.json block
         d3.json(currentJsonFile, function(error, data){
 
@@ -1070,10 +1107,7 @@
 
             var tempMaxRunTime = 0;
 
-            var rawData = [] ;
-            var treeData = [];
 
-            var forceNodes = {"nodes" : []};
 
 
 
@@ -1083,13 +1117,13 @@
 
                     var keyName = "\"" + file + "\"";
 
-                    var proccess = [];
-                    proccess["reads"] =[];
-                    proccess["writes"] =[];
-                    proccess["package"] = package.name;
-                    proccess["name"] = file;
+                    var fileInfo = [];
+                    fileInfo["reads"] =[];
+                    fileInfo["writes"] =[];
+                    fileInfo["package"] = package.name;
+                    fileInfo["name"] = file;
 
-                    fileDict[keyName] = proccess;
+                    fileDict[keyName] = fileInfo;
 
 
 
@@ -1102,13 +1136,13 @@
 
                 var keyName = "\"" + file + "\"";
 
-                var proccess = [];
-                proccess["reads"] =[];
-                proccess["writes"] =[];
-                proccess["package"] ='other_files';
-                proccess["name"] = file;
+                var fileInfo = [];
+                fileInfo["reads"] =[];
+                fileInfo["writes"] =[];
+                fileInfo["package"] ='other_files';
+                fileInfo["name"] = file;
 
-                fileDict[keyName] = proccess;
+                fileDict[keyName] = fileInfo;
 
 
             });
@@ -1167,7 +1201,8 @@
 
 
             var tempPackageX = 0;
-            var tempPackageY = 50;
+            var tempPackageY = 30;
+            var isAlternativeOn = 0;
 
             //Handle Packages to create force data
             data.packages.forEach(function (package) {
@@ -1190,12 +1225,39 @@
 
                 thisPackage.cx = tempPackageX;
                 thisPackage.OGX = tempPackageX;
-                tempPackageX = tempPackageX + (width / data.packages.length); // 200;
 
-                packagesNumber++;
+                //Dynamically set the distances between nodes by number of packages
+                if(data.packages.length > 15){
+
+                    tempPackageX = tempPackageX + ((width /2.25) / data.packages.length); // 200;
+                }
+                else {
+
+                    tempPackageX = tempPackageX + (width / 4 / data.packages.length); // 200;
+                }
+
 
 
                 forceData.packages.push(thisPackage);
+
+                //increase packagesNumber
+                packagesNumber++;
+
+                // set alternative Y position for force nodes
+                if(isAlternativeOn == 0 && data.packages.length > 15){
+
+                    tempPackageY = 80;
+
+                    isAlternativeOn = 1;
+                }
+                else if (isAlternativeOn == 1){
+
+                    tempPackageY = 30;
+                    isAlternativeOn = 0;
+
+                }
+
+
 
 
             });
@@ -1516,7 +1578,7 @@
             .append("line")
             .attr("class", "timeLine")
             .attr("x1", 0)
-            .attr("y1", height )
+            .attr("y1", height  )
             .attr("x2", length)
             .attr("y2", height )
             .attr("stroke-width", 5)
@@ -1575,7 +1637,7 @@
         force = d3.layout.force()
             .nodes(nodes)
             .size([width, height])
-            .linkDistance(30)
+            .linkDistance(0)
             .gravity(0)
             .charge(0)
             .on("tick", tick);
@@ -1636,7 +1698,23 @@
                 return d.radius;
             })
             .style("fill",function() {
-                return "hsl(" + Math.random() * 360 + ",60%,80%)";
+                return "hsl(" + Math.random() * 720 + ",55%,80%)";
+            })
+            .on("mouseover", function(d) {
+
+                tooltip.transition()
+                    .duration(200)
+                    .style("opacity", .8);
+                tooltip .html(
+                    d.name + "<br>" + "version: " + d.version
+                )
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 38) + "px");
+            })
+            .on("mouseout", function(d) {
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", 0);
             })
             .call(force.drag);
 
@@ -1648,7 +1726,7 @@
             .style("text-anchor", "middle")
             .style("fill", "#555")
             .style("font-family", "Arial")
-            .style("font-size", 18);
+            .style("font-size", 15);
 
         edge.data(links).enter().insert("line", ".package")
             .attr("class", "edge")
