@@ -67,9 +67,9 @@
 
     // script for visualization
 
-    //var currentJsonFile = "bash-count.json";
+    var currentJsonFile = "bash-count.json";
     //var currentJsonFile = "stacked-up-website.json";
-    var currentJsonFile = "ache.json";
+    //var currentJsonFile = "ache.json";
 
 
     var availableJsonFiles = ["bash-count.json", "stacked-up-website.json", "ache.json"];
@@ -397,10 +397,7 @@
     function click(d) {
 
 
-
         console.log('single click');
-
-
 
         var links = force.links();
 
@@ -413,7 +410,6 @@
 
         var edgeExit = edge.exit().remove();
 
-
         if(force.nodes().length > packagesNumber){
 
             console.log('single click force.nodes() before pop', force.nodes());
@@ -425,58 +421,51 @@
         }
 
 
-        //        var node = {};
-        //        node.x = 100;
-        //        node.y = 100;
-        //        node.cx = 100;
-        //        node.cy = 100;
-        //        node.px = 100;
-        //        node.py = 100;
-        //        node.weight = 10;
-        //        node.style =
-        //            ("fill" , function() {
-        //                return "hsl(" + Math.random() * 360 + ",60%,80%)";
-        //            });
-        //        node.radius = 20;
-        //
-        //
-        //
-        //
-        //
-        //        var node2 = {};
-        //        node2.x = 100 + 100;
-        //        node2.y = 100 + 100 ;
-        //        node2.cx = 100 + 100;
-        //        node2.cy = 100 + 100 ;
-        //        node2.px = 100 + 100;
-        //        node2.py = 100 + 100;
-        //        node2.weight = 10;
-        //        node2.style =
-        //            ("fill" , function() {
-        //                return "hsl(" + Math.random() * 360 + ",60%,80%)";
-        //            });
-        //
-        //        node2.radius = 20;
-        //
-        //        var nodes = force.nodes();
-        //        nodes.push(node);
-        //        nodes.push(node2);
-        //
-        //        links.push({source: node, target: node2});
-        //
-        //
-        //        console.log('links:', links);
-        //        console.log('force.nodes():', force.nodes());
-        //
-
-
-        //console.log('restart after links: ', links);
 
 
 
-        var circles = svg.selectAll(".package");
 
-        console.log('click circles: ', circles);
+//        var circle = svg.selectAll("circle")
+//            .data(nodes)
+//            .enter().append("circle")
+//            .attr("class", 'package')
+//            .attr("r", function (d) {
+//                return d.radius;
+//            })
+//            .style("fill",function() {
+//                return "hsl(" + Math.random() * 720 + ",55%,80%)";
+//            })
+//            .on("mouseover", function(d) {
+//
+//                tooltip.transition()
+//                    .duration(200)
+//                    .style("opacity", .8);
+//                tooltip .html(
+//                    d.name + "<br>" + "version: " + d.version
+//                )
+//                    .style("left", (d3.event.pageX) + "px")
+//                    .style("top", (d3.event.pageY - 38) + "px");
+//            })
+//            .on("mouseout", function(d) {
+//                tooltip.transition()
+//                    .duration(500)
+//                    .style("opacity", 0);
+//            })
+//            .call(force.drag);
+//
+//        var label = svg.selectAll(".mytext")
+//            .data(nodes)
+//            .enter()
+//            .append("text")
+//            .text(function (d) { return d.name; })
+//            .style("text-anchor", "middle")
+//            .style("fill", "#555")
+//            .style("font-family", "Arial")
+//            .style("font-size", 15);
+
+
+
+
 
         // add links to any nearby nodes
 
@@ -495,7 +484,8 @@
 
         console.log('click circles before push nodes: ', force.nodes());
 
-        force.nodes().push(node);
+        thisNode  = force.nodes().push(node);
+
 
         console.log('click circles after push nodes: ', force.nodes());
 
@@ -507,7 +497,6 @@
             d.packages.reads.forEach(function (readFile) {
 
                 if(target.name == readFile){
-
 
                     links.push({source: node, target: target});
                 }
@@ -521,16 +510,31 @@
         console.log('click circles after push links: ', links);
 
 
+        var label = svg.selectAll(".mytext")
+            .data(force.nodes());
+
+        label.attr("x", function(d){ return d.x; })
+            .attr("y", function (d) {return d.y - 30; });
+
+        force.links(links);
+
+
+
+        var circlesEnter = svg.selectAll(".package").data(force.nodes()).enter();
+//
 
         var edgeEnter = edge.data(links).enter().insert("line", ".package")
             .attr("class", "edge")
-            .attr("x1", function(d){ console.log("mapping link"); return d.source.x;
-            })
+            .attr("x1", function(d){ return d.source.x; })
             .attr("y1", function(d){ return d.source.y; })
             .attr("x2", function(d){ return d.target.x; })
             .attr("y2", function(d){ return d.target.y; });
 
-       // console.log("edge after:  ", edge.innerHTML);
+
+////
+//        circlesEnter.attr("cx", function(d) { return d.x; })
+//            .attr("cy", function(d) { return d.y; });
+
 
 
 
@@ -1046,8 +1050,20 @@
 
             Object.keys(packages).forEach(function(key) {
 
+
+                var summaryText = "";
+                if(packages[key].files.length > 1){
+
+                    summaryText = key + "    (" +  packages[key].files.length + " files)";
+                }
+                else {
+
+                    summaryText = key + "    (" +  packages[key].files.length + " file)";
+                }
+
+
                 newDetails = readsFromDiv.append('details');
-                newSummary = newDetails.append('summary').text(key);
+                newSummary = newDetails.append('summary').text(summaryText);
 
                 newSummary.on("mouseover", function(d) {
 
@@ -1637,56 +1653,57 @@
         force = d3.layout.force()
             .nodes(nodes)
             .size([width, height])
-            .linkDistance(0)
+            .linkDistance(30)
             .gravity(0)
-            .charge(0)
+            .charge(-60)
             .on("tick", tick);
 
 
 
         var links = force.links();
 
-//
-//        var node = {};
-//        node.x = 100;
-//        node.y = 100;
-//        node.cx = 100;
-//        node.cy = 100;
-//        node.px = 100;
-//        node.py = 100;
-//        node.weight = 10;
-//        node.style =
-//            ("fill" , function() {
-//                return "hsl(" + Math.random() * 360 + ",60%,80%)";
-//            });
-//        node.radius = 20;
-//
-//
-//
-//        var node2 = {};
-//        node2.x = 100 + 100;
-//        node2.y = 100 + 100 ;
-//        node2.cx = 100 + 100;
-//        node2.cy = 100 + 100 ;
-//        node2.px = 100 + 100;
-//        node2.py = 100 + 100;
-//        node2.weight = 10;
-//        node2.style =
-//            ("fill" , function() {
-//                return "hsl(" + Math.random() * 360 + ",60%,80%)";
-//            });
-//
-//        node2.radius = 20;
-//
-//        var nodes = force.nodes();
-//        nodes.push(node);
-//        nodes.push(node2);
-//
-//        links.push({source: node, target: node2});
-//
-//
-//        console.log('links:', links);
-//        console.log('force.nodes():', force.nodes());
+
+        var node = {};
+        node.x = 100;
+        node.y = 100;
+        node.cx = 100;
+        node.cy = 100;
+        node.px = 100;
+        node.py = 100;
+        node.weight = 2;
+        node.style =
+            ("fill" , function() {
+                return "hsl(" + Math.random() * 360 + ",60%,80%)";
+            });
+        node.radius = 20;
+
+
+
+        var node2 = {};
+        node2.x = 100 + 500;
+        node2.y = 100 + 500 ;
+        node2.cx = 100 + 500;
+        node2.cy = 100 + 500 ;
+        node2.px = 100 + 500;
+        node2.py = 100 + 500;
+        node2.weight = 1;
+        node2.style =
+            ("fill" , function() {
+                return "hsl(" + Math.random() * 360 + ",60%,80%)";
+            });
+
+        node2.radius = 20;
+
+        var nodes = force.nodes();
+        nodes.push(node);
+        nodes.push(node2);
+
+        links.push({source: node, target: node2});
+
+
+        console.log('links:', links);
+        console.log('force.nodes():', force.nodes());
+
 
 
 
@@ -1760,7 +1777,7 @@
         // console.log('restart before link: ', edge);
 
 
-
+        console.log('Initial links:', links);
 
         restart();
 
