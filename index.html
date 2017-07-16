@@ -17,6 +17,7 @@
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 
     <div id='notes' class="fileSearch">
+
         <h4 style="margin-top: 25px; font-size: 15px">Please select a process</h4>
 
     </div>
@@ -31,7 +32,7 @@
 
 
 
-        <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Process Info</span>
+        <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; </span>
     </div>
 
 
@@ -58,7 +59,7 @@
     var fileDict = {};
     var rawData = [] ;
     var treeData = [];
-    var forceNodes = {"nodes" : []};
+  //  var forceNodes = {"nodes" : []};
 
 </script>
 
@@ -77,7 +78,8 @@
     var forceData = {"packages": []};
 
     var force = d3.layout.force();
-    //var links = force.links();
+
+
 
 
     var packagesNumber = 0;
@@ -112,7 +114,7 @@
 
 
     var tree = d3.layout.tree()
-        .size([height , width + 100]);
+        .size([height , width ]);
 
 
 
@@ -124,6 +126,7 @@
         .attr("width", width + margin.right + margin.left)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
+        .attr("class", "viz")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // Select the container for the notes and dimension it.
@@ -133,10 +136,15 @@
             'height': height + 'px'
         });
 
-
-
-
+    var forceNodes; // = force.nodes();
+    var forceLinks; // = force.links();
+    var forcePackages = svg.selectAll(".package");
+    var label = svg.selectAll(".forceLabel");
     var edge = svg.selectAll(".edge");
+
+
+
+
 
     treeDraw(currentJsonFile);
 
@@ -192,6 +200,30 @@
             .on("mousedown", function(d){
 
                 d3.select("body").transition().style("background-color", "#1c1c1c");
+
+
+
+                // auto-show item content when show results reduces to single
+
+//                ;( function( $, window, document, undefined )
+//                {
+//                    var $container = $( '.viz' );
+//
+//
+//                    if( !$container.length ) return true;
+//
+//                    var $packages = $container.find( '.package' ),
+//                        $package			= $();
+//
+//                    $input.on( 'keyup', function()
+//                    {
+//                        $item = $items.not( '.is-hidden' );
+//                        if( $item.length == 1 )
+//                            $item.addClass( 'js--autoshown is-active' );
+//                        else
+//                            $items.filter( '.js--autoshown' ).removeClass( 'js--autoshown is-active' );
+//                    });
+//                })( jQuery, window, document );
 
             })
             .on("mouseup", function(d){
@@ -401,22 +433,26 @@
 
         var links = force.links();
 
+
+
         links = [];
         //edge = [];
 
-       // console.log("edge before:  ", edge.innerHTML);
+        console.log("edge before:  ", edge);
 
-        var edge = svg.selectAll(".edge").data(links);
+        edge = svg.selectAll(".edge").data(links);
+
+        console.log("edge after:  ", edge);
 
         var edgeExit = edge.exit().remove();
 
-        if(force.nodes().length > packagesNumber){
+        if(forceNodes.length > packagesNumber){
 
-            console.log('single click force.nodes() before pop', force.nodes());
+            console.log('single click force.nodes() before pop', forceNodes);
 
-            force.nodes().pop();
+            forceNodes.pop();
 
-                console.log('single click force.nodes() after pop', force.nodes());
+            console.log('single click force.nodes() after pop', forceNodes);
 
         }
 
@@ -480,25 +516,30 @@
                 return "hsl(" + Math.random() * 360 + ",60%,80%)";
             });
         node.radius = 20;
+        node.fixed = true;
 
 
         console.log('click circles before push nodes: ', force.nodes());
 
-        thisNode  = force.nodes().push(node);
+        thisNode  = forceNodes.push(node);
 
 
         console.log('click circles after push nodes: ', force.nodes());
 
         console.log('click circles before push links: ', links);
 
+        var circles = svg.selectAll("circle");
 
-        force.nodes().forEach(function(target) {
+
+
+        forceNodes.forEach(function(target) {
 
             d.packages.reads.forEach(function (readFile) {
 
                 if(target.name == readFile){
 
                     links.push({source: node, target: target});
+
                 }
 
             })
@@ -510,35 +551,52 @@
         console.log('click circles after push links: ', links);
 
 
-        var label = svg.selectAll(".mytext")
+        console.log("forceLinks before: ", forceLinks);
+
+        forceLinks = links;
+
+        console.log("forceLinks after: ", forceLinks);
+
+
+
+        var label = svg.selectAll(".forceLabel")
             .data(force.nodes());
 
         label.attr("x", function(d){ return d.x; })
             .attr("y", function (d) {return d.y - 30; });
 
         force.links(links);
+        //force.nodes(thisNode);
 
+        console.log("circles before Enter", svg.selectAll(".package"));
 
+//       svg.selectAll(".package").data(force.nodes()).enter().append("circle").attr("r", 5)
+//            .call(force.drag);
 
-        var circlesEnter = svg.selectAll(".package").data(force.nodes()).enter();
-//
-
-        var edgeEnter = edge.data(links).enter().insert("line", ".package")
-            .attr("class", "edge")
-            .attr("x1", function(d){ return d.source.x; })
-            .attr("y1", function(d){ return d.source.y; })
-            .attr("x2", function(d){ return d.target.x; })
-            .attr("y2", function(d){ return d.target.y; });
-
-
-////
 //        circlesEnter.attr("cx", function(d) { return d.x; })
 //            .attr("cy", function(d) { return d.y; });
+//
+//        console.log("circlesEnter", circlesEnter);
+
+        restart();
 
 
-
-
-        force.start();
+//        var edgeEnter = edge.data(links).enter().insert("line", ".package")
+//            .attr("class", "edge")
+//            .attr("x1", function(d){ return d.source.x; })
+//            .attr("y1", function(d){ return d.source.y; })
+//            .attr("x2", function(d){ return d.target.x; })
+//            .attr("y2", function(d){ return d.target.y; });
+//
+//
+//////
+////        circlesEnter.attr("cx", function(d) { return d.x; })
+////            .attr("cy", function(d) { return d.y; });
+//
+//
+//
+//
+//        force.start();
 
 
 //
@@ -734,7 +792,6 @@
 
 
         // search & highlight
-
         ;( function( $, window, document, undefined )
         {
             var $container = $( '.fileSearch' );
@@ -1114,7 +1171,6 @@
     function treeDraw(currentJsonFile){
 
 
-        svg.selectAll(".package").remove();
 
         // d3.json block
         d3.json(currentJsonFile, function(error, data){
@@ -1234,7 +1290,7 @@
                     var thisFile =  fileDict[keyName];
                     thisPackage.files.push(thisFile);
 
-                    forceNodes.nodes.push(thisFile);
+                   // forceNodes.nodes.push(thisFile);
 
                 });
 
@@ -1642,12 +1698,118 @@
 
     }
 
+    function restart() {
+
+        console.log("restart forceLinks", forceLinks);
+        console.log("restart forceNodes", forceNodes);
+
+        edge = edge.data(forceLinks);
+
+        edge.enter().insert("line", ".package")
+            .attr("class", "edge")
+            .attr("x1", function(d){ return d.source.x;
+            })
+            .attr("y1", function(d){ return d.source.y; })
+            .attr("x2", function(d){ return d.target.x; })
+            .attr("y2", function(d){ return d.target.y; });
+
+//
+//        forcePackages = forcePackages.data(forceNodes);
+//        forcePackages
+//            .attr("cx", function (d) {
+//
+//                  console.log(("d.x: " , d.x));
+//                return d.x;
+//            })
+//            .attr("cy", function (d) {
+//                return d.y;
+//            });
+
+
+        console.log("restart forcePackages", forcePackages);
+
+
+//        label = label.data(forceNodes);
+//        label.attr("x", function(d){ return d.x; })
+//            .attr("y", function (d) {return d.y - 30; });
+
+        force.start();
+    }
+
+
+
+    // Move nodes toward cluster focus.
+    function gravity(alpha) {
+        return function (d) {
+            d.y += (d.cy - d.y) * alpha;
+            d.x += (d.cx - d.x) * alpha;
+        };
+    }
+
+
+    // Resolve collisions between nodes.
+    function collide(alpha) {
+        var quadtree = d3.geom.quadtree(forceNodes);
+        return function (d) {
+            var r = d.radius + maxRadius + padding,
+                nx1 = d.x - r,
+                nx2 = d.x + r,
+                ny1 = d.y - r,
+                ny2 = d.y + r;
+            quadtree.visit(function (quad, x1, y1, x2, y2) {
+                if (quad.point && (quad.point !== d)) {
+                    var x = d.x - quad.point.x,
+                        y = d.y - quad.point.y,
+                        l = Math.sqrt(x * x + y * y),
+                        r = d.radius + quad.point.radius + (d.color !== quad.point.color) * padding;
+                    if (l < r) {
+                        l = (l - r) / l * alpha;
+                        d.x -= x *= l;
+                        d.y -= y *= l;
+                        quad.point.x += x;
+                        quad.point.y += y;
+                    }
+                }
+                return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+            });
+        };
+
+    }
+
+
+    function tick(e) {
+
+        edge.attr("x1", function(d){
+
+            //console.log("mapping link");
+        return d.source.x;
+        })
+            .attr("y1", function(d){ return d.source.y; })
+            .attr("x2", function(d){ return d.target.x; })
+            .attr("y2", function(d){ return d.target.y; });
+
+
+        forcePackages
+            .each(gravity(3 * e.alpha))
+            .each(collide(.2))
+            .attr("cx", function (d) {
+
+              //  console.log(("d.x: " , d.x));
+                return d.x;
+            })
+            .attr("cy", function (d) {
+                return d.y;
+            });
+
+
+        label.attr("x", function(d){ return d.x; })
+            .attr("y", function (d) {return d.y - 30; });
+    }
 
     function forceDraw(data) {
 
 
         var nodes = data.packages;
-
 
 
         force = d3.layout.force()
@@ -1659,56 +1821,67 @@
             .on("tick", tick);
 
 
+        forceNodes = force.nodes();
+        forceLinks = force.links();
 
-        var links = force.links();
-
-
-        var node = {};
-        node.x = 100;
-        node.y = 100;
-        node.cx = 100;
-        node.cy = 100;
-        node.px = 100;
-        node.py = 100;
-        node.weight = 2;
-        node.style =
-            ("fill" , function() {
-                return "hsl(" + Math.random() * 360 + ",60%,80%)";
-            });
-        node.radius = 20;
+        console.log("the nodes: ", nodes);
+        console.log("forceNodes: ", forceNodes );
 
 
+       // var links = force.links();
 
-        var node2 = {};
-        node2.x = 100 + 500;
-        node2.y = 100 + 500 ;
-        node2.cx = 100 + 500;
-        node2.cy = 100 + 500 ;
-        node2.px = 100 + 500;
-        node2.py = 100 + 500;
-        node2.weight = 1;
-        node2.style =
-            ("fill" , function() {
-                return "hsl(" + Math.random() * 360 + ",60%,80%)";
-            });
+//
+//        var node = {};
+//        node.x = 100;
+//        node.y = 100;
+//        node.cx = 100;
+//        node.cy = 100;
+//        node.px = 100;
+//        node.py = 100;
+//        node.weight = 2;
+//        node.style =
+//            ("fill" , function() {
+//                return "hsl(" + Math.random() * 360 + ",60%,80%)";
+//            });
+//        node.radius = 20;
+//
+//
+//
+//        var node2 = {};
+//        node2.x = 100 + 500;
+//        node2.y = 100 + 500 ;
+//        node2.cx = 100 + 500;
+//        node2.cy = 100 + 500 ;
+//        node2.px = 100 + 500;
+//        node2.py = 100 + 500;
+//        node2.weight = 1;
+//        node2.style =
+//            ("fill" , function() {
+//                return "hsl(" + Math.random() * 360 + ",60%,80%)";
+//            });
+//
+//        node2.radius = 20;
+//
+//        var nodes = force.nodes();
+//        nodes.push(node);
+//        nodes.push(node2);
+//
+//        links.push({source: node, target: node2});
+//
+//
+//        console.log('links:', links);
+//        console.log('force.nodes():', force.nodes());
 
-        node2.radius = 20;
-
-        var nodes = force.nodes();
-        nodes.push(node);
-        nodes.push(node2);
-
-        links.push({source: node, target: node2});
-
-
-        console.log('links:', links);
-        console.log('force.nodes():', force.nodes());
 
 
 
+     //   var circle = svg.selectAll(".package")
 
-        var circle = svg.selectAll("circle")
-            .data(nodes)
+
+       // forcePackages
+       // var circle = svg.selectAll(".package")
+        forcePackages = forcePackages
+            .data(forceNodes)
             .enter().append("circle")
             .attr("class", 'package')
             .attr("r", function (d) {
@@ -1735,8 +1908,8 @@
             })
             .call(force.drag);
 
-        var label = svg.selectAll(".mytext")
-            .data(nodes)
+         label = label
+            .data(forceNodes)
             .enter()
             .append("text")
             .text(function (d) { return d.name; })
@@ -1745,13 +1918,13 @@
             .style("font-family", "Arial")
             .style("font-size", 15);
 
-        edge.data(links).enter().insert("line", ".package")
-            .attr("class", "edge")
-            .attr("x1", function(d){ return d.source.x;
-            })
-            .attr("y1", function(d){ return d.source.y; })
-            .attr("x2", function(d){ return d.target.x; })
-            .attr("y2", function(d){ return d.target.y; });
+//        edge.data(forceLinks).enter().insert("line", ".package")
+//            .attr("class", "edge")
+//            .attr("x1", function(d){ return d.source.x;
+//            })
+//            .attr("y1", function(d){ return d.source.y; })
+//            .attr("x2", function(d){ return d.target.x; })
+//            .attr("y2", function(d){ return d.target.y; });
 
         ///  var edge = svg.selectAll(".edge");
 
@@ -1777,89 +1950,15 @@
         // console.log('restart before link: ', edge);
 
 
-        console.log('Initial links:', links);
+        console.log('Initial links:', forceLinks);
 
         restart();
 
 
-        function restart() {
-
-            edge = svg.selectAll(".edge");
-
-            edge.data(links).enter().insert("line", ".package")
-                .attr("class", "edge")
-                .attr("x1", function(d){ return d.source.x;
-                })
-                .attr("y1", function(d){ return d.source.y; })
-                .attr("x2", function(d){ return d.target.x; })
-                .attr("y2", function(d){ return d.target.y; });
 
 
-            force.start();
-        }
-
-        function tick(e) {
-
-            edge.attr("x1", function(d){ console.log("mapping link"); return d.source.x;
-            })
-                .attr("y1", function(d){ return d.source.y; })
-                .attr("x2", function(d){ return d.target.x; })
-                .attr("y2", function(d){ return d.target.y; });
 
 
-            circle
-                .each(gravity(3 * e.alpha))
-                .each(collide(.2))
-                .attr("cx", function (d) {
-                    return d.x;
-                })
-                .attr("cy", function (d) {
-                    return d.y;
-                });
-
-
-            label.attr("x", function(d){ return d.x; })
-                .attr("y", function (d) {return d.y - 30; });
-        }
-
-
-        // Move nodes toward cluster focus.
-        function gravity(alpha) {
-            return function (d) {
-                d.y += (d.cy - d.y) * alpha;
-                d.x += (d.cx - d.x) * alpha;
-            };
-        }
-
-
-        // Resolve collisions between nodes.
-        function collide(alpha) {
-            var quadtree = d3.geom.quadtree(nodes);
-            return function (d) {
-                var r = d.radius + maxRadius + padding,
-                    nx1 = d.x - r,
-                    nx2 = d.x + r,
-                    ny1 = d.y - r,
-                    ny2 = d.y + r;
-                quadtree.visit(function (quad, x1, y1, x2, y2) {
-                    if (quad.point && (quad.point !== d)) {
-                        var x = d.x - quad.point.x,
-                            y = d.y - quad.point.y,
-                            l = Math.sqrt(x * x + y * y),
-                            r = d.radius + quad.point.radius + (d.color !== quad.point.color) * padding;
-                        if (l < r) {
-                            l = (l - r) / l * alpha;
-                            d.x -= x *= l;
-                            d.y -= y *= l;
-                            quad.point.x += x;
-                            quad.point.y += y;
-                        }
-                    }
-                    return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-                });
-            };
-
-        }
     }
 
 
