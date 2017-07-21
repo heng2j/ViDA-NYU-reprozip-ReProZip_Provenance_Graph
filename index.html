@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <body>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -27,10 +28,6 @@
 
 <div id='container'>
     <div id='sidePanel'>
-
-        <div id = 'jsonSelections'></div>
-
-
 
         <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; </span>
     </div>
@@ -68,8 +65,8 @@
 
     // script for visualization
 
-    var currentJsonFile = "bash-count.json";
-    //var currentJsonFile = "stacked-up-website.json";
+    //var currentJsonFile = "bash-count.json";
+    var currentJsonFile = "stacked-up-website.json";
     //var currentJsonFile = "ache.json";
 
 
@@ -92,9 +89,9 @@
         .style("opacity", 0);
 
 
-    var margin = {top: 20, right: 120, bottom: 20, left: 100},
+    var margin = {top: 300, right: 120, bottom: 300, left: 100},
         width = 4500 - margin.right - margin.left,
-        height = 1100 - margin.top - margin.bottom,
+        height = 1400 - margin.top - margin.bottom,
         padding = 3.5, // separation between same-color nodes
         maxRadius = 20 // radious for each package ;
 
@@ -185,7 +182,9 @@
 
 
         // Normalize for fixed-depth.
-        nodes.forEach(function(d) { d.y = d.depth * 180; });
+        nodes.forEach(function(d) { d.y = d.depth * 320;
+
+        });
 
         // Update the nodes…
         var node = svg.selectAll("g.node")
@@ -362,6 +361,27 @@
     // Toggle children on click.
     function dblclick(d) {
 
+
+
+        var links = force.links();
+
+
+
+        links = [];
+
+        edge = svg.selectAll(".edge").data(links);
+
+        var edgeExit = edge.exit().remove();
+        var circles = svg.selectAll("circle");
+
+
+        forceLinks = links;
+
+        force.links(links);
+
+        restart();
+
+
         var duration;
 
         if (d.children) {
@@ -431,7 +451,30 @@
 
         console.log('single click');
 
+
+        console.log('This D: ', d);
+
+
+        var isFadeItems = svg.selectAll(".is-focus");
+        isFadeItems
+
+
+
+        var onEmphasizer = svg.selectAll(".onEmphasizer");
+
+        onEmphasizer = onEmphasizer
+        .data(d)
+            .enter().append("circle")
+            .attr("class", 'onEmphasizer')
+            .attr("r", 20)
+            .style("fill", "red");
+
+
+        console.log("onEmphasizer:", onEmphasizer);
+
+
         var links = force.links();
+
 
 
 
@@ -455,49 +498,6 @@
             console.log('single click force.nodes() after pop', forceNodes);
 
         }
-
-
-
-
-
-
-//        var circle = svg.selectAll("circle")
-//            .data(nodes)
-//            .enter().append("circle")
-//            .attr("class", 'package')
-//            .attr("r", function (d) {
-//                return d.radius;
-//            })
-//            .style("fill",function() {
-//                return "hsl(" + Math.random() * 720 + ",55%,80%)";
-//            })
-//            .on("mouseover", function(d) {
-//
-//                tooltip.transition()
-//                    .duration(200)
-//                    .style("opacity", .8);
-//                tooltip .html(
-//                    d.name + "<br>" + "version: " + d.version
-//                )
-//                    .style("left", (d3.event.pageX) + "px")
-//                    .style("top", (d3.event.pageY - 38) + "px");
-//            })
-//            .on("mouseout", function(d) {
-//                tooltip.transition()
-//                    .duration(500)
-//                    .style("opacity", 0);
-//            })
-//            .call(force.drag);
-//
-//        var label = svg.selectAll(".mytext")
-//            .data(nodes)
-//            .enter()
-//            .append("text")
-//            .text(function (d) { return d.name; })
-//            .style("text-anchor", "middle")
-//            .style("fill", "#555")
-//            .style("font-family", "Arial")
-//            .style("font-size", 15);
 
 
 
@@ -581,49 +581,6 @@
         restart();
 
 
-//        var edgeEnter = edge.data(links).enter().insert("line", ".package")
-//            .attr("class", "edge")
-//            .attr("x1", function(d){ return d.source.x; })
-//            .attr("y1", function(d){ return d.source.y; })
-//            .attr("x2", function(d){ return d.target.x; })
-//            .attr("y2", function(d){ return d.target.y; });
-//
-//
-//////
-////        circlesEnter.attr("cx", function(d) { return d.x; })
-////            .attr("cy", function(d) { return d.y; });
-//
-//
-//
-//
-//        force.start();
-
-
-//
-//           console.log('single click force.nodes()', force.nodes());
-//
-//
-//          console.log('single click force.nodes().length', force.nodes().length);
-//
-//          console.log('single click packagesNumber', packagesNumber);
-//
-//            console.log('single click forceData.packages: ', forceData.packages);
-
-
-
-
-        // Delete the current links section to prepare
-        // for new links.
-
-
-        //force.links().exit().remove();
-
-        // var link = svg.selectAll(".edge");
-
-
-
-        // restart();
-
 
 
 
@@ -660,6 +617,10 @@
         // Now add the notes content.
 
 
+        var fileNames = d.reads.sort().concat(d.writes.sort());
+        let uniqFileNames = [...new Set(fileNames)];
+
+
         //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
         notes.append('h3').text("Process:").attr("href", "#ProcessName").attr("class", "panel-title").attr("data-toggle", "collapse").style({'padding-left': 0, 'font-size': '24px','text-decoration': 'none', 'color':'black' });
         notes.append('h5').text(d.name).attr("id", "ProcessName" ).attr("class", "panel-collapse "); //.style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
@@ -669,7 +630,7 @@
         notes.append('h5').text(commands).attr("id", "Commands" ).attr("class", "panel-collapse ");
 
         notes.append('h3').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
-
+        notes.append('h6').text(uniqFileNames.length + " files");
         notes.append('input').attr("type", "search").attr("class", "fileSearch_input").attr("placeholder", "Search for listing files")
             .style("margin-left", "10px;");
 
@@ -775,8 +736,15 @@
         createFileTooTip(searchFilesInfoDiv,d,"reads");
         createFileTooTip(searchFilesInfoDiv,d,"writes");
 
-        searchFilesInfoDiv.append('h3').text("Associated Packages:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
 
+
+        var packageNames = d.packages.reads.sort().concat(d.packages.writes.sort());
+        let uniqPackageNames = [...new Set(packageNames)];
+
+
+
+        searchFilesInfoDiv.append('h3').text("Associated Packages:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
+        searchFilesInfoDiv.append('h6').text(uniqPackageNames.length + " packages");
 
         createPackageTooTip(searchFilesInfoDiv,d);
 
@@ -1099,7 +1067,6 @@
         var currentUL ;
 
 
-        console.log("packages details:", packages);
         // console.log("packages[package] after added files", Object.keys(packages).length);
 
         if(Object.keys(packages).length !=0){
@@ -1273,7 +1240,7 @@
 
 
             var tempPackageX = 0;
-            var tempPackageY = 30;
+            var tempPackageY = -200;
             var isAlternativeOn = 0;
 
             //Handle Packages to create force data
@@ -1299,9 +1266,13 @@
                 thisPackage.OGX = tempPackageX;
 
                 //Dynamically set the distances between nodes by number of packages
-                if(data.packages.length > 15){
+                if(data.packages.length > 15 && data.packages.length < 30 ){
 
-                    tempPackageX = tempPackageX + ((width /2.25) / data.packages.length); // 200;
+                    tempPackageX = tempPackageX + ((width /3) / data.packages.length); // 200;
+                }
+                else if(data.packages.length > 30){
+
+                    tempPackageX = tempPackageX + ((width /1.8) / data.packages.length); // 200;
                 }
                 else {
 
@@ -1318,13 +1289,13 @@
                 // set alternative Y position for force nodes
                 if(isAlternativeOn == 0 && data.packages.length > 15){
 
-                    tempPackageY = 80;
+                    tempPackageY = -120;
 
                     isAlternativeOn = 1;
                 }
                 else if (isAlternativeOn == 1){
 
-                    tempPackageY = 30;
+                    tempPackageY = -200;
                     isAlternativeOn = 0;
 
                 }
@@ -1541,7 +1512,7 @@
 
             //Time line code block
             root = treeData[0];
-            root.x0 = height / 2;
+            root.x0 = height; // / 2;
             root.y0 = 0;
 
             rootStartTime = root.start_time;
@@ -1790,8 +1761,8 @@
 
 
         forcePackages
-            .each(gravity(3 * e.alpha))
-            .each(collide(.2))
+            .each(gravity(0.15 * e.alpha))
+            .each(collide(0.2))
             .attr("cx", function (d) {
 
               //  console.log(("d.x: " , d.x));
@@ -1814,10 +1785,11 @@
 
         force = d3.layout.force()
             .nodes(nodes)
-            .size([width, height])
-            .linkDistance(30)
+            .size([ width, height])
+            .linkDistance(300)
+            .linkStrength(0.5)
             .gravity(0)
-            .charge(-60)
+            .charge(-100)
             .on("tick", tick);
 
 
@@ -1883,7 +1855,7 @@
         forcePackages = forcePackages
             .data(forceNodes)
             .enter().append("circle")
-            .attr("class", 'package')
+            .attr("class", 'package is-focus')
             .attr("r", function (d) {
                 return d.radius;
             })
