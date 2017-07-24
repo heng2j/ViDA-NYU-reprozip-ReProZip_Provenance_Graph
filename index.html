@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdn.rawgit.com/eligrey/canvas-toBlob.js/f1a01896135ab378aa5c0118eadd81da55e698d8/canvas-toBlob.js"></script>
+<script src="https://cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js"></script>
 <script src="https://momentjs.com/downloads/moment.js"></script>
 <link rel="stylesheet" href="style.css">
 
@@ -14,14 +16,66 @@
 -->
 <script src="//d3js.org/d3.v3.min.js"></script>
 
+
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 
-    <div id='notes' class="fileSearch">
 
-        <h4 style="margin-top: 25px; font-size: 15px">Please select a process</h4>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title" style="margin-left: -25px; font-size: 24px;">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Overview</a>
+            </h4>
+        </div>
+
+        <div id="collapse1" class="panel-collapse collapse">
+
+
+            <div class="panel-body">
+                <div>
+                    <button id='saveButton'>Export my D3 visualization to PNG</button>
+                </div>
+
+                <div class="All_Packages">
+
+
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title" style="margin-left: -25px">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Process Details</a>
+            </h4>
+        </div>
+        <div id="collapse2" class="panel-collapse collapse in">
+            <div >
+
+                <div id='notes' class="fileSearch">
+
+                    <h4 style="margin-top: 0px; font-size: 15px">Please select a process</h4>
+
+                </div>
+
+            </div>
+
+
+
+
+        </div>
+
+
 
     </div>
+
+
+
+
+
 
 </div>
 
@@ -50,13 +104,14 @@
     }
 </script>
 
+
 <script>
 
     // script to prepare data
     var fileDict = {};
     var rawData = [] ;
     var treeData = [];
-  //  var forceNodes = {"nodes" : []};
+    //  var forceNodes = {"nodes" : []};
 
 </script>
 
@@ -65,8 +120,8 @@
 
     // script for visualization
 
-    //var currentJsonFile = "bash-count.json";
-    var currentJsonFile = "stacked-up-website.json";
+    var currentJsonFile = "bash-count.json";
+    //var currentJsonFile = "stacked-up-website.json";
     //var currentJsonFile = "ache.json";
 
 
@@ -124,13 +179,17 @@
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("class", "viz")
+        .attr("id", "viz")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
 
     // Select the container for the notes and dimension it.
     var notes = d3.select('#notes')
         .style({
             'width': 620-width + 'px',
-            'height': height + 'px'
+            'height': height + 'px',
+            'margin-top' : 25 + 'px'
         });
 
     var forceNodes; // = force.nodes();
@@ -144,6 +203,25 @@
 
 
     treeDraw(currentJsonFile);
+
+
+
+    //-- Click any empty space within the svg body to reset the location for the packages and detached the links between the packages and processes
+    d3.select("body").on("click",function(){
+
+
+        if (d3.event.target.toString().includes("SVGSVGElement")){
+
+            console.log('clicked an empty space!');
+
+
+            resetPackagesPosition();
+
+        }
+
+
+    });
+
 
 
     var select = d3.select('#jsonSelections')
@@ -198,7 +276,7 @@
             .on("click", click)
             .on("mousedown", function(d){
 
-                d3.select("body").transition().style("background-color", "#1c1c1c");
+              //  d3.select("body").transition().style("background-color", "#1c1c1c");
 
 
 
@@ -250,6 +328,8 @@
 
         nodeEnter.append("circle")
             .attr("r", 1e-6)
+            .attr("class", "process")
+            .attr("id", "process")
             .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
 
         nodeEnter.append("text")
@@ -367,20 +447,6 @@
 
 
 
-        links = [];
-
-        edge = svg.selectAll(".edge").data(links);
-
-        var edgeExit = edge.exit().remove();
-        var circles = svg.selectAll("circle");
-
-
-        forceLinks = links;
-
-        force.links(links);
-
-        restart();
-
 
         var duration;
 
@@ -442,6 +508,8 @@
 
 
         update(d);
+
+
     }
 
 
@@ -450,20 +518,33 @@
 
 
         console.log('single click');
+//
+//
+//        console.log('This D: ', d);
+//
+//        var thisCirclce = this.getElementsByClassName("process")[0];
+//
+//        thisCirclce.style("r", 20);
+//
+//
+//        console.log('This  thisCirlce: ', thisCirclce);
+//
+//
 
-
-        console.log('This D: ', d);
 
 
         var isFadeItems = svg.selectAll(".is-focus");
-        isFadeItems
+
+        console.log("isFadeItems", isFadeItems);
+
+
 
 
 
         var onEmphasizer = svg.selectAll(".onEmphasizer");
 
         onEmphasizer = onEmphasizer
-        .data(d)
+            .data(d)
             .enter().append("circle")
             .attr("class", 'onEmphasizer')
             .attr("r", 20)
@@ -756,7 +837,7 @@
         notes.transition().style({'opacity': 1});
 
 
-        'use strict';
+        // 'use strict';
 
 
         // search & highlight
@@ -862,6 +943,7 @@
                     $items.filter( '.js--autoshown' ).removeClass( 'js--autoshown is-active' );
             });
         })( jQuery, window, document );
+
 
 
     }
@@ -1013,6 +1095,7 @@
     function createPackageTooTip(notes,source){
 
 
+        console.log('createPackageTooTip source', source);
 
         var idString = "package_Div";
 
@@ -1065,6 +1148,7 @@
         var newDetails ;
         var newSummary;
         var currentUL ;
+        var container;
 
 
         // console.log("packages[package] after added files", Object.keys(packages).length);
@@ -1086,12 +1170,30 @@
                 }
 
 
-                newDetails = readsFromDiv.append('details');
+                container = readsFromDiv.append('div');
+
+//
+//                var checkBox =  container.append("foreignObject")
+//                    .attr("width", 100)
+//                    .attr("height", 100)
+//                    .style("float", 'left')
+//                    .style("margin-left", 30)
+//                    .append("xhtml:body")
+//                    .html("<form><input type=checkbox id=check /></form>")
+//                    .on("click", function(d, i){
+//
+//                        console.log(" theck box d:", d);
+//                        console.log(" the source:", source);
+//                       // console.log(svg.select("#check").node().checked);
+//
+//
+//                    });
+
+
+                newDetails = container.append('details');
                 newSummary = newDetails.append('summary').text(summaryText);
 
                 newSummary.on("mouseover", function(d) {
-
-                    console.log("what is this d?:", d);
 
 
                     tooltip.transition()
@@ -1132,7 +1234,147 @@
 
     }
 
+    function createAllPackageList(packages){
 
+      //  var packages = {};
+
+
+        var allPackageListDiv = d3.selectAll(".All_Packages");
+        var mainContainer;
+
+
+        allPackageListDiv.append('h3').text("All Packages:").attr("id", "AllPackagesDiv" ).attr("href", "#AllPackages").attr("class", "panel-title").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
+       // var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
+        mainContainer = allPackageListDiv.append('div').attr("id", "AllPackages" ).attr("class", "panel-collapse ");
+
+        mainContainer.append('h6').text(packages.length + " packages");
+
+        var newDetails ;
+        var newSummary;
+        var currentUL ;
+        var subContainer;
+
+
+
+
+        packages.forEach(function(package){
+
+        //    packages[package.name] = {["version"]: package.version, ["files"]:package.files};
+
+            var summaryText = "";
+
+            if(package.files.length > 1){
+
+                summaryText = package.name + "    (" +  package.files.length + " files)";
+            }
+            else {
+
+                summaryText = package.name + "    (" +  package.files.length + " file)";
+            }
+
+            subContainer = mainContainer.append('div');
+
+            var checkBox =  subContainer.append("input")
+                .attr("type", "checkbox")
+                .attr("width", 100)
+                .attr("height", 100)
+                .attr("checked", true)
+                .style("float", 'left')
+                .style("padding-left", 50)
+                .on("click", function(d, i){
+
+
+                    var thisPackage = d3.select("#package_" +package.name);
+                    var thisEdge = d3.select("#edge_" +package.name);
+                    var thisPackageLabel = d3.select("#packageLabel_" +package.name);
+
+
+
+                    if(d3.select(this).node().checked == false){
+
+
+                        thisPackage.style({
+                            "opacity": 0
+
+                        });
+
+                        thisPackageLabel.style({
+                            "opacity": 0
+
+                        });
+
+                        thisEdge.style({
+                            "opacity": 0
+
+                        });
+
+
+
+                    }
+                    else{
+
+                        thisPackage.style({
+                            "opacity": 1
+
+                        });
+
+                        thisPackageLabel.style({
+                            "opacity": 1
+
+                        });
+
+                        thisEdge.style({
+                            "opacity": 1
+
+                        });
+
+
+                    }
+
+
+
+                });
+
+
+            newDetails = subContainer.append('details');
+            newSummary = newDetails.append('summary').text(summaryText);
+
+            newSummary.on("mouseover", function(d) {
+
+
+                tooltip.transition()
+                    .duration(200)
+                    .style("opacity", .8);
+                tooltip.html(
+                    "<h5>" +  package.version + " </h5>"
+
+                ).style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+
+
+            }).on("mouseout", function(d) {
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            });
+
+
+            currentUL = newDetails.append('ul');
+
+            package.files.forEach(function (file) {
+
+                currentUL.append('li')
+                    .text(file.name);
+
+            })
+
+
+        })
+
+
+
+
+    }
 
 
     function treeDraw(currentJsonFile){
@@ -1257,7 +1499,7 @@
                     var thisFile =  fileDict[keyName];
                     thisPackage.files.push(thisFile);
 
-                   // forceNodes.nodes.push(thisFile);
+                    // forceNodes.nodes.push(thisFile);
 
                 });
 
@@ -1307,6 +1549,9 @@
 
             console.log('forceData:' , forceData);
 
+
+
+            createAllPackageList(forceData.packages);
 
             //Handle runs
             data.runs.forEach(function(run){
@@ -1560,6 +1805,8 @@
 
             update(root);
 
+           // createPackageTooTip(searchFilesInfoDiv,d);
+
         })
 
 
@@ -1671,13 +1918,13 @@
 
     function restart() {
 
-        console.log("restart forceLinks", forceLinks);
-        console.log("restart forceNodes", forceNodes);
 
         edge = edge.data(forceLinks);
 
         edge.enter().insert("line", ".package")
             .attr("class", "edge")
+            .attr("id",  function(d){
+                return  "edge_" + d.target.name})
             .attr("x1", function(d){ return d.source.x;
             })
             .attr("y1", function(d){ return d.source.y; })
@@ -1696,8 +1943,6 @@
 //                return d.y;
 //            });
 
-
-        console.log("restart forcePackages", forcePackages);
 
 
 //        label = label.data(forceNodes);
@@ -1753,7 +1998,7 @@
         edge.attr("x1", function(d){
 
             //console.log("mapping link");
-        return d.source.x;
+            return d.source.x;
         })
             .attr("y1", function(d){ return d.source.y; })
             .attr("x2", function(d){ return d.target.x; })
@@ -1765,7 +2010,7 @@
             .each(collide(0.2))
             .attr("cx", function (d) {
 
-              //  console.log(("d.x: " , d.x));
+                //  console.log(("d.x: " , d.x));
                 return d.x;
             })
             .attr("cy", function (d) {
@@ -1800,7 +2045,7 @@
         console.log("forceNodes: ", forceNodes );
 
 
-       // var links = force.links();
+        // var links = force.links();
 
 //
 //        var node = {};
@@ -1847,15 +2092,19 @@
 
 
 
-     //   var circle = svg.selectAll(".package")
+        //   var circle = svg.selectAll(".package")
 
 
-       // forcePackages
-       // var circle = svg.selectAll(".package")
+        // forcePackages
+        // var circle = svg.selectAll(".package")
         forcePackages = forcePackages
             .data(forceNodes)
             .enter().append("circle")
-            .attr("class", 'package is-focus')
+            .attr("class", 'package')
+            .attr("id", function(d){
+                return "package_"+ d.name;
+
+            })
             .attr("r", function (d) {
                 return d.radius;
             })
@@ -1880,15 +2129,18 @@
             })
             .call(force.drag);
 
-         label = label
+        label = label
             .data(forceNodes)
             .enter()
             .append("text")
             .text(function (d) { return d.name; })
+            .attr("id", function (d) { return  "packageLabel_" + d.name; })
             .style("text-anchor", "middle")
             .style("fill", "#555")
             .style("font-family", "Arial")
             .style("font-size", 15);
+
+
 
 //        edge.data(forceLinks).enter().insert("line", ".package")
 //            .attr("class", "edge")
@@ -2014,6 +2266,144 @@
         return TestingPackagePath;
 
     }
+
+
+    function resetPackagesPosition(){
+
+
+        links = [];
+
+        edge = svg.selectAll(".edge").data(links);
+
+        var edgeExit = edge.exit().remove();
+        var circles = svg.selectAll("circle");
+
+        forceLinks = links;
+
+        force.links(links);
+
+        restart();
+    }
+
+</script>
+
+
+
+<script>
+
+    // Set-up the export button
+    d3.select('#saveButton').on('click', function(){
+        var svgString = getSVGString(svg.node());
+        console.log(svgString);
+
+        svgString2Image( svgString, 2*width, 2*height, 'png', save ); // passes Blob and filesize String to the callback
+
+        function save( dataBlob, filesize ){
+            saveAs( dataBlob, 'D3 vis exported to PNG.png' ); // FileSaver.js function
+        }
+    });
+
+    // Below are the functions that handle actual exporting:
+    // getSVGString ( svgNode ) and svgString2Image( svgString, width, height, format, callback )
+    function getSVGString( svgNode ) {
+        svgNode.setAttribute('xlink', 'http://www.w3.org/1999/xlink');
+        var cssStyleText = getCSSStyles( svgNode );
+        appendCSS( cssStyleText, svgNode );
+
+        var serializer = new XMLSerializer();
+        var svgString = serializer.serializeToString(svgNode);
+        svgString = svgString.replace(/(\w+)?:?xlink=/g, 'xmlns:xlink='); // Fix root xlink without namespace
+        svgString = svgString.replace(/NS\d+:href/g, 'xlink:href'); // Safari NS namespace fix
+
+        return svgString;
+
+        function getCSSStyles( parentElement ) {
+            var selectorTextArr = [];
+
+            // Add Parent element Id and Classes to the list
+            selectorTextArr.push( '#'+parentElement.id );
+            for (var c = 0; c < parentElement.classList.length; c++)
+                if ( !contains('.'+parentElement.classList[c], selectorTextArr) )
+                    selectorTextArr.push( '.'+parentElement.classList[c] );
+
+            // Add Children element Ids and Classes to the list
+            var nodes = parentElement.getElementsByTagName("*");
+            for (var i = 0; i < nodes.length; i++) {
+                var id = nodes[i].id;
+                if ( !contains('#'+id, selectorTextArr) )
+                    selectorTextArr.push( '#'+id );
+
+                var classes = nodes[i].classList;
+                for (var c = 0; c < classes.length; c++)
+                    if ( !contains('.'+classes[c], selectorTextArr) )
+                        selectorTextArr.push( '.'+classes[c] );
+            }
+
+            // Extract CSS Rules
+            var extractedCSSText = "";
+            for (var i = 0; i < document.styleSheets.length; i++) {
+                var s = document.styleSheets[i];
+
+                try {
+                    if(!s.cssRules) continue;
+                } catch( e ) {
+                    if(e.name !== 'SecurityError') throw e; // for Firefox
+                    continue;
+                }
+
+                var cssRules = s.cssRules;
+                for (var r = 0; r < cssRules.length; r++) {
+                    if ( contains( cssRules[r].selectorText, selectorTextArr ) )
+                        extractedCSSText += cssRules[r].cssText;
+                }
+            }
+
+
+            return extractedCSSText;
+
+            function contains(str,arr) {
+                return arr.indexOf( str ) === -1 ? false : true;
+            }
+
+        }
+
+        function appendCSS( cssText, element ) {
+            var styleElement = document.createElement("style");
+            styleElement.setAttribute("type","text/css");
+            styleElement.innerHTML = cssText;
+            var refNode = element.hasChildNodes() ? element.children[0] : null;
+            element.insertBefore( styleElement, refNode );
+        }
+    }
+
+
+    function svgString2Image( svgString, width, height, format, callback ) {
+        var format = format ? format : 'png';
+
+        var imgsrc = 'data:image/svg+xml;base64,'+ btoa( unescape( encodeURIComponent( svgString ) ) ); // Convert SVG string to data URL
+
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+
+        canvas.width = width;
+        canvas.height = height;
+
+        var image = new Image();
+        image.onload = function() {
+            context.clearRect ( 0, 0, width, height );
+            context.drawImage(image, 0, 0, width, height);
+
+            canvas.toBlob( function(blob) {
+                var filesize = Math.round( blob.length/1024 ) + ' KB';
+                if ( callback ) callback( blob, filesize );
+            });
+
+
+        };
+
+        image.src = imgsrc;
+    }
+
 
 </script>
 
