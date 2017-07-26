@@ -568,13 +568,15 @@
         console.log('This this: ', this);
 
 
+        var otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
+
         if(inFocus == true){
 
-            var otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
 
             otherSVG.style("opacity", 0.3);
 
         }
+        else    otherSVG.style("opacity", 1);
 
 
 //       var thisProcess = d3.selectAll(".process")
@@ -1419,7 +1421,7 @@
                     .duration(200)
                     .style("opacity", .8);
                 tooltip.html(
-                    "<h5>" +  package.version + " </h5>"
+                    "<h5>" + "Version: " + package.version + " </h5>"
 
                 ).style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY - 28) + "px");
