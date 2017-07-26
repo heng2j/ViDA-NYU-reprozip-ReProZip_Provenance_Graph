@@ -33,7 +33,7 @@
 
             <div class="panel-body">
                 <div>
-                    <button id='saveButton'>Export my D3 visualization to PNG</button>
+                    <button id='saveButton'>Export to PNG</button>
                 </div>
 
                 <div class="All_Packages">
@@ -120,9 +120,9 @@
 
     // script for visualization
 
-    var currentJsonFile = "bash-count.json";
+    //var currentJsonFile = "bash-count.json";
     //var currentJsonFile = "stacked-up-website.json";
-    //var currentJsonFile = "ache.json";
+    var currentJsonFile = "ache.json";
 
 
     var availableJsonFiles = ["bash-count.json", "stacked-up-website.json", "ache.json"];
@@ -156,6 +156,11 @@
 
     var searchFilesInfoDiv;
     var searchFilesList;
+
+
+    var thisNodeCircle;
+    var thisNodeCircleLabel;
+
 
     var i = 0,
         duration = 750,
@@ -253,7 +258,6 @@
 
 
 
-
         // Compute the new tree layout.
         var nodes = tree.nodes(root).reverse(),
             links = tree.links(nodes);
@@ -276,7 +280,7 @@
             .on("click", click)
             .on("mousedown", function(d){
 
-              //  d3.select("body").transition().style("background-color", "#1c1c1c");
+                //  d3.select("body").transition().style("background-color", "#1c1c1c");
 
 
 
@@ -326,13 +330,17 @@
                     .style("opacity", 0);
             });
 
+
+
+
         nodeEnter.append("circle")
             .attr("r", 1e-6)
             .attr("class", "process")
-            .attr("id", "process")
+            .attr("id",  function(d) { return "process_" + d.name.replace(/[ ()]/g,''); })
             .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
 
         nodeEnter.append("text")
+            .attr("id",  function(d) { return "processLabel_" + d.name.replace(/[ ()]/g,''); })
             .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
             .attr("dy", ".35em")
             .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
@@ -445,6 +453,21 @@
 
         var links = force.links();
 
+        links = [];
+
+        edge = svg.selectAll(".edge").data(links);
+
+        var edgeExit = edge.exit().remove();
+        var circles = svg.selectAll("circle");
+
+
+        forceLinks = links;
+
+        force.links(links);
+
+        restart();
+
+
 
 
 
@@ -520,7 +543,7 @@
         console.log('single click');
 //
 //
-//        console.log('This D: ', d);
+        console.log('This D: ', d);
 //
 //        var thisCirclce = this.getElementsByClassName("process")[0];
 //
@@ -530,6 +553,34 @@
 //        console.log('This  thisCirlce: ', thisCirclce);
 //
 //
+
+        if (thisNodeCircle != null && thisNodeCircleLabel != null){
+
+
+            thisNodeCircle.transition().attr("r", 8);
+            thisNodeCircleLabel.transition().style("font", "15px sans-serif").attr("x", function(d) { return d.children || d._children ? -10 : 10; });
+
+
+        }
+
+
+
+        thisNodeCircle = d3.select("#process_"+ d.name.replace(/[ ()]/g,''));// d3.select("id","#process_" + d.name.replace(/[ ()]/g,''));
+        thisNodeCircleLabel = d3.select("#processLabel_"+ d.name.replace(/[ ()]/g,''));// d3.select("id","#process_" + d.name.replace(/[ ()]/g,''));
+
+
+        thisNodeCircle.transition().attr("r", 20);
+        thisNodeCircleLabel
+            .transition()
+            .style("font", "20px sans-serif")
+            .attr("x", function(d) { return d.children || d._children ? -30 : 30; });
+
+
+
+
+
+
+        // var thisEdge = d3.select("#edge_" +package.name);
 
 
 
@@ -1236,7 +1287,7 @@
 
     function createAllPackageList(packages){
 
-      //  var packages = {};
+        //  var packages = {};
 
 
         var allPackageListDiv = d3.selectAll(".All_Packages");
@@ -1244,7 +1295,7 @@
 
 
         allPackageListDiv.append('h3').text("All Packages:").attr("id", "AllPackagesDiv" ).attr("href", "#AllPackages").attr("class", "panel-title").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
-       // var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
+        // var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
         mainContainer = allPackageListDiv.append('div').attr("id", "AllPackages" ).attr("class", "panel-collapse ");
 
         mainContainer.append('h6').text(packages.length + " packages");
@@ -1259,7 +1310,7 @@
 
         packages.forEach(function(package){
 
-        //    packages[package.name] = {["version"]: package.version, ["files"]:package.files};
+            //    packages[package.name] = {["version"]: package.version, ["files"]:package.files};
 
             var summaryText = "";
 
@@ -1805,7 +1856,7 @@
 
             update(root);
 
-           // createPackageTooTip(searchFilesInfoDiv,d);
+            // createPackageTooTip(searchFilesInfoDiv,d);
 
         })
 
@@ -2270,6 +2321,15 @@
 
     function resetPackagesPosition(){
 
+
+        if (thisNodeCircle != null && thisNodeCircleLabel != null){
+
+
+            thisNodeCircle.transition().attr("r", 8);
+            thisNodeCircleLabel.transition().style("font", "15px sans-serif").attr("x", function(d) { return d.children || d._children ? -10 : 10; });
+
+
+        }
 
         links = [];
 
