@@ -2545,9 +2545,6 @@
                 }
 
 
-
-                console.log("This d", d);
-
                 var associatedProcesses = [];
 //
 //                if (d.name != "other_files"){
@@ -2588,7 +2585,25 @@
 
                             console.log("Same process: ", processName);
 
-                            links.push({source: d , target: process});
+                            console.log("The process: ", process);
+
+                            console.log("The d: ", d);
+
+                            process.fixed = true;
+
+
+                            var node = {};
+                            node.x = process.y;
+                            node.y = process.x;
+                            node.px = process.y;
+                            node.py = process.x;
+                            node.weight = 10;
+                            node.fixed = true;
+
+                            thisNode  = forceNodes.push(node);
+
+
+                            links.push({source: d , target: node});
 
                         }
 
