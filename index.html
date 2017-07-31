@@ -404,6 +404,17 @@
 
             inFocus = $(this).prop('checked');
 
+            if(inFocus == false){
+
+                var otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
+
+                otherSVG.transition().style("opacity", 1);
+
+
+                otherSVG = null;
+
+            }
+
 
         })
     })
@@ -438,9 +449,9 @@
 
     // script for visualization
 
-    var currentJsonFile = "bash-count.json";
+    //var currentJsonFile = "bash-count.json";
     //var currentJsonFile = "stacked-up-website.json";
-    //var currentJsonFile = "ache.json";
+    var currentJsonFile = "ache.json";
 
     var currentNodes;
 
@@ -883,6 +894,9 @@
         }
         else    otherSVG.style("opacity", 1);
 
+
+
+        otherSVG = null;
 
 //       var thisProcess = d3.selectAll(".process")
 //            .style("opacity",
