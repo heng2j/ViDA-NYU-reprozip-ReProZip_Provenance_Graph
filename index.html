@@ -488,6 +488,8 @@
     var searchFilesInfoDiv;
     var searchFilesList;
 
+    var packageSections = {};
+
 
     var thisNodeCircle;
     var thisNodeCircleLabel;
@@ -977,10 +979,10 @@
         node.px = d.y;
         node.py = d.x;
         node.weight = 10;
-        node.style =
-            ("fill" , function() {
-                return "hsl(" + Math.random() * 360 + ",60%,80%)";
-            });
+//        node.style =
+//            ("fill" , function() {
+//                return "hsl(" + Math.random() * 360 + ",60%,80%)";
+//            });
         node.radius = 20;
         node.fixed = true;
 
@@ -1868,12 +1870,13 @@
             var tempPackageX = 0;
             var tempPackageY = -200;
             var isAlternativeOn = 0;
+            var sections = [];
 
             //Handle Packages to create force data
             data.packages.forEach(function (package) {
 
 
-                var thisPackage = {["name"]: package.name, ["version"]: package.version, ["files"] : [] , ["cx"]: 0, ["cy"]: tempPackageY , ["OGy"]: tempPackageY, ["color"]: "" , ["radius"] : maxRadius};
+                var thisPackage = {["name"]: package.name, ["version"]: package.version, ["section"] : package.section, ["files"] : [] , ["cx"]: 0, ["cy"]: tempPackageY , ["OGy"]: tempPackageY, ["color"]: "" , ["radius"] : maxRadius};
 
                 package.files.forEach(function (file) {
 
@@ -1906,7 +1909,10 @@
                 }
 
 
+                //push this package's section to local sections
+                sections.push(thisPackage.section);
 
+                //push this package to the forceData
                 forceData.packages.push(thisPackage);
 
                 //increase packagesNumber
@@ -1932,6 +1938,37 @@
             });
 
             console.log('forceData:' , forceData);
+
+
+
+
+            //make the sections as unique ** A function may needed
+            let uniq = [...new Set(sections)];
+            sections = uniq;
+
+
+            var linearScale = d3.scale.linear().domain([0, sections.length]).range([0,400]);
+
+            var i = 0;
+
+
+            sections.forEach(function(section){
+
+
+                console.log("linearScale(i): ", linearScale(i));
+
+                var thisSection = [];
+                thisSection["name"] = section;
+                thisSection["color"] = "hsl(" +  linearScale(i) + ",60%,80%)";
+
+                packageSections[section] = thisSection;
+
+                i++;
+
+
+            });
+            //Add this package's section to sections
+
 
 
 
@@ -2529,8 +2566,15 @@
             .attr("r", function (d) {
                 return d.radius;
             })
-            .style("fill",function() {
-                return "hsl(" + Math.random() * 720 + ",55%,80%)";
+            .style("fill",function(d) {
+
+
+                if(d.section == packageSections[d.section].name){
+
+                    return packageSections[d.section].color;
+                }
+
+                return   "#5e3cc3" ; // reutn default ReproZip Color
             })
             .on("click", function(d) {
 
@@ -2655,7 +2699,7 @@
                     .duration(200)
                     .style("opacity", .8);
                 tooltip .html(
-                    d.name + "<br>" + "version: " + d.version
+                    d.name + "<br>" + "section: "+ d.section + "<br>" + "version: " + d.version
                 )
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY - 38) + "px");
