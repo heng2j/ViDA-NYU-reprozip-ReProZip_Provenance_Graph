@@ -3037,6 +3037,7 @@
         "/etc/host.conf"
       ], 
       "name": "base-files", 
+      "section": "admin",
       "version": "6.5ubuntu6"
     }, 
     {
@@ -3048,6 +3049,7 @@
         "/usr/bin/id"
       ], 
       "name": "coreutils", 
+      "section": "utils",
       "version": "8.13-3ubuntu3"
     }, 
     {
@@ -3056,6 +3058,7 @@
         "/bin/sh"
       ], 
       "name": "dash", 
+      "section": "shells",
       "version": "0.5.7-2ubuntu2"
     }, 
     {
@@ -3063,6 +3066,7 @@
         "/usr/share/locale-langpack/en_GB/LC_MESSAGES/libc.mo"
       ], 
       "name": "language-pack-en-base", 
+      "section": "translations",
       "version": "1:12.04+20120801"
     }, 
     {
@@ -3070,6 +3074,7 @@
         "/lib/x86_64-linux-gnu/libacl.so.1"
       ], 
       "name": "libacl1", 
+      "section": "libs",
       "version": "2.2.51-5ubuntu1"
     }, 
     {
@@ -3077,6 +3082,7 @@
         "/usr/lib/x86_64-linux-gnu/libasn1.so.8"
       ], 
       "name": "libasn1-8-heimdal", 
+      "section": "libs",
       "version": "1.6~git20120311.dfsg.1-2"
     }, 
     {
@@ -3084,6 +3090,7 @@
         "/lib/x86_64-linux-gnu/libattr.so.1"
       ], 
       "name": "libattr1", 
+      "section": "libs",
       "version": "1:2.4.46-5ubuntu1"
     }, 
     {
@@ -3091,6 +3098,7 @@
         "/lib/x86_64-linux-gnu/libbsd.so.0"
       ], 
       "name": "libbsd0", 
+      "section": "libs",
       "version": "0.3.0-2"
     }, 
     {
@@ -3099,6 +3107,7 @@
         "/sbin/ldconfig.real"
       ], 
       "name": "libc-bin", 
+      "section": "libs",
       "version": "2.15-0ubuntu10"
     }, 
     {
@@ -3119,6 +3128,7 @@
         "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache"
       ], 
       "name": "libc6", 
+      "section": "libs",
       "version": "2.15-0ubuntu10"
     }, 
     {
@@ -3126,6 +3136,7 @@
         "/lib/x86_64-linux-gnu/libcom_err.so.2"
       ], 
       "name": "libcomerr2", 
+      "section": "libs",
       "version": "1.42-1ubuntu2.3"
     }, 
     {
@@ -3133,6 +3144,7 @@
         "/usr/lib/x86_64-linux-gnu/libedit.so.2"
       ], 
       "name": "libedit2", 
+      "section": "libs",
       "version": "2.11-20080614-3ubuntu2"
     }, 
     {
@@ -3140,6 +3152,7 @@
         "/lib/x86_64-linux-gnu/libgcc_s.so.1"
       ], 
       "name": "libgcc1", 
+      "section": "libs",
       "version": "1:4.6.3-1ubuntu5"
     }, 
     {
@@ -3147,6 +3160,7 @@
         "/lib/x86_64-linux-gnu/libgcrypt.so.11"
       ], 
       "name": "libgcrypt11", 
+      "section": "libs",
       "version": "1.5.0-3"
     }, 
     {
@@ -3154,6 +3168,7 @@
         "/usr/lib/x86_64-linux-gnu/libgnutls.so.26"
       ], 
       "name": "libgnutls26", 
+      "section": "libs",
       "version": "2.12.14-5ubuntu3"
     }, 
     {
@@ -3161,6 +3176,7 @@
         "/lib/x86_64-linux-gnu/libgpg-error.so.0"
       ], 
       "name": "libgpg-error0", 
+      "section": "libs",
       "version": "1.10-2ubuntu1"
     }, 
     {
@@ -3168,6 +3184,7 @@
         "/usr/lib/x86_64-linux-gnu/libgssapi_krb5.so.2"
       ], 
       "name": "libgssapi-krb5-2", 
+      "section": "libs",
       "version": "1.10+dfsg~beta1-2ubuntu0.7"
     }, 
     {
@@ -3175,6 +3192,7 @@
         "/usr/lib/x86_64-linux-gnu/libgssapi.so.3"
       ], 
       "name": "libgssapi3-heimdal", 
+      "section": "libs",
       "version": "1.6~git20120311.dfsg.1-2"
     }, 
     {
@@ -3182,6 +3200,7 @@
         "/usr/lib/x86_64-linux-gnu/libhcrypto.so.4"
       ], 
       "name": "libhcrypto4-heimdal", 
+      "section": "libs",
       "version": "1.6~git20120311.dfsg.1-2"
     }, 
     {
@@ -3189,6 +3208,7 @@
         "/usr/lib/x86_64-linux-gnu/libheimbase.so.1"
       ], 
       "name": "libheimbase1-heimdal", 
+      "section": "libs",
       "version": "1.6~git20120311.dfsg.1-2"
     }, 
     {
@@ -3196,6 +3216,7 @@
         "/usr/lib/x86_64-linux-gnu/libheimntlm.so.0"
       ], 
       "name": "libheimntlm0-heimdal", 
+      "section": "libs",
       "version": "1.6~git20120311.dfsg.1-2"
     }, 
     {
@@ -3203,6 +3224,7 @@
         "/usr/lib/x86_64-linux-gnu/libhx509.so.5"
       ], 
       "name": "libhx509-5-heimdal", 
+      "section": "libs",
       "version": "1.6~git20120311.dfsg.1-2"
     }, 
     {
@@ -3210,6 +3232,7 @@
         "/usr/lib/x86_64-linux-gnu/libk5crypto.so.3"
       ], 
       "name": "libk5crypto3", 
+      "section": "libs",
       "version": "1.10+dfsg~beta1-2ubuntu0.7"
     }, 
     {
@@ -3217,6 +3240,7 @@
         "/lib/x86_64-linux-gnu/libkeyutils.so.1"
       ], 
       "name": "libkeyutils1", 
+      "section": "misc",
       "version": "1.5.2-2"
     }, 
     {
@@ -3224,6 +3248,7 @@
         "/usr/lib/x86_64-linux-gnu/libkrb5.so.26"
       ], 
       "name": "libkrb5-26-heimdal", 
+      "section": "libs",
       "version": "1.6~git20120311.dfsg.1-2"
     }, 
     {
@@ -3231,6 +3256,7 @@
         "/usr/lib/x86_64-linux-gnu/libkrb5.so.3"
       ], 
       "name": "libkrb5-3", 
+      "section": "libs",
       "version": "1.10+dfsg~beta1-2ubuntu0.7"
     }, 
     {
@@ -3238,6 +3264,7 @@
         "/usr/lib/x86_64-linux-gnu/libkrb5support.so.0"
       ], 
       "name": "libkrb5support0", 
+      "section": "libs",
       "version": "1.10+dfsg~beta1-2ubuntu0.7"
     }, 
     {
@@ -3246,6 +3273,7 @@
         "/usr/lib/x86_64-linux-gnu/libldap_r-2.4.so.2"
       ], 
       "name": "libldap-2.4-2", 
+      "section": "libs",
       "version": "2.4.28-1.1ubuntu4"
     }, 
     {
@@ -3253,6 +3281,7 @@
         "/usr/lib/x86_64-linux-gnu/libp11-kit.so.0"
       ], 
       "name": "libp11-kit0", 
+      "section": "libs",
       "version": "0.12-2ubuntu1"
     }, 
     {
@@ -3260,6 +3289,7 @@
         "/lib/x86_64-linux-gnu/libpam.so.0"
       ], 
       "name": "libpam0g", 
+      "section": "libs",
       "version": "1.1.3-7ubuntu2"
     }, 
     {
@@ -3267,6 +3297,7 @@
         "/lib/libply.so.2"
       ], 
       "name": "libplymouth2", 
+      "section": "libs",
       "version": "0.8.2-2ubuntu30"
     }, 
     {
@@ -3274,6 +3305,7 @@
         "/usr/lib/libpq.so.5"
       ], 
       "name": "libpq5", 
+      "section": "libs",
       "version": "9.1.21-0ubuntu0.12.04"
     }, 
     {
@@ -3281,6 +3313,7 @@
         "/usr/lib/x86_64-linux-gnu/libroken.so.18"
       ], 
       "name": "libroken18-heimdal", 
+      "section": "libs",
       "version": "1.6~git20120311.dfsg.1-2"
     }, 
     {
@@ -3288,6 +3321,7 @@
         "/usr/lib/x86_64-linux-gnu/libsasl2.so.2"
       ], 
       "name": "libsasl2-2", 
+      "section": "libs",
       "version": "2.1.25.dfsg1-3"
     }, 
     {
@@ -3295,6 +3329,7 @@
         "/lib/x86_64-linux-gnu/libselinux.so.1"
       ], 
       "name": "libselinux1", 
+      "section": "libs",
       "version": "2.1.0-4.1ubuntu1"
     }, 
     {
@@ -3302,6 +3337,7 @@
         "/usr/lib/x86_64-linux-gnu/libsqlite3.so.0"
       ], 
       "name": "libsqlite3-0", 
+      "section": "libs",
       "version": "3.7.9-2ubuntu1.2"
     }, 
     {
@@ -3310,6 +3346,7 @@
         "/lib/x86_64-linux-gnu/libssl.so.1.0.0"
       ], 
       "name": "libssl1.0.0", 
+      "section": "libs",
       "version": "1.0.1-4ubuntu5.36"
     }, 
     {
@@ -3317,6 +3354,7 @@
         "/usr/lib/x86_64-linux-gnu/libtasn1.so.3"
       ], 
       "name": "libtasn1-3", 
+      "section": "libs",
       "version": "2.10-1ubuntu1"
     }, 
     {
@@ -3324,6 +3362,7 @@
         "/lib/x86_64-linux-gnu/libtinfo.so.5"
       ], 
       "name": "libtinfo5", 
+      "section": "libs",
       "version": "5.9-4"
     }, 
     {
@@ -3331,6 +3370,7 @@
         "/lib/x86_64-linux-gnu/libuuid.so.1"
       ], 
       "name": "libuuid1", 
+      "section": "libs",
       "version": "2.20.1-1ubuntu3"
     }, 
     {
@@ -3338,6 +3378,7 @@
         "/usr/lib/x86_64-linux-gnu/libwind.so.0"
       ], 
       "name": "libwind0-heimdal", 
+      "section": "libs",
       "version": "1.6~git20120311.dfsg.1-2"
     }, 
     {
@@ -3345,6 +3386,7 @@
         "/usr/lib/x86_64-linux-gnu/libxml2.so.2"
       ], 
       "name": "libxml2", 
+      "section": "libs",
       "version": "2.7.8.dfsg-5.1ubuntu4"
     }, 
     {
@@ -3352,6 +3394,7 @@
         "/usr/share/locale/locale.alias"
       ], 
       "name": "locales", 
+      "section": "libs",
       "version": "2.13+git20120306-3"
     }, 
     {
@@ -3360,6 +3403,7 @@
         "/lib/lsb/init-functions"
       ], 
       "name": "lsb-base", 
+      "section": "misc",
       "version": "4.0-0ubuntu20"
     }, 
     {
@@ -3367,6 +3411,7 @@
         "/lib/terminfo/x/xterm-256color"
       ], 
       "name": "ncurses-base", 
+      "section": "utils",
       "version": "5.9-4"
     }, 
     {
@@ -3374,6 +3419,7 @@
         "/usr/bin/tput"
       ], 
       "name": "ncurses-bin", 
+      "section": "utils",
       "version": "5.9-4"
     }, 
     {
@@ -3381,6 +3427,7 @@
         "/usr/lib/ssl/openssl.cnf"
       ], 
       "name": "openssl", 
+      "section": "utils",
       "version": "1.0.1-4ubuntu3"
     }, 
     {
@@ -3389,6 +3436,7 @@
         "/usr/lib/libperl.so.5.14"
       ], 
       "name": "perl-base", 
+      "section": "perl",
       "version": "5.14.2-6ubuntu2"
     }, 
     {
@@ -3396,6 +3444,7 @@
         "/bin/plymouth"
       ], 
       "name": "plymouth", 
+      "section": "x11",
       "version": "0.8.2-2ubuntu30"
     }, 
     {
@@ -3406,6 +3455,7 @@
         "/usr/share/postgresql/9.1/timezonesets/Default"
       ], 
       "name": "postgresql-9.1", 
+      "section": "database",
       "version": "9.1.21-0ubuntu0.12.04"
     }, 
     {
@@ -3413,6 +3463,7 @@
         "/usr/lib/postgresql/9.1/bin/psql"
       ], 
       "name": "postgresql-client-9.1", 
+      "section": "database",
       "version": "9.1.21-0ubuntu0.12.04"
     }, 
     {
@@ -3420,6 +3471,7 @@
         "/usr/share/postgresql-common/PgCommon.pm"
       ], 
       "name": "postgresql-client-common", 
+      "section": "misc",
       "version": "129ubuntu1"
     }, 
     {
@@ -3429,6 +3481,7 @@
         "/usr/share/postgresql-common/init.d-functions"
       ], 
       "name": "postgresql-common", 
+      "section": "misc",
       "version": "129ubuntu1"
     }, 
     {
@@ -3437,6 +3490,7 @@
         "/lib/libproc-3.2.8.so"
       ], 
       "name": "procps", 
+      "section": "admin",
       "version": "1:3.2.8-11ubuntu6"
     }, 
     {
@@ -3544,6 +3598,7 @@
         "/usr/lib/python2.7/zipfile.py"
       ], 
       "name": "python2.7", 
+      "section": "python",
       "version": "2.7.3-0ubuntu3.8"
     }, 
     {
@@ -3610,6 +3665,7 @@
         "/usr/lib/python2.7/weakref.py"
       ], 
       "name": "python2.7-minimal", 
+      "section": "python",
       "version": "2.7.3-0ubuntu3.8"
     }, 
     {
@@ -3617,6 +3673,7 @@
         "/bin/sed"
       ], 
       "name": "sed", 
+      "section": "utils",
       "version": "4.2.1-9"
     }, 
     {
@@ -5412,6 +5469,7 @@
         "/usr/share/zoneinfo/zone.tab"
       ], 
       "name": "tzdata", 
+      "section": "libs",
       "version": "2012b-1"
     }, 
     {
@@ -5419,6 +5477,7 @@
         "/lib/x86_64-linux-gnu/libz.so.1"
       ], 
       "name": "zlib1g", 
+      "section": "libs",
       "version": "1:1.2.3.4.dfsg-3ubuntu4"
     }
   ], 

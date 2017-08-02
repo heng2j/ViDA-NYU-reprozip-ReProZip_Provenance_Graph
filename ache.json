@@ -6762,6 +6762,7 @@
         "/etc/host.conf"
       ], 
       "name": "base-files", 
+      "section": "admin",
       "version": "8+deb8u2"
     }, 
     {
@@ -6769,6 +6770,7 @@
         "/bin/bash"
       ], 
       "name": "bash", 
+      "section": "shells",
       "version": "4.3-11+b1"
     }, 
     {
@@ -6779,6 +6781,7 @@
         "/usr/bin/env"
       ], 
       "name": "coreutils", 
+      "section": "utils",
       "version": "8.23-4"
     }, 
     {
@@ -6786,6 +6789,7 @@
         "/bin/dash"
       ], 
       "name": "dash", 
+      "section": "shells",
       "version": "0.5.7-4+b1"
     }, 
     {
@@ -6793,6 +6797,7 @@
         "/usr/bin/which"
       ], 
       "name": "debianutils", 
+      "section": "utils",
       "version": "4.4+b1"
     }, 
     {
@@ -6811,6 +6816,7 @@
         "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache"
       ], 
       "name": "libc6", 
+      "section": "libs",
       "version": "2.19-18+deb8u1"
     }, 
     {
@@ -6818,6 +6824,7 @@
         "/usr/lib/x86_64-linux-gnu/libffi.so.6"
       ], 
       "name": "libffi6", 
+      "section": "libs",
       "version": "3.1-2+b2"
     }, 
     {
@@ -6825,6 +6832,7 @@
         "/lib/x86_64-linux-gnu/libgcc_s.so.1"
       ], 
       "name": "libgcc1", 
+      "section": "libs",
       "version": "1:4.9.2-10"
     }, 
     {
@@ -6835,6 +6843,7 @@
         "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so.0"
       ], 
       "name": "libglib2.0-0", 
+      "section": "libs",
       "version": "2.42.1-1"
     }, 
     {
@@ -6842,6 +6851,7 @@
         "/lib/x86_64-linux-gnu/libncurses.so.5"
       ], 
       "name": "libncurses5", 
+      "section": "libs",
       "version": "5.9+20140913-1+b1"
     }, 
     {
@@ -6849,6 +6859,7 @@
         "/lib/x86_64-linux-gnu/libpcre.so.3"
       ], 
       "name": "libpcre3", 
+      "section": "libs",
       "version": "2:8.35-3.3"
     }, 
     {
@@ -6856,6 +6867,7 @@
         "/lib/x86_64-linux-gnu/libselinux.so.1"
       ], 
       "name": "libselinux1", 
+      "section": "libs",
       "version": "2.3-2"
     }, 
     {
@@ -6863,6 +6875,7 @@
         "/usr/lib/x86_64-linux-gnu/libstdc++.so.6"
       ], 
       "name": "libstdc++6", 
+      "section": "libs",
       "version": "4.9.2-10"
     }, 
     {
@@ -6870,6 +6883,7 @@
         "/lib/x86_64-linux-gnu/libtinfo.so.5"
       ], 
       "name": "libtinfo5", 
+      "section": "libs",
       "version": "5.9+20140913-1+b1"
     }, 
     {
@@ -6877,6 +6891,7 @@
         "/usr/share/locale/locale.alias"
       ], 
       "name": "locales", 
+      "section": "localization",
       "version": "2.19-18+deb8u1"
     }, 
     {
@@ -6886,6 +6901,7 @@
         "/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/ext/libatk-wrapper.so"
       ], 
       "name": "openjdk-7-jre", 
+      "section": "java",
       "version": "7u79-2.5.6-1~deb8u1"
     }, 
     {
@@ -6918,6 +6934,7 @@
         "/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/tz.properties"
       ], 
       "name": "openjdk-7-jre-headless", 
+      "section": "java",
       "version": "7u79-2.5.6-1~deb8u1"
     }, 
     {
@@ -6926,6 +6943,7 @@
         "/usr/share/javazi/ZoneInfoMappings"
       ], 
       "name": "tzdata-java", 
+      "section": "java",
       "version": "2015f-0+deb8u1"
     }, 
     {
@@ -6933,6 +6951,7 @@
         "/lib/x86_64-linux-gnu/libz.so.1"
       ], 
       "name": "zlib1g", 
+      "section": "libs",
       "version": "1:1.2.8.dfsg-2+b1"
     }
   ], 

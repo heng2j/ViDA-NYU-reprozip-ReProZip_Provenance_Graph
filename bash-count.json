@@ -22,6 +22,7 @@
         "/bin/bash"
       ], 
       "name": "bash", 
+      "section": "shells",
       "version": "4.3-14ubuntu1.1"
     }, 
     {
@@ -31,6 +32,7 @@
         "/usr/bin/wc"
       ], 
       "name": "coreutils", 
+      "section": "utils",
       "version": "8.25-2ubuntu2"
     }, 
     {
@@ -41,6 +43,7 @@
         "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache"
       ], 
       "name": "libc6", 
+      "section": "libs",
       "version": "2.23-0ubuntu3"
     }, 
     {
@@ -48,6 +51,7 @@
         "/lib/x86_64-linux-gnu/libtinfo.so.5"
       ], 
       "name": "libtinfo5", 
+      "section": "libs",
       "version": "6.0+20160213-1ubuntu1"
     }
   ], 
