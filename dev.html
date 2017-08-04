@@ -39,32 +39,31 @@
 </head>
 
 <body style="color: #ffffff">
-      <div id="wrapper">
-        <div class="overlay"></div>
+      <div id="wrapper" class="toggled">
 
         <!-- Sidebar -->
         <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
             <ul class="nav sidebar-nav">
                 <li class="sidebar-brand">
                     <a href="#">
-                       Bootstrap 3
+                        ReproZip Provenance Graph
                     </a>
                 </li>
-                <li class="dropdown active">
+                <li >
 
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1"><i class="fa fa-fw fa-home"></i> Home</a>
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1"><i class="fa fa-fw fa-server"></i> Overview</a>
 
                     <div id="collapse1" class="panel-collapse collapse">
 
 
-                        <div class="panel-body">
+                        <div class="panel-body" style="margin-left: 20px">
                             <div>
-                                <button id="generate">Save as SVG</button>
+                                <button id="generate" style="color:black">Save as SVG</button>
                             </div>
                             <div>
                                 <label>
                                     <input id="toggle-inFocus" type="checkbox" data-toggle="toggle" >
-                                    Focus selected processes and packages
+                                    Focus on/off
                                 </label>
                             </div>
 
@@ -77,8 +76,23 @@
 
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-fw fa-folder"></i> Page one</a>
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2"><i class="fa fa-fw fa-info-circle"></i> Process Details</a>
+
+                    <div id="collapse2" class="panel-collapse collapse in">
+
+
+                            <div id='notes' class="panel-body fileSearch" style="margin-left: 20px">
+
+                            </div>
+
+
+                    </div>
+
+
+
                 </li>
+
+                <!--
                 <li>
                     <a href="#"><i class="fa fa-fw fa-file-o"></i> Second page</a>
                 </li>
@@ -105,6 +119,10 @@
                 <li>
                     <a href="#"><i class="fa fa-fw fa-twitter"></i> Last page</a>
                 </li>
+
+                -->
+
+
             </ul>
         </nav>
         <!-- /#sidebar-wrapper -->
@@ -118,15 +136,12 @@
           </button>
 
 
-            <div class="container">
-
-
 
                 <div id='viz-graph'></div>
 
 
 
-            </div>
+
         </div>
         <!-- /#page-content-wrapper -->
 
@@ -474,6 +489,7 @@
           // add the tool tip
           var tooltip = d3.select("body").append("div")
               .attr("class", "tooltip")
+              .style("font-size",  12 + "px")
               .style("opacity", 0);
 
 
@@ -1068,15 +1084,15 @@
 
 
               //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
-              notes.append('h3').text("Process:").attr("href", "#ProcessName").attr("class", "panel-title").attr("data-toggle", "collapse").style({'padding-left': 0, 'font-size': '24px','text-decoration': 'none', 'color':'black' });
-              notes.append('h5').text(d.name).attr("id", "ProcessName" ).attr("class", "panel-collapse "); //.style({'padding-left': 0, 'text-decoration': 'none', 'color':'black' });
+              notes.append('h3').text("Process:").attr("href", "#ProcessName").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+              notes.append('h5').text(d.name).attr("id", "ProcessName" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
 
 
-              notes.append('h3').text("Commands:").attr("href", "#Commands").attr("class", "panel-title").attr("data-toggle", "collapse").style({'padding-left': 0, 'font-size': '24px','text-decoration': 'none', 'color':'black' });
-              notes.append('h5').text(commands).attr("id", "Commands" ).attr("class", "panel-collapse ");
+              notes.append('h3').text("Commands:").attr("href", "#Commands").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+              notes.append('h5').text(commands).attr("id", "Commands" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
 
-              notes.append('h3').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
-              notes.append('h6').text(uniqFileNames.length + " files");
+              notes.append('h3').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+              notes.append('h6').text(uniqFileNames.length + " files").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
               notes.append('input').attr("type", "search").attr("class", "fileSearch_input").attr("placeholder", "Search for listing files")
                   .style("margin-left", "10px;");
 
@@ -1189,8 +1205,8 @@
 
 
 
-              searchFilesInfoDiv.append('h3').text("Associated Packages:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
-              searchFilesInfoDiv.append('h6').text(uniqPackageNames.length + " packages");
+              searchFilesInfoDiv.append('h3').text("Associated Packages:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+              searchFilesInfoDiv.append('h6').text(uniqPackageNames.length + " packages").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
 
               createPackageTooTip(searchFilesInfoDiv,d);
 
@@ -1404,14 +1420,15 @@
                                       .duration(200)
                                       .style("opacity", .8);
                                   tooltip.html(
-                                      "<h5>From Package:  " +  thisFile.package+ " </h5>" +
+                                      "<h5 style='font-size: 12px'>" + thisFile.name + " </h5>" +
+                                      "<h5 style='font-size: 12px'>From Package:  " +  thisFile.package+ " </h5>" +
 
-                                      "<h5>Read By: </h5>" +
+                                      "<h5 style='font-size: 12px'>Read By: </h5>" +
                                       proccess_Read
                                       +
                                       "<br>"
                                       +
-                                      "<h5>Written By: </h5>" +
+                                      "<h5 style='font-size: 12px'>Written By: </h5>" +
                                       proccess_Write
 
                                   )
@@ -1563,10 +1580,11 @@
                               .duration(200)
                               .style("opacity", .8);
                           tooltip.html(
-                              "<h5>" +  packages[key].version + " </h5>"
+                              "<h5 style='font-size: 12px'>" +  packages[key].version + " </h5>"
 
                           ).style("left", (d3.event.pageX) + "px")
                               .style("top", (d3.event.pageY - 28) + "px");
+
 
 
                       }).on("mouseout", function(d) {
@@ -1606,11 +1624,11 @@
               var mainContainer;
 
 
-              allPackageListDiv.append('h3').text("All Packages:").attr("id", "AllPackagesDiv" ).attr("href", "#AllPackages").attr("class", "panel-title").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'black'});
+              allPackageListDiv.append('h3').text("All Packages:").attr("id", "AllPackagesDiv" ).attr("href", "#AllPackages").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
               // var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
               mainContainer = allPackageListDiv.append('div').attr("id", "AllPackages" ).attr("class", "panel-collapse ");
 
-              mainContainer.append('h6').text(packages.length + " packages");
+              mainContainer.append('h6').text(packages.length + " packages").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'#778899' ,  'font-size': '15px' });
 
               var newDetails ;
               var newSummary;
@@ -1709,7 +1727,7 @@
                           .duration(200)
                           .style("opacity", .8);
                       tooltip.html(
-                          "<h5>" + "Version: " + package.version + " </h5>"
+                          "<h5 style='font-size: 12px'>" + "Version: " + package.version + " </h5>"
 
                       ).style("left", (d3.event.pageX) + "px")
                           .style("top", (d3.event.pageY - 28) + "px");
