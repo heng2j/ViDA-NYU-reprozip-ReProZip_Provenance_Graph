@@ -2849,7 +2849,7 @@
 
           function expandAll(){
 
-              console.log("root: ", root);
+              resetPackagesPosition();
 
               expand(root);
               update(root);
@@ -2857,8 +2857,8 @@
 
           function collapseAll(){
 
-              console.log("root: ", root);
 
+              resetPackagesPosition();
 
               root.children.forEach(collapse);
               collapse(root);
@@ -2871,7 +2871,7 @@
       </script>
 
 
-
+</div>
 
 </body>
 
