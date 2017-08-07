@@ -55,10 +55,15 @@
 
                     <div id="collapse1" class="panel-collapse collapse">
 
-
                         <div class="panel-body" style="margin-left: 20px">
                             <div>
                                 <button id="generate" style="color:black">Save as SVG</button>
+                            </div>
+                            <div>
+                                <label>
+                                    <input id="toggle-expandTree" type="checkbox" data-toggle="toggle" >
+                                    Expand Tree
+                                </label>
                             </div>
                             <div>
                                 <label>
@@ -129,7 +134,7 @@
 
         <!-- Page Content -->
         <div id="page-content-wrapper">
-          <button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="offcanvas">
+          <button type="button" class="hamburger is-open animated fadeInLeft" data-toggle="offcanvas">
             <span class="hamb-top"></span>
             <span class="hamb-middle"></span>
             <span class="hamb-bottom"></span>
@@ -137,12 +142,11 @@
 
 
 
+
+
                 <div id='viz-graph'></div>
 
 
-
-
-        </div>
         <!-- /#page-content-wrapper -->
 
     </div>
@@ -433,8 +437,52 @@
                   }
 
 
+              });
+
+
+
+              $('#toggle-expandTree').bootstrapToggle({
+                  on: 'Exand All',
+                  off: 'Collapse All'
+              });
+
+              $('#toggle-expandTree').change(function() {
+
+
+
+
+                  isExpanded = $(this).prop('checked');
+
+
+                  console.log("isExpanded: ", isExpanded);
+
+                  if(isExpanded == false){
+
+                      console.log("isExpanded: false ");
+
+
+                      collapseAll();
+
+                  }
+                  else if (isExpanded == true) {
+
+                      console.log("isExpanded: true ");
+
+                      expandAll();
+
+                  }
+
+
+
+
               })
+
+
           })
+
+
+
+
       </script>
 
       <script>
@@ -481,6 +529,7 @@
 
 
           var inFocus;
+          var isExpanded;
 
           var packagesNumber = 0;
 
@@ -1132,7 +1181,7 @@
                   var id = "faq-" + fileCount;
                   var href = "#" + id;
 
-                  var fileLi =   filelistUL.append('li').attr("id",id );
+                  var fileLi =   filelistUL.append('li').attr("id",id ).attr("class", null);
 
                   var fileH2 =  fileLi.append('h4');//.text(file.name);
                   var fileA =  fileH2.append('a').attr("href", href).text(file.name);
@@ -1385,6 +1434,7 @@
 
                           currentUL.append('li')
                               .data(thisReadArray)
+                              .attr("class", 'noBeforeContent')
                               .on("mouseover", function(d) {
 
 
@@ -1599,6 +1649,7 @@
                       packages[key].files.forEach(function (file) {
 
                           currentUL.append('li')
+                              .attr("class", 'noBeforeContent')
                               .text(file.name);
 
                       })
@@ -1745,6 +1796,7 @@
                   package.files.forEach(function (file) {
 
                       currentUL.append('li')
+                          .attr("class", 'noBeforeContent')
                           .text(file.name);
 
                   })
@@ -2119,12 +2171,12 @@
                   });
 
 
-                  // Default timeline length for root
+
                   function collapse(d) {
 
                       if (d.children) {
 
-
+                          // Set default timeline length for root
                           if(isTreeRedrawn == false){
                               timeLineLen_Total =  timeLineLen_Total + (root.x0  / 2);
 
@@ -2141,10 +2193,14 @@
 
 
 
+
+
                   //Time line code block
                   root = treeData[0];
                   root.x0 = height; // / 2;
                   root.y0 = 0;
+
+
 
                   rootStartTime = root.start_time;
 
@@ -2757,6 +2813,60 @@
 
               });
           }
+
+
+
+
+          function collapse(d) {
+
+              if (d.children) {
+
+                  // Set default timeline length for root
+                  if(isTreeRedrawn == false){
+                      timeLineLen_Total =  timeLineLen_Total + (root.x0  / 2);
+
+                  }
+
+
+                  d._children = d.children;
+                  d._children.forEach(collapse);
+                  d.children = null;
+              }
+
+
+          }
+
+
+          function expand(d){
+              var children = (d.children)?d.children:d._children;
+              if (d._children) {
+                  d.children = d._children;
+                  d._children = null;
+              }
+              if(children)
+                  children.forEach(expand);
+          }
+
+          function expandAll(){
+
+              console.log("root: ", root);
+
+              expand(root);
+              update(root);
+          }
+
+          function collapseAll(){
+
+              console.log("root: ", root);
+
+
+              root.children.forEach(collapse);
+              collapse(root);
+              update(root);
+          }
+
+
+
 
       </script>
 
