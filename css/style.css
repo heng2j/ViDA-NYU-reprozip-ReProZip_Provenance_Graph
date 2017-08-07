@@ -102,6 +102,7 @@ html {
   background-color: #1a1a1a;
   color: #ffffff;
 }
+
 .sidebar-nav li:nth-child(2):before {
   background-color: #402d5c;
 }
@@ -315,4 +316,11 @@ body a {
 }
 body a:hover {
   color: #fff;
+}
+
+
+
+.sidebar-nav .noBeforeContent::before{
+
+  content: none;
 }
