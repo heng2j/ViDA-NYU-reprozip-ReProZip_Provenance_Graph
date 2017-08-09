@@ -97,37 +97,6 @@
 
             </li>
 
-            <!--
-            <li>
-                <a href="#"><i class="fa fa-fw fa-file-o"></i> Second page</a>
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-fw fa-cog"></i> Third page</a>
-            </li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-fw fa-plus"></i> Dropdown <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li class="dropdown-header">Dropdown heading</li>
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-fw fa-bank"></i> Page four</a>
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-fw fa-dropbox"></i> Page 5</a>
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-fw fa-twitter"></i> Last page</a>
-            </li>
-
-            -->
-
-
         </ul>
     </nav>
     <!-- /#sidebar-wrapper -->
@@ -176,7 +145,7 @@
                     xmlns: "http://www.w3.org/2000/xmlns/",
                     xlink: "http://www.w3.org/1999/xlink",
                     svg: "http://www.w3.org/2000/svg"
-                }
+                };
 
                 initialize();
 
@@ -209,11 +178,11 @@
                     documents.forEach(function(doc) {
                         var styles = getStyles(doc);
                         var newSources = getSources(doc, styles);
-                        // because of prototype on NYT pages
                         for (var i = 0; i < newSources.length; i++) {
                             SVGSources.push(newSources[i]);
                         };
-                    })
+                    });
+
                     if (SVGSources.length > 1) {
                         createPopover(SVGSources);
                     } else if (SVGSources.length > 0) {
@@ -431,12 +400,43 @@
 
                     otherSVG.transition().style("opacity", 1);
 
-
                     otherSVG = null;
 
                 }
+                else if (inFocus == true){
 
 
+                    var otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
+
+                    otherSVG.transition().style("opacity", 0.3);
+
+                    otherSVG = null;
+
+                    thisNodeCircle.transition().attr("r", 20).style("opacity", 1);
+                    thisNodeCircleLabel
+                        .transition()
+                        .style("font", "20px sans-serif")
+                        .style("opacity", 1)
+                        .attr("x", function(d) { return d.children || d._children ? -30 : 30; });
+
+
+                    forceNodes.forEach(function(target) {
+
+                        currentSelectedNode.packages.reads.forEach(function (readFile) {
+
+                            if(target.name == readFile){
+
+                                console.log("d3.select:",d3.select("#package_" + readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"")).style("opacity", 1));
+
+                                d3.select("#package_" + readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"")).style("opacity", 1);
+                                d3.select("#packageLabel_" + readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"")).style("opacity", 1);
+
+
+                            }
+                        })
+                    });
+
+                }
             });
 
 
@@ -448,56 +448,24 @@
 
             $('#toggle-expandTree').change(function() {
 
-
-
-
                 isExpanded = $(this).prop('checked');
 
 
-                console.log("isExpanded: ", isExpanded);
-
                 if(isExpanded == false){
-
-                    console.log("isExpanded: false ");
-
 
                     collapseAll();
 
                 }
                 else if (isExpanded == true) {
 
-                    console.log("isExpanded: true ");
-
                     expandAll();
 
                 }
 
-
-
-
             })
 
-
         })
-
-
-
-
     </script>
-
-    <script>
-        //script for Sidebar
-        //          function openNav() {
-        //              document.getElementById("mySidenav").style.width = "20%";
-        //              document.getElementById("viz-graph").style.marginLeft = "20%";
-        //          }
-        //
-        //          function closeNav() {
-        //              document.getElementById("mySidenav").style.width = "0";
-        //              document.getElementById("viz-graph").style.marginLeft= "0";
-        //          }
-    </script>
-
 
     <script>
 
@@ -518,7 +486,9 @@
         //var currentJsonFile = "stacked-up-website.json";
         var currentJsonFile = "ache.json";
 
-        var currentNodes;
+        var currentSelectedNode;
+        var currentDisplayingNodes;
+
 
 
         var availableJsonFiles = ["bash-count.json", "stacked-up-website.json", "ache.json"];
@@ -605,8 +575,6 @@
 
 
 
-
-
         treeDraw(currentJsonFile);
 
 
@@ -623,8 +591,6 @@
                 resetPackagesPosition();
 
             }
-
-
         });
 
 
@@ -655,7 +621,6 @@
 
         // update Tree function
         function update(source) {
-
 
 
             // Compute the new tree layout.
@@ -847,8 +812,8 @@
             });
 
 
-            currentNodes = nodes;
-            console.log("currentNodes: ", currentNodes);
+            currentDisplayingNodes = nodes;
+            console.log("currentDisplayingNodes: ", currentDisplayingNodes);
 
         }
 
@@ -967,6 +932,8 @@
 
             otherSVG = null;
 
+            currentSelectedNode = d;
+
 
 
             if (thisNodeCircle != null && thisNodeCircleLabel != null){
@@ -980,8 +947,8 @@
 
 
 
-            thisNodeCircle = d3.select("#process_"+ d.name.replace(/[ ()]/g,''));// d3.select("id","#process_" + d.name.replace(/[ ()]/g,''));
-            thisNodeCircleLabel = d3.select("#processLabel_"+ d.name.replace(/[ ()]/g,''));// d3.select("id","#process_" + d.name.replace(/[ ()]/g,''));
+            thisNodeCircle = d3.select("#process_"+ d.name.replace(/[ ()]/g,''));  // d3.select("id","#process_" + d.name.replace(/[ ()]/g,''));
+            thisNodeCircleLabel = d3.select("#processLabel_"+ d.name.replace(/[ ()]/g,''));  // d3.select("id","#process_" + d.name.replace(/[ ()]/g,''));
 
 
             thisNodeCircle.transition().attr("r", 20).style("opacity", 1);
@@ -995,8 +962,6 @@
 
 
             // var thisEdge = d3.select("#edge_" +package.name);
-
-
 
             var isFadeItems = svg.selectAll(".is-focus");
 
@@ -1022,10 +987,6 @@
 
 
             }
-
-
-
-
 
             // add links to any nearby nodes
 
@@ -1053,9 +1014,6 @@
 
                     if(target.name == readFile){
 
-
-                        console.log("target.name: ",target.name );
-                        console.log("readFile: ", readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"") );
 
 
                         d3.select("#package_" + readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"")).style("opacity", 1);
@@ -1181,7 +1139,7 @@
                 var id = "faq-" + fileCount;
                 var href = "#" + id;
 
-                var fileLi =   filelistUL.append('li').attr("id",id ).attr("class", null);
+                var fileLi =   filelistUL.append('li').attr("id",id ).attr("class", "noBeforeContent");
 
                 var fileH2 =  fileLi.append('h4');//.text(file.name);
                 var fileA =  fileH2.append('a').attr("href", href).text(file.name);
@@ -2596,12 +2554,12 @@
 
                     console.log("associatedProcesses", associatedProcesses);
 
-                    // var currentNodes = tree.nodes(root).reverse();
+                    // var currentDisplayingNodes = tree.nodes(root).reverse();
 
 
-                    console.log("currentNodes", currentNodes);
+                    console.log("currentDisplayingNodes", currentDisplayingNodes);
 
-                    currentNodes.forEach(function(process){
+                    currentDisplayingNodes.forEach(function(process){
 
                         associatedProcesses.forEach(function(processName){
 
