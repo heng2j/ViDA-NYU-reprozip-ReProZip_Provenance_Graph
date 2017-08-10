@@ -86,7 +86,7 @@
                 <div id="collapse2" class="panel-collapse collapse in">
 
 
-                    <div id='notes' class="panel-body fileSearch" style="margin-left: 20px">
+                    <div id='processDetails' class="panel-body fileSearch" style="margin-left: 20px">
 
                     </div>
 
@@ -135,13 +135,13 @@
 
 
             (function() {
-                var doctype = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
+                let doctype = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
 
                 window.URL = (window.URL || window.webkitURL);
 
-                var body = document.body;
+                let body = document.body;
 
-                var prefix = {
+                let prefix = {
                     xmlns: "http://www.w3.org/2000/xmlns/",
                     xlink: "http://www.w3.org/1999/xlink",
                     svg: "http://www.w3.org/2000/svg"
@@ -150,7 +150,7 @@
                 initialize();
 
                 function initialize() {
-                    var documents = [window.document],
+                    let documents = [window.document],
                         SVGSources = [];
                     iframes = document.querySelectorAll("iframe"),
                         objects = document.querySelectorAll("object");
@@ -176,9 +176,9 @@
                     });
 
                     documents.forEach(function(doc) {
-                        var styles = getStyles(doc);
-                        var newSources = getSources(doc, styles);
-                        for (var i = 0; i < newSources.length; i++) {
+                        let styles = getStyles(doc);
+                        let newSources = getSources(doc, styles);
+                        for (let i = 0; i < newSources.length; i++) {
                             SVGSources.push(newSources[i]);
                         };
                     });
@@ -206,7 +206,7 @@
                         })
                     });
 
-                    var buttonsContainer = document.createElement("div");
+                    let buttonsContainer = document.createElement("div");
                     body.appendChild(buttonsContainer);
 
                     buttonsContainer.setAttribute("class", "svg-crowbar");
@@ -217,7 +217,7 @@
 
 
 
-                    var background = document.createElement("div");
+                    let background = document.createElement("div");
                     body.appendChild(background);
 
                     background.setAttribute("class", "svg-crowbar");
@@ -229,7 +229,7 @@
                     background.style["height"] = "100%";
 
                     sources.forEach(function(d, i) {
-                        var buttonWrapper = document.createElement("div");
+                        let buttonWrapper = document.createElement("div");
                         buttonsContainer.appendChild(buttonWrapper);
                         buttonWrapper.setAttribute("class", "svg-crowbar");
                         buttonWrapper.style["position"] = "absolute";
@@ -245,7 +245,7 @@
                         buttonWrapper.style["cursor"] = "move";
                         buttonWrapper.textContent =  "SVG #" + i + ": " + (d.id ? "#" + d.id : "") + (d.class ? "." + d.class : "");
 
-                        var button = document.createElement("button");
+                        let button = document.createElement("button");
                         buttonWrapper.appendChild(button);
                         button.setAttribute("data-source-id", i)
                         button.style["width"] = "150px";
@@ -264,7 +264,7 @@
                 }
 
                 function cleanup() {
-                    var crowbarElements = document.querySelectorAll(".svg-crowbar");
+                    let crowbarElements = document.querySelectorAll(".svg-crowbar");
 
                     [].forEach.call(crowbarElements, function(el) {
                         el.parentNode.removeChild(el);
@@ -273,7 +273,7 @@
 
 
                 function getSources(doc, styles) {
-                    var svgInfo = [],
+                    let svgInfo = [],
                         svgs = doc.querySelectorAll("svg");
 
                     styles = (styles === undefined) ? "" : styles;
@@ -282,11 +282,11 @@
 
                         svg.setAttribute("version", "1.1");
 
-                        var defsEl = document.createElement("defs");
+                        let defsEl = document.createElement("defs");
                         svg.insertBefore(defsEl, svg.firstChild); //TODO   .insert("defs", ":first-child")
                         // defsEl.setAttribute("class", "svg-crowbar");
 
-                        var styleEl = document.createElement("style")
+                        let styleEl = document.createElement("style")
                         defsEl.appendChild(styleEl);
                         styleEl.setAttribute("type", "text/css");
 
@@ -304,8 +304,8 @@
                             svg.setAttributeNS(prefix.xmlns, "xmlns:xlink", prefix.xlink);
                         }
 
-                        var source = (new XMLSerializer()).serializeToString(svg).replace('</style>', '<![CDATA[' + styles + ']]></style>');
-                        var rect = svg.getBoundingClientRect();
+                        let source = (new XMLSerializer()).serializeToString(svg).replace('</style>', '<![CDATA[' + styles + ']]></style>');
+                        let rect = svg.getBoundingClientRect();
                         svgInfo.push({
                             top: rect.top,
                             left: rect.left,
@@ -321,7 +321,7 @@
                 }
 
                 function download(source) {
-                    var filename = "untitled";
+                    let filename = "untitled";
 
                     if (source.id) {
                         filename = source.id;
@@ -331,9 +331,9 @@
                         filename = window.document.title.replace(/[^a-z0-9]/gi, '-').toLowerCase();
                     }
 
-                    var url = window.URL.createObjectURL(new Blob(source.source, { "type" : "text\/xml" }));
+                    let url = window.URL.createObjectURL(new Blob(source.source, { "type" : "text\/xml" }));
 
-                    var a = document.createElement("a");
+                    let a = document.createElement("a");
                     body.appendChild(a);
                     a.setAttribute("class", "svg-crowbar");
                     a.setAttribute("download", filename + ".svg");
@@ -347,19 +347,19 @@
                 }
 
                 function getStyles(doc) {
-                    var styles = "",
+                    let styles = "",
                         styleSheets = doc.styleSheets;
 
                     if (styleSheets) {
-                        for (var i = 0; i < styleSheets.length; i++) {
+                        for (let i = 0; i < styleSheets.length; i++) {
                             processStyleSheet(styleSheets[i]);
                         }
                     }
 
                     function processStyleSheet(ss) {
                         if (ss.cssRules) {
-                            for (var i = 0; i < ss.cssRules.length; i++) {
-                                var rule = ss.cssRules[i];
+                            for (let i = 0; i < ss.cssRules.length; i++) {
+                                let rule = ss.cssRules[i];
                                 if (rule.type === 3) {
                                     // Import Rule
                                     processStyleSheet(rule.styleSheet);
@@ -396,7 +396,7 @@
 
                 if(inFocus == false){
 
-                    var otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
+                    let otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
 
                     otherSVG.transition().style("opacity", 1);
 
@@ -406,7 +406,7 @@
                 else if (inFocus == true){
 
 
-                    var otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
+                    let otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
 
                     otherSVG.transition().style("opacity", 0.3);
 
@@ -470,10 +470,10 @@
     <script>
 
         // script to prepare data
-        var fileDict = {};
-        var rawData = [] ;
-        var treeData = [];
-        //  var forceNodes = {"nodes" : []};
+        let fileDict = {};
+        let rawData = [] ;
+        let treeData = [];
+        //  let forceNodes = {"nodes" : []};
 
     </script>
 
@@ -482,57 +482,57 @@
 
         // script for visualization
 
-        //var currentJsonFile = "bash-count.json";
-        //var currentJsonFile = "stacked-up-website.json";
-        var currentJsonFile = "ache.json";
+        //let currentJsonFile = "bash-count.json";
+        //let currentJsonFile = "stacked-up-website.json";
+        let currentJsonFile = "ache.json";
 
-        var currentSelectedNode;
-        var currentDisplayingNodes;
-
-
-
-        var availableJsonFiles = ["bash-count.json", "stacked-up-website.json", "ache.json"];
-
-        var forceData = {"packages": []};
-
-        var force = d3.layout.force();
+        let currentSelectedNode;
+        let currentDisplayingNodes;
 
 
-        var inFocus;
-        var isExpanded;
 
-        var packagesNumber = 0;
+        let availableJsonFiles = ["bash-count.json", "stacked-up-website.json", "ache.json"];
 
-        var isTreeRedrawn = false;
+        let forceData = {"packages": []};
+
+        let force = d3.layout.force();
+
+
+        let inFocus;
+        let isExpanded;
+
+        let packagesNumber = 0;
+
+        let isTreeRedrawn = false;
 
         // add the tool tip
-        var tooltip = d3.select("body").append("div")
+        let tooltip = d3.select("body").append("div")
             .attr("class", "tooltip")
             .style("font-size",  12 + "px")
             .style("opacity", 0);
 
 
-        var margin = {top: 300, right: 120, bottom: 300, left: 150},
+        let margin = {top: 300, right: 120, bottom: 300, left: 150},
             width = 4500 - margin.right - margin.left,
             height = 1400 - margin.top - margin.bottom,
             padding = 3.5, // separation between same-color nodes
             maxRadius = 20 // radious for each package ;
 
-        var timeLineLen;
-        var timeLineLen_Total;
-        var duration_total_ms;
+        let timeLineLen;
+        let timeLineLen_Total;
+        let duration_total_ms;
 
-        var searchFilesInfoDiv;
-        var searchFilesList;
+        let searchFilesInfoDiv;
+        let searchFilesList;
 
-        var packageSections = {};
-
-
-        var thisNodeCircle;
-        var thisNodeCircleLabel;
+        let sectionsInPackages = {};
 
 
-        var i = 0,
+        let thisNodeCircle;
+        let thisNodeCircleLabel;
+
+
+        let i = 0,
             duration = 750,
             rootStartTime,
             root,
@@ -540,16 +540,16 @@
 
 
 
-        var tree = d3.layout.tree()
+        let tree = d3.layout.tree()
             .size([height , width ]);
 
 
 
 
-        var diagonal = d3.svg.diagonal()
+        let diagonal = d3.svg.diagonal()
             .projection(function(d) { return [d.y, d.x]; });
 
-        var svg = d3.select("#viz-graph").append("svg")
+        let svg = d3.select("#viz-graph").append("svg")
             .attr("width", width + margin.right + margin.left)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -559,19 +559,19 @@
 
 
 
-        // Select the container for the notes and dimension it.
-        var notes = d3.select('#notes')
+        // Select the container for the processDetails and dimension it.
+        let processDetails = d3.select('#processDetails')
             .style({
                 'width': 620-width + 'px',
                 'height': height + 'px',
                 'margin-top' : 25 + 'px'
             });
 
-        var forceNodes; // = force.nodes();
-        var forceLinks; // = force.links();
-        var forcePackages = svg.selectAll(".package");
-        var label = svg.selectAll(".forceLabel");
-        var edge = svg.selectAll(".edge");
+        let forceNodes; // = force.nodes();
+        let forceLinks; // = force.links();
+        let forcePackages = svg.selectAll(".package");
+        let label = svg.selectAll(".forceLabel");
+        let edge = svg.selectAll(".edge");
 
 
 
@@ -595,7 +595,7 @@
 
 
 
-        var select = d3.select('#jsonSelections')
+        let select = d3.select('#jsonSelections')
             .append('select')
             .attr('class','select')
             .attr("x", 400)
@@ -610,7 +610,7 @@
             });
 
 
-        var options = select
+        let options = select
             .selectAll('option')
             .data(availableJsonFiles).enter()
             .append('option')
@@ -624,7 +624,7 @@
 
 
             // Compute the new tree layout.
-            var nodes = tree.nodes(root).reverse(),
+            let nodes = tree.nodes(root).reverse(),
                 links = tree.links(nodes);
 
 
@@ -634,11 +634,11 @@
             });
 
             // Update the nodes…
-            var node = svg.selectAll("g.node")
+            let node = svg.selectAll("g.node")
                 .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
             // Enter any new nodes at the parent's previous position.
-            var nodeEnter = node.enter().append("g")
+            let nodeEnter = node.enter().append("g")
                 .attr("class", "node")
                 .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
                 .on("dblclick", dblclick)
@@ -653,12 +653,12 @@
 
 //                ;( function( $, window, document, undefined )
 //                {
-//                    var $container = $( '.viz' );
+//                    let $container = $( '.viz' );
 //
 //
 //                    if( !$container.length ) return true;
 //
-//                    var $packages = $container.find( '.package' ),
+//                    let $packages = $container.find( '.package' ),
 //                        $package			= $();
 //
 //                    $input.on( 'keyup', function()
@@ -715,7 +715,7 @@
 
 
             // Transition nodes to their new position.
-            var nodeUpdate = node.transition()
+            let nodeUpdate = node.transition()
                 .duration(duration)
                 .attr("transform", function(d) {
 
@@ -731,7 +731,7 @@
                 .style("fill-opacity", 1);
 
             // Transition exiting nodes to the parent's new position.
-            var nodeExit = node.exit().transition()
+            let nodeExit = node.exit().transition()
                 .duration(duration)
                 .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
                 .remove();
@@ -743,14 +743,14 @@
                 .style("fill-opacity", 1e-6);
 
             // Update the links…
-            var link = svg.selectAll("path.link")
+            let link = svg.selectAll("path.link")
                 .data(links, function(d) { return d.target.id; });
 
             // Enter any new links at the parent's previous position.
             link.enter().insert("path", "g")
                 .attr("class", "link")
                 .attr("d", function(d) {
-                    var o = {x: source.x0, y: source.y0};
+                    let o = {x: source.x0, y: source.y0};
                     return diagonal({source: o, target: o});
                 });
 
@@ -764,14 +764,14 @@
             link.exit().transition()
                 .duration(duration)
                 .attr("d", function(d) {
-                    var o = {x: source.x, y: source.y};
+                    let o = {x: source.x, y: source.y};
                     return diagonal({source: o, target: o});
                 })
                 .remove();
 
 
             // Update the link text
-            var linktext = svg.selectAll("g.link")
+            let linktext = svg.selectAll("g.link")
                 .data(links, function (d) {
                     return d.target.id;
                 });
@@ -822,14 +822,14 @@
 
 
 
-            var links = force.links();
+            let links = force.links();
 
             links = [];
 
             edge = svg.selectAll(".edge").data(links);
 
-            var edgeExit = edge.exit().remove();
-            var circles = svg.selectAll("circle");
+            let edgeExit = edge.exit().remove();
+            let circles = svg.selectAll("circle");
 
 
             forceLinks = links;
@@ -842,7 +842,7 @@
 
 
 
-            var duration;
+            let duration;
 
             if (d.children) {
 
@@ -867,7 +867,7 @@
 
 
 
-                var tempDuration = 0;
+                let tempDuration = 0;
 
 
                 if (d.children != null){
@@ -895,7 +895,7 @@
 
             timeLineLen =  timeLineLen_Total * (duration / duration_total_ms);
 
-            //  var durationLabel  = "Took " + (duration / 1000000).toFixed(2) + " milliseconds";
+            //  let durationLabel  = "Took " + (duration / 1000000).toFixed(2) + " milliseconds";
 
             updateTimeLine(timeLineLen, getTimeLineLabel(duration));
 
@@ -918,7 +918,7 @@
             console.log('This this: ', this);
 
 
-            var otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
+            let otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
 
             if(inFocus == true){
 
@@ -961,12 +961,12 @@
 
 
 
-            // var thisEdge = d3.select("#edge_" +package.name);
+            // let thisEdge = d3.select("#edge_" +package.name);
 
-            var isFadeItems = svg.selectAll(".is-focus");
+            let isFadeItems = svg.selectAll(".is-focus");
 
 
-            var links = force.links();
+            let links = force.links();
 
 
 
@@ -979,7 +979,7 @@
 
 
 
-            var edgeExit = edge.exit().remove();
+            let edgeExit = edge.exit().remove();
 
             if(forceNodes.length > packagesNumber){
 
@@ -990,7 +990,7 @@
 
             // add links to any nearby nodes
 
-            var node = {};
+            let node = {};
             node.x = d.y;
             node.y = d.x;
             node.px = d.y;
@@ -1004,7 +1004,7 @@
             thisNode  = forceNodes.push(node);
 
 
-            var circles = svg.selectAll("circle");
+            let circles = svg.selectAll("circle");
 
 
 
@@ -1036,7 +1036,7 @@
 
 
 
-            var label = svg.selectAll(".forceLabel")
+            let label = svg.selectAll(".forceLabel")
                 .data(force.nodes());
 
             label.attr("x", function(d){ return d.x; })
@@ -1054,12 +1054,12 @@
 
 
 
-            // Delete the current notes section to prepare
+            // Delete the current processDetails section to prepare
             // for new information.
 
-            notes.selectAll('*').remove();
+            processDetails.selectAll('*').remove();
 
-            var commands = '';
+            let commands = '';
 
 
             if(d.argv != null){
@@ -1077,50 +1077,50 @@
             }
 
 
-            // Fill in the notes section with informationm
+            // Fill in the processDetails section with informationm
             // from the node. Because we want to transition
             // this to match the transitions on the graph,
             // we first set it's opacity to 0.
 
-            notes.style({'opacity': 0});
-            // Now add the notes content.
+            processDetails.style({'opacity': 0});
+            // Now add the processDetails content.
 
 
-            var fileNames = d.reads.sort().concat(d.writes.sort());
+            let fileNames = d.reads.sort().concat(d.writes.sort());
             let uniqFileNames = [...new Set(fileNames)];
 
 
-            //  var readFromDivHeader = notes.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
-            notes.append('h3').text("Process:").attr("href", "#ProcessName").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
-            notes.append('h5').text(d.name).attr("id", "ProcessName" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
+            //  let readFromDivHeader = processDetails.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
+            processDetails.append('h3').text("Process:").attr("href", "#ProcessName").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+            processDetails.append('h5').text(d.name).attr("id", "ProcessName" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
 
 
-            notes.append('h3').text("Commands:").attr("href", "#Commands").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
-            notes.append('h5').text(commands).attr("id", "Commands" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
+            processDetails.append('h3').text("Commands:").attr("href", "#Commands").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+            processDetails.append('h5').text(commands).attr("id", "Commands" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
 
-            notes.append('h3').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
-            notes.append('h6').text(uniqFileNames.length + " files").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
-            notes.append('input').attr("type", "search").attr("class", "fileSearch_input").attr("placeholder", "Search for listing files")
+            processDetails.append('h3').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+            processDetails.append('h6').text(uniqFileNames.length + " files").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
+            processDetails.append('input').attr("type", "search").attr("class", "fileSearch_input").attr("placeholder", "Search for listing files")
                 .style("margin-left", "10px;");
 
-            searchFilesInfoDiv = notes.append('div').attr("class", "searchFilesInfoDiv");
+            searchFilesInfoDiv = processDetails.append('div').attr("class", "searchFilesInfoDiv");
 
-            searchFilesList = notes.append('div').attr("class", "searchFilesList");
+            searchFilesList = processDetails.append('div').attr("class", "searchFilesList");
 
 
-            var filesList = [];
+            let filesList = [];
 
-            var fileNamesList = d.reads.sort().concat(d.writes.sort());
+            let fileNamesList = d.reads.sort().concat(d.writes.sort());
 
             fileNamesList.forEach(function(file){
 
 
-                var keyName = "\"" + file + "\"";
+                let keyName = "\"" + file + "\"";
 
                 if(keyName in fileDict){
 
 
-                    var file = fileDict[keyName];
+                    let file = fileDict[keyName];
 
                     filesList.push(file);
 
@@ -1131,25 +1131,25 @@
 
 
 
-            var filelistUL = searchFilesList.append('ul');
-            var fileCount = 1;
+            let filelistUL = searchFilesList.append('ul');
+            let fileCount = 1;
 
             filesList.forEach(function(file){
 
-                var id = "faq-" + fileCount;
-                var href = "#" + id;
+                let id = "faq-" + fileCount;
+                let href = "#" + id;
 
-                var fileLi =   filelistUL.append('li').attr("id",id ).attr("class", "noBeforeContent");
+                let fileLi =   filelistUL.append('li').attr("id",id ).attr("class", "noBeforeContent");
 
-                var fileH2 =  fileLi.append('h4');//.text(file.name);
-                var fileA =  fileH2.append('a').attr("href", href).text(file.name);
+                let fileH2 =  fileLi.append('h4');//.text(file.name);
+                let fileA =  fileH2.append('a').attr("href", href).text(file.name);
 
-                var fileDiv = fileLi.append('div');
+                let fileDiv = fileLi.append('div');
 
 
 
-                var proccess_Read = "";
-                var proccess_Write = "";
+                let proccess_Read = "";
+                let proccess_Write = "";
 
 
                 if(file.reads.length != 0){
@@ -1207,7 +1207,7 @@
 
 
 
-            var packageNames = d.packages.reads.sort().concat(d.packages.writes.sort());
+            let packageNames = d.packages.reads.sort().concat(d.packages.writes.sort());
             let uniqPackageNames = [...new Set(packageNames)];
 
 
@@ -1222,7 +1222,7 @@
             // With the content in place, transition
             // the opacity to make it visible.
 
-            notes.transition().style({'opacity': 1});
+            processDetails.transition().style({'opacity': 1});
 
 
             // 'use strict';
@@ -1231,13 +1231,13 @@
             // search & highlight
             ;( function( $, window, document, undefined )
             {
-                var $container = $( '.fileSearch' );
-                var $searchFilesListContainer = $container.find( '.searchFilesList' );
+                let $container = $( '.fileSearch' );
+                let $searchFilesListContainer = $container.find( '.searchFilesList' );
 
                 if( !$container.length ) return true;
 
 
-                var $input			= $container.find( '.fileSearch_input' ),
+                let $input			= $container.find( '.fileSearch_input' ),
                     $notfound		= $searchFilesListContainer.find( '.searchFilesList__notfound' ),
                     $items			= $searchFilesListContainer.find( '> ul > li' ),
                     $item			= $(),
@@ -1272,10 +1272,10 @@
                         $item.html( $item.html().replace( /<span class="highlight">([^<]+)<\/span>/gi, '$1' ) );
                     });
 
-                    var searchVal = $.trim( $input.val() ).toLowerCase();
+                    let searchVal = $.trim( $input.val() ).toLowerCase();
                     if( searchVal.length )
                     {
-                        for( var i in itemsIndexed )
+                        for( let i in itemsIndexed )
                         {
                             $item = $items.eq( i );
                             if( itemsIndexed[ i ].indexOf( searchVal ) != -1 )
@@ -1313,12 +1313,12 @@
 
             ;( function( $, window, document, undefined )
             {
-                var $container = $( '.fileSearch' );
-                var $searchFilesListContainer = $container.find( '.searchFilesList' );
+                let $container = $( '.fileSearch' );
+                let $searchFilesListContainer = $container.find( '.searchFilesList' );
 
                 if( !$container.length ) return true;
 
-                var $input			= $container.find( '.fileSearch_input' ),
+                let $input			= $container.find( '.fileSearch_input' ),
                     $items			= $searchFilesListContainer.find( '> ul > li' ),
                     $item			= $();
 
@@ -1340,10 +1340,10 @@
         function createFileTooTip(notesDiv,source, associationString){
 
 
-            var readsList;
-            var idString;
-            var idString_href;
-            var text_String ;
+            let readsList;
+            let idString;
+            let idString_href;
+            let text_String ;
 
             if(associationString == 'reads'){
 
@@ -1365,18 +1365,18 @@
 
             notesDiv.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", idString_href).text(text_String).style({'padding-left': 0, 'text-decoration': 'none', 'font': '8 px sans-serif' });
 
-            var readsFromDiv = notesDiv.append('div').attr("id", idString ).attr("class", "panel-collapse ");
+            let readsFromDiv = notesDiv.append('div').attr("id", idString ).attr("class", "panel-collapse ");
 
-            // var readsList = source.writes.sort();
-            var packagePath = '';
-            var newDetails ;
-            var newSummary;
-            var currentUL ;
+            // let readsList = source.writes.sort();
+            let packagePath = '';
+            let newDetails ;
+            let newSummary;
+            let currentUL ;
 
 
             if(readsList.length !=0){
 
-                for (var i = 0; i < readsList.length; i++ ){
+                for (let i = 0; i < readsList.length; i++ ){
 
                     packagePath = setPackagePath(readsList, i , i + 1);
                     newDetails = readsFromDiv.append('details');
@@ -1386,9 +1386,9 @@
                     while(readsList[i].includes(packagePath) ){
 
 
-                        var thisReadArray = ["\"" + readsList[i] + "\""];
+                        let thisReadArray = ["\"" + readsList[i] + "\""];
 
-                        var fileName = readsList[i].replace(packagePath,"");
+                        let fileName = readsList[i].replace(packagePath,"");
 
                         currentUL.append('li')
                             .data(thisReadArray)
@@ -1396,10 +1396,10 @@
                             .on("mouseover", function(d) {
 
 
-                                var thisFile =  fileDict[d];
+                                let thisFile =  fileDict[d];
 
-                                var proccess_Read = "";
-                                var proccess_Write = "";
+                                let proccess_Read = "";
+                                let proccess_Write = "";
 
 
                                 if(thisFile.reads.length != 0){
@@ -1482,15 +1482,15 @@
 
 
 
-        function createPackageTooTip(notes,source){
+        function createPackageTooTip(processDetails,source){
 
 
             console.log('createPackageTooTip source', source);
 
-            var idString = "package_Div";
+            let idString = "package_Div";
 
-            var packageNames = source.packages.reads.sort().concat(source.packages.writes.sort());
-            var packages = {};
+            let packageNames = source.packages.reads.sort().concat(source.packages.writes.sort());
+            let packages = {};
 
 
             packageNames.forEach(function (package) {
@@ -1510,17 +1510,17 @@
 
 
 
-            var fileList = source.reads.sort().concat(source.writes.sort());
+            let fileList = source.reads.sort().concat(source.writes.sort());
 
             fileList.forEach(function(file){
 
 
-                var keyName = "\"" + file + "\"";
+                let keyName = "\"" + file + "\"";
 
                 if(keyName in fileDict){
 
 
-                    var file = fileDict[keyName];
+                    let file = fileDict[keyName];
 
                     packages[file.package].files.push(file);
 
@@ -1532,13 +1532,13 @@
 
 
 
-            var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
+            let readsFromDiv = processDetails.append('div').attr("id", idString ).attr("class", "panel-collapse ");
 
 
-            var newDetails ;
-            var newSummary;
-            var currentUL ;
-            var container;
+            let newDetails ;
+            let newSummary;
+            let currentUL ;
+            let container;
 
 
             if(Object.keys(packages).length !=0){
@@ -1547,7 +1547,7 @@
                 Object.keys(packages).forEach(function(key) {
 
 
-                    var summaryText = "";
+                    let summaryText = "";
                     if(packages[key].files.length > 1){
 
                         summaryText = key + "    (" +  packages[key].files.length + " files)";
@@ -1561,7 +1561,7 @@
                     container = readsFromDiv.append('div');
 
 //
-//                var checkBox =  container.append("foreignObject")
+//                let checkBox =  container.append("foreignObject")
 //                    .attr("width", 100)
 //                    .attr("height", 100)
 //                    .style("float", 'left')
@@ -1626,23 +1626,23 @@
 
         function createAllPackageList(packages){
 
-            //  var packages = {};
+            //  let packages = {};
 
 
-            var allPackageListDiv = d3.selectAll(".All_Packages");
-            var mainContainer;
+            let allPackageListDiv = d3.selectAll(".All_Packages");
+            let mainContainer;
 
 
             allPackageListDiv.append('h3').text("All Packages:").attr("id", "AllPackagesDiv" ).attr("href", "#AllPackages").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
-            // var readsFromDiv = notes.append('div').attr("id", idString ).attr("class", "panel-collapse ");
+            // let readsFromDiv = processDetails.append('div').attr("id", idString ).attr("class", "panel-collapse ");
             mainContainer = allPackageListDiv.append('div').attr("id", "AllPackages" ).attr("class", "panel-collapse ");
 
             mainContainer.append('h6').text(packages.length + " packages").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'#778899' ,  'font-size': '15px' });
 
-            var newDetails ;
-            var newSummary;
-            var currentUL ;
-            var subContainer;
+            let newDetails ;
+            let newSummary;
+            let currentUL ;
+            let subContainer;
 
 
 
@@ -1651,7 +1651,7 @@
 
                 //    packages[package.name] = {["version"]: package.version, ["files"]:package.files};
 
-                var summaryText = "";
+                let summaryText = "";
 
                 if(package.files.length > 1){
 
@@ -1664,7 +1664,7 @@
 
                 subContainer = mainContainer.append('div');
 
-                var checkBox =  subContainer.append("input")
+                let checkBox =  subContainer.append("input")
                     .attr("type", "checkbox")
                     .attr("width", 100)
                     .attr("height", 100)
@@ -1674,9 +1674,9 @@
                     .on("click", function(d, i){
 
 
-                        var thisPackage = d3.select("#package_" +package.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
-                        var thisEdge = d3.select("#edge_" +package.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
-                        var thisPackageLabel = d3.select("#packageLabel_" +package.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
+                        let thisPackage = d3.select("#package_" +package.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
+                        let thisEdge = d3.select("#edge_" +package.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
+                        let thisPackageLabel = d3.select("#packageLabel_" +package.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
 
 
 
@@ -1777,7 +1777,7 @@
 
                 if (error) throw error;
 
-                var tempMaxRunTime = 0;
+                let tempMaxRunTime = 0;
 
 
 
@@ -1785,9 +1785,9 @@
 
                     package.files.forEach(function (file) {
 
-                        var keyName = "\"" + file + "\"";
+                        let keyName = "\"" + file + "\"";
 
-                        var fileInfo = [];
+                        let fileInfo = [];
                         fileInfo["reads"] =[];
                         fileInfo["writes"] =[];
                         fileInfo["package"] = package.name;
@@ -1804,9 +1804,9 @@
                 data.other_files.forEach(function (file) {
 
 
-                    var keyName = "\"" + file + "\"";
+                    let keyName = "\"" + file + "\"";
 
-                    var fileInfo = [];
+                    let fileInfo = [];
                     fileInfo["reads"] =[];
                     fileInfo["writes"] =[];
                     fileInfo["package"] ='other_files';
@@ -1828,7 +1828,7 @@
 
                             _process.reads.forEach(function(file){
 
-                                var keyName = "\"" + file + "\"";
+                                let keyName = "\"" + file + "\"";
 
 
 
@@ -1850,7 +1850,7 @@
 
 
 
-                                var keyName = "\"" + file + "\"";
+                                let keyName = "\"" + file + "\"";
 
                                 if(keyName in fileDict){
 
@@ -1870,23 +1870,23 @@
                 });
 
 
-                var tempPackageX = 0;
-                var tempPackageY = -200;
-                var isAlternativeOn = 0;
-                var sections = [];
+                let tempPackageX = 0;
+                let tempPackageY = -200;
+                let isAlternativeOn = 0;
+                let sections = [];
 
                 //Handle Packages to create force data
                 data.packages.forEach(function (package) {
 
 
-                    var thisPackage = {["name"]: package.name, ["version"]: package.version, ["section"] : package.section, ["files"] : [] , ["cx"]: 0, ["cy"]: tempPackageY , ["OGy"]: tempPackageY, ["color"]: "" , ["radius"] : maxRadius};
+                    let thisPackage = {["name"]: package.name, ["version"]: package.version, ["section"] : package.section, ["files"] : [] , ["cx"]: 0, ["cy"]: tempPackageY , ["OGy"]: tempPackageY, ["color"]: "" , ["radius"] : maxRadius};
 
                     package.files.forEach(function (file) {
 
 
-                        var keyName = "\"" + file + "\"";
+                        let keyName = "\"" + file + "\"";
 
-                        var thisFile =  fileDict[keyName];
+                        let thisFile =  fileDict[keyName];
                         thisPackage.files.push(thisFile);
 
                         // forceNodes.nodes.push(thisFile);
@@ -1959,19 +1959,19 @@
 
                     run.processes.forEach(function(_process){
 
-                        var packages = {["reads"]:[], ["writes"]: []};
-                        var packagesName = [];
+                        let packages = {["reads"]:[], ["writes"]: []};
+                        let packagesName = [];
 
                         if(_process.parent == null){
 
-                            var node = {["name"]: _process.long_name, ["parent"]: "null", ["rule"] : "null", ["description"]: _process.description, ["reads"]: _process.reads ,  ["writes"]: _process.writes  ,["argv"]: _process.argv  , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
+                            let node = {["name"]: _process.long_name, ["parent"]: "null", ["rule"] : "null", ["description"]: _process.description, ["reads"]: _process.reads ,  ["writes"]: _process.writes  ,["argv"]: _process.argv  , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
 
 
                             if(_process.reads != null){
 
                                 _process.reads.forEach(function(file){
 
-                                    var keyName = "\"" + file + "\"";
+                                    let keyName = "\"" + file + "\"";
 
                                     if( keyName in fileDict){
 
@@ -1993,7 +1993,7 @@
 
 
 
-                                    var keyName = "\"" + file + "\"";
+                                    let keyName = "\"" + file + "\"";
 
                                     if(keyName in fileDict){
 
@@ -2025,18 +2025,18 @@
                         }
                         else {
 
-                            var parentProcess = run.processes[ ( _process.parent[0] ) ];
+                            let parentProcess = run.processes[ ( _process.parent[0] ) ];
 
-                            var node = {["name"]: _process.long_name, ["parent"]: parentProcess.long_name, ["rule"] : _process.parent[1], ["description"]: _process.description ,  ["reads"]: _process.reads ,  ["writes"]: _process.writes ,["argv"]: _process.argv , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
+                            let node = {["name"]: _process.long_name, ["parent"]: parentProcess.long_name, ["rule"] : _process.parent[1], ["description"]: _process.description ,  ["reads"]: _process.reads ,  ["writes"]: _process.writes ,["argv"]: _process.argv , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
 
 
-                            // var filesDict = {} ;
+                            // let filesDict = {} ;
 
                             if(_process.reads != null){
 
                                 _process.reads.forEach(function(file){
 
-                                    var keyName = "\"" + file + "\"";
+                                    let keyName = "\"" + file + "\"";
 
                                     //console.log('Inner keyName:', fileDict[keyName]);
                                     //console.log('keyName:', keyName);
@@ -2064,7 +2064,7 @@
 
 
 
-                                    var keyName = "\"" + file + "\"";
+                                    let keyName = "\"" + file + "\"";
 
                                     if(keyName in fileDict){
 
@@ -2102,7 +2102,7 @@
                     console.log('rawData', rawData);
 
 
-                    var dataMap = rawData.reduce(function(map, node) {
+                    let dataMap = rawData.reduce(function(map, node) {
                         map[node.name] = node;
                         return map;
                     }, {});
@@ -2110,7 +2110,7 @@
 
                     rawData.forEach(function(node) {
                         // add to parent
-                        var parent = dataMap[node.parent];
+                        let parent = dataMap[node.parent];
                         if (parent) {
                             // create child array if it doesn't exist
                             (parent.children || (parent.children = []))
@@ -2163,16 +2163,16 @@
                 rootStartTime = root.start_time;
 
 
-                var duration_ms = (root.children[0].start_time - rootStartTime) / 1000000;
+                let duration_ms = (root.children[0].start_time - rootStartTime) / 1000000;
 
-                var duration = new moment.duration(duration_ms);
+                let duration = new moment.duration(duration_ms);
 
-                var durationLabel  = "Took " + duration.asMilliseconds().toFixed(2) + " milliseconds";
+                let durationLabel  = "Took " + duration.asMilliseconds().toFixed(2) + " milliseconds";
 
 
                 duration_total_ms =  (tempMaxRunTime - rootStartTime) / 1000000 ;
 
-                var durationLabel_total  = getTimeLineLabel(duration_total_ms,"total");
+                let durationLabel_total  = getTimeLineLabel(duration_total_ms,"total");
 
 
                 // timeLineLen = root.x0 / 2;
@@ -2218,9 +2218,9 @@
 
         function getTimeLineLabel(duration_ms, isTotalString){
 
-            var duration_total = new moment.duration(duration_ms);
+            let duration_total = new moment.duration(duration_ms);
 
-            var durationLabel_total  = '';
+            let durationLabel_total  = '';
 
 
             if(duration_total.asMilliseconds() < 60000){
@@ -2266,7 +2266,7 @@
         function timeLineDraw(length, durationLabel){
 
             //  Draw the timeline for currentduration
-            var lines = svg.append("g")
+            let lines = svg.append("g")
                 .attr("class", "timeLineGroup")
                 .append("line")
                 .attr("class", "timeLine")
@@ -2280,7 +2280,7 @@
 
 
             // Update the link text
-            var timeLineText = svg.selectAll(".timeLineGroup").append("text")
+            let timeLineText = svg.selectAll(".timeLineGroup").append("text")
                 .attr("y", height + 20)//magic number here
                 .attr("x", length / 2)
                 .attr('text-anchor', 'middle')
@@ -2294,7 +2294,7 @@
         function totalTimeLineDraw(length, durationLabel){
 
             // Draw the timeline for total duration.
-            var lines = svg.append("g")
+            let lines = svg.append("g")
                 .attr("class", "TotalTimeLineGroup")
                 .append("line")
                 .attr("class", "timeLine_Total")
@@ -2308,7 +2308,7 @@
 
 
             // Update the link text
-            var timeLineText = svg.selectAll(".TotalTimeLineGroup").append("text")
+            let timeLineText = svg.selectAll(".TotalTimeLineGroup").append("text")
                 .attr("y", height + 20)//magic number here
                 .attr("x", length )
                 .attr('text-anchor', 'middle')
@@ -2404,16 +2404,16 @@
 
         // Resolve collisions between nodes.
         function collide(alpha) {
-            var quadtree = d3.geom.quadtree(forceNodes);
+            let quadtree = d3.geom.quadtree(forceNodes);
             return function (d) {
-                var r = d.radius + maxRadius + padding,
+                let r = d.radius + maxRadius + padding,
                     nx1 = d.x - r,
                     nx2 = d.x + r,
                     ny1 = d.y - r,
                     ny2 = d.y + r;
                 quadtree.visit(function (quad, x1, y1, x2, y2) {
                     if (quad.point && (quad.point !== d)) {
-                        var x = d.x - quad.point.x,
+                        let x = d.x - quad.point.x,
                             y = d.y - quad.point.y,
                             l = Math.sqrt(x * x + y * y),
                             r = d.radius + quad.point.radius + (d.color !== quad.point.color) * padding;
@@ -2464,7 +2464,7 @@
         function forceDraw(data) {
 
 
-            var nodes = data.packages;
+            let nodes = data.packages;
 
 
             force = d3.layout.force()
@@ -2498,9 +2498,9 @@
                 .style("fill",function(d) {
 
 
-                    if(d.section == packageSections[d.section].name){
+                    if(d.section == sectionsInPackages[d.section].name){
 
-                        return packageSections[d.section].color;
+                        return sectionsInPackages[d.section].color;
                     }
 
                     return   "#5e3cc3" ; // reutn default ReproZip Color
@@ -2508,7 +2508,7 @@
                 .on("click", function(d) {
 
 
-                    var links = force.links();
+                    let links = force.links();
 
                     links = [];
 
@@ -2516,7 +2516,7 @@
                     edge = svg.selectAll(".edge").data(links);
 
 
-                    var edgeExit = edge.exit().remove();
+                    let edgeExit = edge.exit().remove();
 
 
                     if(forceNodes.length > packagesNumber){
@@ -2527,7 +2527,7 @@
                     }
 
 
-                    var associatedProcesses = [];
+                    let associatedProcesses = [];
 //
 //                if (d.name != "other_files"){
 //
@@ -2554,7 +2554,7 @@
 
                     console.log("associatedProcesses", associatedProcesses);
 
-                    // var currentDisplayingNodes = tree.nodes(root).reverse();
+                    // let currentDisplayingNodes = tree.nodes(root).reverse();
 
 
                     console.log("currentDisplayingNodes", currentDisplayingNodes);
@@ -2574,7 +2574,7 @@
                                 process.fixed = true;
 
 
-                                var node = {};
+                                let node = {};
                                 node.x = process.y;
                                 node.y = process.x;
                                 node.px = process.y;
@@ -2596,7 +2596,7 @@
 
                     forceLinks = links;
 
-                    var label = svg.selectAll(".forceLabel")
+                    let label = svg.selectAll(".forceLabel")
                         .data(force.nodes());
 
                     label.attr("x", function(d){ return d.x; })
@@ -2648,13 +2648,13 @@
 
         function updateTimeLine(length, durationLabel){
 
-            var timeline =  svg.selectAll(".timeLine");
+            let timeline =  svg.selectAll(".timeLine");
 
             timeline.transition()
                 .attr("x2", length);
 
 
-            var timeLineText = d3.selectAll(".timeLineText")
+            let timeLineText = d3.selectAll(".timeLineText")
                 .transition()
                 .attr("x", timeLineLen / 2)
                 .attr('text-anchor', 'middle')
@@ -2678,13 +2678,13 @@
 
             // console.log('nextIndex: ', nextIndex);
 
-            var TestingPackagePath = '';
+            let TestingPackagePath = '';
 
             if(fileList[nextIndex] != null){
 
 
                 a1_Len =  fileList[index].length;
-                var i = 0;
+                let i = 0;
 
                 while(i < a1_Len && fileList[index].charAt(i)===fileList[nextIndex].charAt(i)){
 
@@ -2738,8 +2738,8 @@
 
             edge = svg.selectAll(".edge").data(links);
 
-            var edgeExit = edge.exit().remove();
-            var circles = svg.selectAll("circle");
+            let edgeExit = edge.exit().remove();
+            let circles = svg.selectAll("circle");
 
             forceLinks = links;
 
@@ -2754,18 +2754,18 @@
             let uniq = [...new Set(sections)];
             sections = uniq;
 
-            var linearScale = d3.scale.linear().domain([0, sections.length]).range([0,400]);
+            let linearScale = d3.scale.linear().domain([0, sections.length]).range([0,400]);
 
-            var i = 0;
+            let i = 0;
 
             sections.forEach(function(section){
 
 
-                var thisSection = [];
+                let thisSection = [];
                 thisSection["name"] = section;
                 thisSection["color"] = "hsl(" + linearScale(i) + ",60%,80%)";
 
-                packageSections[section] = thisSection;
+                sectionsInPackages[section] = thisSection;
 
                 i++;
 
@@ -2796,7 +2796,7 @@
 
 
         function expand(d){
-            var children = (d.children)?d.children:d._children;
+            let children = (d.children)?d.children:d._children;
             if (d._children) {
                 d.children = d._children;
                 d._children = null;
