@@ -150,8 +150,8 @@
 
                 function initialize() {
                     var documents = [window.document],
-                        SVGSources = [];
-                    iframes = document.querySelectorAll("iframe"),
+                        SVGSources = [],
+                        iframes = document.querySelectorAll("iframe"),
                         objects = document.querySelectorAll("object");
 
                     [].forEach.call(iframes, function(el) {
@@ -160,7 +160,7 @@
                                 documents.push(el.contentDocument);
                             }
                         } catch(err) {
-                            console.log(err)
+                            console.log(err);
                         }
                     });
 
@@ -170,7 +170,7 @@
                                 documents.push(el.contentDocument);
                             }
                         } catch(err) {
-                            console.log(err)
+                            console.log(err);
                         }
                     });
 
@@ -179,7 +179,7 @@
                         var newSources = getSources(doc, styles);
                         for (var i = 0; i < newSources.length; i++) {
                             SVGSources.push(newSources[i]);
-                        };
+                        }
                     });
 
                     if (SVGSources.length > 1) {
@@ -202,7 +202,7 @@
                                     s2.left += 38;
                                 }
                             }
-                        })
+                        });
                     });
 
                     var buttonsContainer = document.createElement("div");
@@ -246,7 +246,7 @@
 
                         var button = document.createElement("button");
                         buttonWrapper.appendChild(button);
-                        button.setAttribute("data-source-id", i)
+                        button.setAttribute("data-source-id", i);
                         button.style["width"] = "150px";
                         button.style["font-size"] = "12px";
                         button.style["line-height"] = "1.4em";
@@ -285,7 +285,7 @@
                         svg.insertBefore(defsEl, svg.firstChild); //TODO   .insert("defs", ":first-child")
                         // defsEl.setAttribute("class", "svg-crowbar");
 
-                        var styleEl = document.createElement("style")
+                        var styleEl = document.createElement("style");
                         defsEl.appendChild(styleEl);
                         styleEl.setAttribute("type", "text/css");
 
@@ -330,7 +330,7 @@
                         filename = window.document.title.replace(/[^a-z0-9]/gi, '-').toLowerCase();
                     }
 
-                    var url = window.URL.createObjectURL(new Blob(source.source, { "type" : "text\/xml" }));
+                    var url = window.URL.createObjectURL(new Blob(source.source, { "type" : "text/xml" }));
 
                     var a = document.createElement("a");
                     body.appendChild(a);
@@ -381,7 +381,7 @@
 
 
 
-        };
+        }
 
     </script>
 
@@ -397,7 +397,7 @@
 
                 inFocus = $(this).prop('checked');
 
-                if(inFocus == false){
+                if(inFocus === false){
 
                     var otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
 
@@ -436,7 +436,7 @@
 
 
                             }
-                        })
+                        });
                     });
 
                 }
@@ -489,7 +489,7 @@
 
             })
 
-        })
+        });
     </script>
 
     <script>
@@ -541,7 +541,7 @@
             width = 4500 - margin.right - margin.left,
             height = 1400 - margin.top - margin.bottom,
             padding = 3.5, // separation between same-color nodes
-            maxRadius = 20 // radious for each package ;
+            maxRadius = 20; // radious for each package
 
         var timeLineLen;
         var timeLineLen_Total;
@@ -822,7 +822,7 @@
                 .duration(duration)
                 .attr("transform", function (d) {
                     return "translate(" + ((d.source.y + d.target.y) / 2) + "," + ((d.source.x + d.target.x) / 2) + ")";
-                })
+                });
 
 
             //Transition exiting link text to the parent's new position.
@@ -902,7 +902,7 @@
                         if ((node.start_time - rootStartTime) > tempDuration) {
 
                             tempDuration = node.start_time - rootStartTime;
-                        };
+                        }
 
 
                     });
@@ -1048,7 +1048,7 @@
 
                     }
 
-                })
+                });
 
 
 
@@ -1098,7 +1098,7 @@
             }
             else{
 
-                commands = 'No argument for this process'
+                commands = 'No argument for this process';
             }
 
 
@@ -1179,24 +1179,24 @@
 
                 if(file.reads.length != 0){
                     file.reads.forEach(function(process){
-                        proccess_Read += process + "<br/>"
+                        proccess_Read += process + "<br/>";
 
                     });
                 }
                 else {
 
-                    proccess_Read = "Not read by any process."
+                    proccess_Read = "Not read by any process.";
                 }
 
                 if(file.writes.length != 0){
                     file.writes.forEach(function(process){
-                        proccess_Write += process + "<br/>"
+                        proccess_Write += process + "<br/>";
 
                     });
                 }
                 else {
 
-                    proccess_Write = "Not written by any process."
+                    proccess_Write = "Not written by any process.";
                 }
 
                 fileDiv.html(
@@ -1211,7 +1211,7 @@
                     "<h5>Written By: </h5>" +
                     proccess_Write
 
-                )
+                );
 
 
 
@@ -1429,24 +1429,24 @@
 
                                 if(thisFile.reads.length != 0){
                                     thisFile.reads.forEach(function(process){
-                                        proccess_Read += process + "<br/>"
+                                        proccess_Read += process + "<br/>";
 
                                     });
                                 }
                                 else {
 
-                                    proccess_Read = "Not read by any process."
+                                    proccess_Read = "Not read by any process.";
                                 }
 
                                 if(thisFile.writes.length != 0){
                                     thisFile.writes.forEach(function(process){
-                                        proccess_Write += process + "<br/>"
+                                        proccess_Write += process + "<br/>";
 
                                     });
                                 }
                                 else {
 
-                                    proccess_Write = "Not written by any process."
+                                    proccess_Write = "Not written by any process.";
                                 }
 
                                 tooltip.transition()
@@ -1528,7 +1528,7 @@
 
                         packages[package].version = "Version: " + forceDataPackage.version;
                     }
-                })
+                });
 
 
             });
@@ -1635,7 +1635,7 @@
                             .attr("class", 'noBeforeContent')
                             .text(file.name);
 
-                    })
+                    });
 
                 });
 
@@ -1783,10 +1783,10 @@
                         .attr("class", 'noBeforeContent')
                         .text(file.name);
 
-                })
+                });
 
 
-            })
+            });
 
 
 
@@ -1823,7 +1823,7 @@
 
 
 
-                    })
+                    });
                 });
 
 
@@ -1868,7 +1868,7 @@
 
                             });
 
-                        };
+                        }
 
 
                         if (_process.writes != null){
@@ -1890,7 +1890,7 @@
                         }
 
 
-                    })
+                    });
 
 
                 });
@@ -2010,7 +2010,7 @@
 
                                 let uniq = [...new Set(packages.reads)];
                                 packages.reads = uniq;
-                            };
+                            }
 
 
 
@@ -2081,7 +2081,7 @@
 
                                 let uniq = [...new Set(packages.reads)];
                                 packages.reads = uniq;
-                            };
+                            }
 
 
 
@@ -2236,7 +2236,7 @@
 
                 // createPackageTooTip(searchFilesInfoDiv,d);
 
-            })
+            });
 
 
 
@@ -2353,7 +2353,7 @@
             edge.enter().insert("line", ".package")
                 .attr("class", "edge")
                 .attr("id",  function(d){
-                    return  "edge_" + d.target.name})
+                    return  "edge_" + d.target.name; })
                 .attr("x1", function(d){ return d.source.x;
                 })
                 .attr("y1", function(d){ return d.source.y; })
@@ -2390,7 +2390,7 @@
             edge.enter().insert("line", ".package")
                 .attr("class", "edge")
                 .attr("id",  function(d){
-                    return  "edge_" + d.target.name})
+                    return  "edge_" + d.target.name; })
                 .attr("x1", function(d){ return d.source.y;
                 })
                 .attr("y1", function(d){ return d.source.x; })
@@ -2570,7 +2570,7 @@
 
                             associatedProcesses.push(process);
 
-                        })
+                        });
 
                     });
 
@@ -2615,7 +2615,7 @@
 
                             }
 
-                        })
+                        });
 
                     });
 
@@ -2714,7 +2714,7 @@
 
                 while(i < a1_Len && fileList[index].charAt(i)===fileList[nextIndex].charAt(i)){
 
-                    i++
+                    i++;
                 }
 
                 if (fileList[index].substring(0,i) == '/'){
