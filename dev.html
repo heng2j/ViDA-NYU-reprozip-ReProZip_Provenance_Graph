@@ -115,6 +115,10 @@
     </div>
     <!-- /#wrapper -->
 
+
+
+</div>
+
 <code>
     <script src="js/index.js"></script>
 
@@ -404,13 +408,13 @@
 
                   inFocus = $(this).prop('checked');
 
-                  if(inFocus == false){
+                  if(!inFocus){
                       let otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
 
                       otherSVG.transition().style("opacity", 1);
 
                   }
-                  else if (inFocus == true){
+                  else{
                       let otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
 
                       otherSVG.transition().style("opacity", 0.3);
@@ -427,8 +431,8 @@
 
                           currentSelectedNode.packages.reads.forEach(function (readFile) {
 
-                              if(target.name == readFile){
-
+                             {
+                                  if(target.name === readFile)
                                   console.log("d3.select:",d3.select("#package_" + readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"")).style("opacity", 1));
 
                                   d3.select("#package_" + readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"")).style("opacity", 1);
@@ -504,7 +508,7 @@
 
 
 
-    <!-- Code Section for d3 visualization  -->
+    <!-- GLobal variables for d3 visualization  -->
       <script>
 
 
@@ -515,9 +519,9 @@
 
           /*-- define the current data set for the visualization  --*/
 
-          //let currentJsonFile = "bash-count.json";
-          //let currentJsonFile = "stacked-up-website.json";
-          const currentJsonFile = "ache.json";
+          const currentJsonFile = "bash-count.json";
+          //const currentJsonFile = "stacked-up-website.json";
+          //const currentJsonFile = "ache.json";
 
           // boolean to indicate if the switch of focusing process and associated packages is toggled
           let inFocus = false;
@@ -570,9 +574,11 @@
 
 
 
+</script>
 
 
-
+    <!-- Functions for d3 visualization  -->
+    <script>
 
           //-- Click any empty space within the svg body to reset the location for the packages and detached the links between the packages and processes
           d3.select("body").on("click",function(){
@@ -592,7 +598,6 @@
 
           // update Tree function
           function update(source) {
-
 
               // Compute the new tree layout.
               let nodes = tree.nodes(root).reverse(),
@@ -635,7 +640,7 @@
   //                    $input.on( 'keyup', function()
   //                    {
   //                        $item = $items.not( '.is-hidden' );
-  //                        if( $item.length == 1 )
+  //                        if( $item.length === 1 )
   //                            $item.addClass( 'js--autoshown is-active' );
   //                        else
   //                            $items.filter( '.js--autoshown' ).removeClass( 'js--autoshown is-active' );
@@ -746,7 +751,6 @@
                       return d.target.id;
                   });
 
-              //  console.log('linktext',linktext);
 
 
               linktext.enter()
@@ -798,8 +802,9 @@
 
               edge = svg.selectAll(".edge").data(links);
 
-              let edgeExit = edge.exit().remove();
-              let circles = svg.selectAll("circle");
+              //Empty edges.
+             edge.exit().remove();
+             svg.selectAll("circle");
 
 
               forceLinks = links;
@@ -810,7 +815,7 @@
 
 
 
-              let duration;
+              let newTimelineDuration;
 
               if (d.children) {
 
@@ -822,7 +827,7 @@
 
                   console.log('Close');
 
-                  duration = (d.start_time - rootStartTime) / 1000000;
+                  newTimelineDuration = (d.start_time - rootStartTime) / 1000000;
 
 
               } else {
@@ -856,16 +861,16 @@
                   }
 
 
-                  duration = tempDuration / 1000000;  //d.children[0].start_time - rootStartTime;
+                  newTimelineDuration = tempDuration / 1000000;  //d.children[0].start_time - rootStartTime;
 
 
               }
 
-              timeLineLen =  timeLineLen_Total * (duration / duration_total_ms);
+              timeLineLen =  timeLineLen_Total * (newTimelineDuration / duration_total_ms);
 
               //  let durationLabel  = "Took " + (duration / 1000000).toFixed(2) + " milliseconds";
 
-              updateTimeLine(timeLineLen, getTimeLineLabel(duration));
+              updateTimeLine(timeLineLen, getTimeLineLabel(newTimelineDuration));
 
 
 
@@ -888,7 +893,7 @@
 
               let otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
 
-              if(inFocus == true){
+              if(inFocus === true){
 
 
                   otherSVG.style("opacity", 0.3);
@@ -925,23 +930,11 @@
 
 
 
-
-              // let thisEdge = d3.select("#edge_" +package.name);
-
-              let isFadeItems = svg.selectAll(".is-focus");
-
-
               let links = force.links();
 
-
-
-
               links = [];
-              //edge = [];
-
 
               edge = svg.selectAll(".edge").data(links);
-
 
 
               let edgeExit = edge.exit().remove();
@@ -949,7 +942,6 @@
               if(forceNodes.length > packagesNumber){
 
                   forceNodes.pop();
-
 
               }
 
@@ -966,7 +958,7 @@
 
 
 
-              thisNode  = forceNodes.push(node);
+             let thisNode  = forceNodes.push(node);
 
 
               let circles = svg.selectAll("circle");
@@ -977,12 +969,12 @@
 
                   d.packages.reads.forEach(function (readFile) {
 
-                      if(target.name == readFile){
+                      if(target.name === readFile){
 
 
 
-                          d3.select("#package_" + readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"")).style("opacity", 1);
-                          d3.select("#packageLabel_" + readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"")).style("opacity", 1);
+                          d3.select("#package_" + readFile.replace(/[.,\/#!$%&;:+{}=\-_`~()]/g,"")).style("opacity", 1);
+                          d3.select("#packageLabel_" + readFile.replace(/[.,\/#!$%&;:+{}=\-_`~()]/g,"")).style("opacity", 1);
 
                           links.push({source: node, target: target});
 
@@ -999,8 +991,6 @@
               forceLinks = links;
 
 
-
-
               let label = svg.selectAll(".forceLabel")
                   .data(force.nodes());
 
@@ -1013,7 +1003,6 @@
 
 
               restart();
-
 
 
 
@@ -1056,11 +1045,11 @@
 
 
               //  let readFromDivHeader = processDetails.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
-              processDetails.append('h3').text("Process:").attr("href", "#ProcessName").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+              processDetails.append('h3').text("Process:").attr("href", "#ProcessName").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
               processDetails.append('h5').text(d.name).attr("id", "ProcessName" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
 
 
-              processDetails.append('h3').text("Commands:").attr("href", "#Commands").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+              processDetails.append('h3').attr("class", "collapsible").append('a').text("Commands:").attr("href", "#Commands").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
               processDetails.append('h5').text(commands).attr("id", "Commands" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
 
               processDetails.append('h3').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
@@ -1085,9 +1074,9 @@
                   if(keyName in fileDict){
 
 
-                      let file = fileDict[keyName];
+                      let thisFile = fileDict[keyName];
 
-                      filesList.push(file);
+                      filesList.push(thisFile);
 
                   }
 
@@ -1107,10 +1096,9 @@
                   let fileLi =   filelistUL.append('li').attr("id",id ).attr("class", "noBeforeContent");
 
                   let fileH2 =  fileLi.append('h4');//.text(file.name);
-                  let fileA =  fileH2.append('a').attr("href", href).text(file.name);
+                  fileH2.append('a').attr("href", href).text(file.name);
 
                   let fileDiv = fileLi.append('div');
-
 
 
                   let proccess_Read = "";
@@ -1224,7 +1212,7 @@
                       $(".searchFilesList").show();
 
 
-                      if( e.keyCode == 13 ) // enter
+                      if( e.keyCode === 13 ) // enter
                       {
 
                           $input.trigger( 'blur' );
@@ -1257,7 +1245,7 @@
 
                       }
 
-                      $notfound.toggleClass( 'is-visible', $items.not( '.is-hidden' ).length == 0 );
+                      $notfound.toggleClass( 'is-visible', $items.not( '.is-hidden' ).length === 0 );
                   });
               })( jQuery, window, document );
 
@@ -1290,7 +1278,7 @@
                   $input.on( 'keyup', function()
                   {
                       $item = $items.not( '.is-hidden' );
-                      if( $item.length == 1 )
+                      if( $item.length === 1 )
                           $item.addClass( 'js--autoshown is-active' );
                       else
                           $items.filter( '.js--autoshown' ).removeClass( 'js--autoshown is-active' );
@@ -1310,14 +1298,14 @@
               let idString_href;
               let text_String ;
 
-              if(associationString == 'reads'){
+              if(associationString === 'reads'){
 
                   idString = "readsToDiv";
                   idString_href = "#readsToDiv";
                   text_String = "Reads from:";
                   readsList = source.reads.sort();
               }
-              else if (associationString == 'writes'){
+              else if (associationString === 'writes'){
 
                   idString = "writesToDiv";
                   idString_href = "#writesToDiv";
@@ -1335,7 +1323,6 @@
               // let readsList = source.writes.sort();
               let packagePath = '';
               let newDetails ;
-              let newSummary;
               let currentUL ;
 
 
@@ -1345,7 +1332,9 @@
 
                       packagePath = setPackagePath(readsList, i , i + 1);
                       newDetails = readsFromDiv.append('details');
-                      newSummary = newDetails.append('summary').text(packagePath);
+
+                      newDetails.append('summary').text(packagePath);
+
                       currentUL = newDetails.append('ul');
 
                       while(readsList[i].includes(packagePath) ){
@@ -1447,7 +1436,7 @@
 
 
 
-          function createPackageTooTip(processDetails,source){
+          function createPackageTooTip(processDetails_Div,source){
 
 
               console.log('createPackageTooTip source', source);
@@ -1458,15 +1447,15 @@
               let packages = {};
 
 
-              packageNames.forEach(function (package) {
+              packageNames.forEach(function (thisPackage) {
 
-                  packages[package] = {["version"]:"", ["files"]:[]};
+                  packages[thisPackage] = {["version"]:"", ["files"]:[]};
 
                   forceData.packages.forEach(function(forceDataPackage){
 
-                      if(forceDataPackage.name == package && forceDataPackage.name != "other_files" ){
+                      if(forceDataPackage.name === thisPackage && forceDataPackage.name != "other_files" ){
 
-                          packages[package].version = "Version: " + forceDataPackage.version;
+                          packages[thisPackage].version = "Version: " + forceDataPackage.version;
                       }
                   })
 
@@ -1485,9 +1474,9 @@
                   if(keyName in fileDict){
 
 
-                      let file = fileDict[keyName];
+                      let thisFile = fileDict[keyName];
 
-                      packages[file.package].files.push(file);
+                      packages[thisFile.package].files.push(thisFile);
 
 
                   }
@@ -1497,7 +1486,7 @@
 
 
 
-              let readsFromDiv = processDetails.append('div').attr("id", idString ).attr("class", "panel-collapse ");
+              let readsFromDiv = processDetails_Div.append('div').attr("id", idString ).attr("class", "panel-collapse ");
 
 
               let newDetails ;
@@ -1587,7 +1576,7 @@
               }
 
 
-          }
+          };
 
           function createAllPackageList(packages){
 
@@ -1611,24 +1600,24 @@
 
 
 
-              packages.forEach(function(package){
+              packages.forEach(function(thisPackage){
 
-                  //    packages[package.name] = {["version"]: package.version, ["files"]:package.files};
+                  //    packages[thisPackage.name] = {["version"]: thisPackage.version, ["files"]:thisPackage.files};
 
                   let summaryText = "";
 
-                  if(package.files.length > 1){
+                  if(thisPackage.files.length > 1){
 
-                      summaryText = package.name + "    (" +  package.files.length + " files)";
+                      summaryText = thisPackage.name + "    (" +  thisPackage.files.length + " files)";
                   }
                   else {
 
-                      summaryText = package.name + "    (" +  package.files.length + " file)";
+                      summaryText = thisPackage.name + "    (" +  thisPackage.files.length + " file)";
                   }
 
                   subContainer = mainContainer.append('div');
 
-                  let checkBox =  subContainer.append("input")
+                  subContainer.append("input")
                       .attr("type", "checkbox")
                       .attr("width", 100)
                       .attr("height", 100)
@@ -1639,13 +1628,13 @@
                       .on("click", function(d, i){
 
 
-                          let thisPackage = d3.select("#package_" +package.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
-                          let thisEdge = d3.select("#edge_" +package.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
-                          let thisPackageLabel = d3.select("#packageLabel_" +package.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
+                          let thisPackage = d3.select("#package_" +thisPackage.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
+                          let thisEdge = d3.select("#edge_" +thisPackage.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
+                          let thisPackageLabel = d3.select("#packageLabel_" +thisPackage.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
 
 
 
-                          if(d3.select(this).node().checked == false){
+                          if(!d3.select(this).node().checked){
 
 
                               thisPackage.style({
@@ -1701,7 +1690,7 @@
                           .duration(200)
                           .style("opacity", .8);
                       tooltip.html(
-                          "<h5 style='font-size: 12px'>" + "Version: " + package.version + " </h5>"
+                          "<h5 style='font-size: 12px'>" + "Version: " + thisPackage.version + " </h5>"
 
                       ).style("left", (d3.event.pageX) + "px")
                           .style("top", (d3.event.pageY - 28) + "px");
@@ -1716,7 +1705,7 @@
 
                   currentUL = newDetails.append('ul');
 
-                  package.files.forEach(function (file) {
+                  thisPackage.files.forEach(function (file) {
 
                       currentUL.append('li')
                           .attr("class", 'noBeforeContent')
@@ -1730,14 +1719,14 @@
 
 
 
-          }
+          };
 
 
-          function treeDraw(currentJsonFile){
+          function treeDraw(currentJson){
 
 
               // d3.json block
-              d3.json(currentJsonFile, function(error, data){
+              d3.json(currentJson, function(error, data){
 
                   if (error) throw error;
 
@@ -1745,16 +1734,16 @@
 
 
 
-                  data.packages.forEach(function (package) {
+                  data.packages.forEach(function (thisPackage) {
 
-                      package.files.forEach(function (file) {
+                      thisPackage.files.forEach(function (file) {
 
                           let keyName = "\"" + file + "\"";
 
                           let fileInfo = [];
                           fileInfo["reads"] =[];
                           fileInfo["writes"] =[];
-                          fileInfo["package"] = package.name;
+                          fileInfo["package"] = thisPackage.name;
                           fileInfo["name"] = file;
 
                           fileDict[keyName] = fileInfo;
@@ -1840,26 +1829,26 @@
                   let sections = [];
 
                   //Handle Packages to create force data
-                  data.packages.forEach(function (package) {
+                  data.packages.forEach(function (thisPackage) {
 
 
-                      let thisPackage = {["name"]: package.name, ["version"]: package.version, ["section"] : package.section, ["files"] : [] , ["cx"]: 0, ["cy"]: tempPackageY , ["OGy"]: tempPackageY, ["color"]: "" , ["radius"] : maxRadius};
+                      let newPackage = {["name"]: thisPackage.name, ["version"]: thisPackage.version, ["section"] : thisPackage.section, ["files"] : [] , ["cx"]: 0, ["cy"]: tempPackageY , ["OGy"]: tempPackageY, ["color"]: "" , ["radius"] : maxRadius};
 
-                      package.files.forEach(function (file) {
+                      thisPackage.files.forEach(function (file) {
 
 
                           let keyName = "\"" + file + "\"";
 
                           let thisFile =  fileDict[keyName];
-                          thisPackage.files.push(thisFile);
+                          newPackage.files.push(thisFile);
 
                           // forceNodes.nodes.push(thisFile);
 
                       });
 
 
-                      thisPackage.cx = tempPackageX;
-                      thisPackage.OGX = tempPackageX;
+                      newPackage.cx = tempPackageX;
+                      newPackage.OGX = tempPackageX;
 
                       //Dynamically set the distances between nodes by number of packages
                       if(data.packages.length > 15 && data.packages.length < 30 ){
@@ -1877,22 +1866,22 @@
 
 
                       //push this package's section to local sections
-                      sections.push(thisPackage.section);
+                      sections.push(newPackage.section);
 
                       //push this package to the forceData
-                      forceData.packages.push(thisPackage);
+                      forceData.packages.push(newPackage);
 
                       //increase packagesNumber to keep the over package number in record
                       packagesNumber++;
 
                       // set alternative Y position for force nodes
-                      if(isAlternativeOn == 0 && data.packages.length > 15){
+                      if(isAlternativeOn === 0 && data.packages.length > 15){
 
                           tempPackageY = -120;
 
                           isAlternativeOn = 1;
                       }
-                      else if (isAlternativeOn == 1){
+                      else if (isAlternativeOn === 1){
 
                           tempPackageY = -200;
                           isAlternativeOn = 0;
@@ -2095,7 +2084,7 @@
                       if (d.children) {
 
                           // Set default timeline length for root
-                          if(isTreeRedrawn == false){
+                          if(!isTreeRedrawn){
                               timeLineLen_Total =  timeLineLen_Total + (root.x0  / 2);
 
                           }
@@ -2147,7 +2136,7 @@
 
                   //   console.log('timeLineLen: ', timeLineLen);
 
-                  if(isTreeRedrawn == false){
+                  if(!isTreeRedrawn){
 
 
                       totalTimeLineDraw(timeLineLen_Total, durationLabel_total);
@@ -2174,7 +2163,7 @@
           };
 
 
-          treeDraw(currentJsonFile);
+
 
 
           function getTimeLineLabel(duration_ms, isTotalString){
@@ -2211,7 +2200,7 @@
 
               }
 
-              if (isTotalString == "total"){
+              if (isTotalString === "total"){
 
                   durationLabel_total = "Total " + durationLabel_total;
               }else{
@@ -2222,12 +2211,12 @@
               return durationLabel_total;
 
 
-          }
+          };
 
           function timeLineDraw(length, durationLabel){
 
               //  Draw the timeline for currentduration
-              let lines = svg.append("g")
+              svg.append("g")
                   .attr("class", "timeLineGroup")
                   .append("line")
                   .attr("class", "timeLine")
@@ -2241,7 +2230,7 @@
 
 
               // Update the link text
-              let timeLineText = svg.selectAll(".timeLineGroup").append("text")
+            svg.selectAll(".timeLineGroup").append("text")
                   .attr("y", height + 20)//magic number here
                   .attr("x", length / 2)
                   .attr('text-anchor', 'middle')
@@ -2250,12 +2239,12 @@
 
 
 
-          }
+          };
 
           function totalTimeLineDraw(length, durationLabel){
 
               // Draw the timeline for total duration.
-              let lines = svg.append("g")
+               svg.append("g")
                   .attr("class", "TotalTimeLineGroup")
                   .append("line")
                   .attr("class", "timeLine_Total")
@@ -2269,7 +2258,7 @@
 
 
               // Update the link text
-              let timeLineText = svg.selectAll(".TotalTimeLineGroup").append("text")
+              svg.selectAll(".TotalTimeLineGroup").append("text")
                   .attr("y", height + 20)//magic number here
                   .attr("x", length )
                   .attr('text-anchor', 'middle')
@@ -2278,7 +2267,7 @@
 
 
 
-          }
+          };
 
           function restart() {
 
@@ -2314,7 +2303,7 @@
   //            .attr("y", function (d) {return d.y - 30; });
 
               force.start();
-          }
+          };
 
 
           function restart2() {
@@ -2351,7 +2340,7 @@
   //            .attr("y", function (d) {return d.y - 30; });
 
               force.start();
-          }
+          };
 
 
           // Move nodes toward cluster focus.
@@ -2360,7 +2349,7 @@
                   d.y += (d.cy - d.y) * alpha;
                   d.x += (d.cx - d.x) * alpha;
               };
-          }
+          };
 
 
           // Resolve collisions between nodes.
@@ -2390,7 +2379,7 @@
                   });
               };
 
-          }
+          };
 
 
           function tick(e) {
@@ -2420,7 +2409,7 @@
 
               label.attr("x", function(d){ return d.x; })
                   .attr("y", function (d) {return d.y - 30; });
-          }
+          };
 
           function forceDraw(data) {
 
@@ -2459,7 +2448,7 @@
                   .style("fill",function(d) {
 
 
-                      if(d.section == sectionsInPackages[d.section].name){
+                      if(d.section === sectionsInPackages[d.section].name){
 
                           return sectionsInPackages[d.section].color;
                       }
@@ -2524,7 +2513,7 @@
 
                           associatedProcesses.forEach(function(processName){
 
-                              if(process.name == processName){
+                              if(process.name === processName){
 
                                   console.log("Same process: ", processName);
 
@@ -2543,7 +2532,7 @@
                                   node.weight = 10;
                                   node.fixed = true;
 
-                                  thisNode  = forceNodes.push(node);
+                                  let thisNode  = forceNodes.push(node);
 
 
                                   links.push({source: d , target: node});
@@ -2602,7 +2591,7 @@
 
               restart();
 
-          }
+          };
 
 
 
@@ -2623,7 +2612,7 @@
 
                   .text(durationLabel);
 
-          }
+          };
 
 
           function decreaseTimeLineLen(length){
@@ -2633,7 +2622,7 @@
                   timeLineLen =  length //timeLineLen - ( length);
               }
 
-          }
+          };
 
           function setPackagePath (fileList, index, nextIndex){
 
@@ -2652,7 +2641,7 @@
                       i++
                   }
 
-                  if (fileList[index].substring(0,i) == '/'){
+                  if (fileList[index].substring(0,i) === '/'){
 
 
                       // console.log('different character: ',fileList[index].substring(0,i));
@@ -2680,7 +2669,7 @@
 
               return TestingPackagePath;
 
-          }
+          };
 
 
           function resetPackagesPosition(){
@@ -2707,7 +2696,7 @@
               force.links(links);
 
               restart();
-          }
+          };
 
           function setSectionsColors(sections){
 
@@ -2731,7 +2720,7 @@
                   i++;
 
               });
-          }
+          };
 
 
 
@@ -2741,7 +2730,7 @@
               if (d.children) {
 
                   // Set default timeline length for root
-                  if(isTreeRedrawn == false){
+                  if(!isTreeRedrawn){
                       timeLineLen_Total =  timeLineLen_Total + (root.x0  / 2);
 
                   }
@@ -2753,7 +2742,7 @@
               }
 
 
-          }
+          };
 
 
           function expand(d){
@@ -2764,7 +2753,7 @@
               }
               if(children)
                   children.forEach(expand);
-          }
+          };
 
           function expandAll(){
 
@@ -2782,15 +2771,19 @@
               root.children.forEach(collapse);
               collapse(root);
               update(root);
-          }
-
-
+          };
 
 
       </script>
 
 
-  </div>
+    <!-- Execution for d3 visualization  -->
+    <script>
+
+        treeDraw(currentJsonFile);
+
+    </script>
+
 
   </body>
 
