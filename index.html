@@ -587,7 +587,7 @@
 <!-- GLobal dimension variables -->
 <script>
 
-    const margin = {top: 300, right: 120, bottom: 300, left: 150},
+    const margin = {top: 300, right: 120, bottom: 150, left: 150},
         width = 4500 - margin.right - margin.left,
         height = 1400 - margin.top - margin.bottom,
         padding = 3.5, // separation between packages
@@ -639,8 +639,8 @@
     /*-- define the current data set for the visualization  --*/
 
     //const currentJsonFile = "bash-count.json";
-    //const currentJsonFile = "stacked-up-website.json";
-    const currentJsonFile = "ache.json";
+    const currentJsonFile = "stacked-up-website.json";
+    //const currentJsonFile = "ache.json";
 
     // boolean to indicate if the switch of focusing process and associated packages is toggled
     let inFocus = false;
@@ -724,7 +724,7 @@
 
 
         // Normalize for fixed-depth.
-        nodes.forEach(function(d) { d.y = d.depth * 320;
+        nodes.forEach(function(d) { d.y = d.depth * 400;
 
         });
 
