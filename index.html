@@ -7,16 +7,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 
-
-    <!-- Latest compiled and minified CSS -->
+    <!-- Latest compiled and minified CSS   <link rel="stylesheet" href="css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
 
 
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
@@ -27,6 +22,8 @@
 
     <link rel="stylesheet" href="css/style.css">
 
+    <!-- Local customized bootstrap CSS  -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
 
     <!-- Planing to switch to d3 v4 if necessary
@@ -51,20 +48,22 @@
             </li>
             <li >
 
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1"><i class="fa fa-fw fa-server"></i> Overview</a>
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1"><i class="fa fa-fw fa-server" style="margin-right: 5px"></i> Overview</a>
 
                 <div id="collapse1" class="panel-collapse collapse">
 
                     <div class="panel-body" style="margin-left: 20px">
-                        <div>
-                            <button id="generate" style="color:black">Save as SVG</button>
+
+                        <div class="btn-group-vertical" style="text-align: left; margin-bottom: 2px; ">
+
+                            <button id="generate" type="button" class="btn btn-primary " style="text-align: left; margin-top: 2px"><i class="fa fa-download" aria-hidden="true" style="margin-right: 5px; align-content: flex-start"></i> Save as SVG</button>
+                            <button id="packages_ConnectAll" type="button" class="btn btn-primary " style="text-align: left; margin-top: 2px"><i class="fa fa-share-alt fa-rotate-270" aria-hidden="true" style="margin-right: 5px" ></i>  Connect All Packages </button>
+                            <button id="tree_CloseAll"  type="button" class="btn btn-primary " style="text-align: left; margin-top: 2px"> <i class="fa fa-circle" aria-hidden="true" style="margin-right: 5px"></i>  Collapse All </button>
+                            <button id="tree_ExpandAll" type="button" class="btn btn-primary " style="text-align: left; margin-top: 2px"><i class="fa fa-sitemap fa-rotate-270" aria-hidden="true" style="margin-right: 5px" ></i>  Expand All </button>
+
                         </div>
-                        <div>
-                            <label>
-                                <input id="toggle-expandTree" type="checkbox" data-toggle="toggle" >
-                                Expand Tree
-                            </label>
-                        </div>
+
+
                         <div>
                             <label>
                                 <input id="toggle-inFocus" type="checkbox" data-toggle="toggle" >
@@ -72,7 +71,7 @@
                             </label>
                         </div>
 
-                        <div class="All_Packages">
+                        <div class="All_Packages" style="color: lightslategrey;font: 13px sans-serif;">
 
                         </div>
                     </div>
@@ -103,15 +102,11 @@
 
     <!-- Page Content -->
     <div id="page-content-wrapper">
-        <button type="button" class="hamburger is-open animated fadeInLeft" data-toggle="offcanvas">
+        <button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="offcanvas">
             <span class="hamb-top"></span>
             <span class="hamb-middle"></span>
             <span class="hamb-bottom"></span>
         </button>
-
-
-
-
 
         <div id='viz-graph'></div>
 
@@ -122,919 +117,431 @@
     <!-- /#wrapper -->
 
 
+
+</div>
+
+<code>
     <script src="js/index.js"></script>
 
+</code>
+
+<!-- GLobal utilities variables  -->
+<script>
+
+    /*-- tooltip variables  --*/
+
+    const tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("font-size",  12 + "px")
+        .style("opacity", 0);
+
+</script>
+
+<!-- Modified code from New York Times SVG Crowbar to save the current visualization as SVG file. The modification is allowed according to MIT License that New York Times SVG Crowbar licensed under with -->
+<script>
+
+    d3.select("#generate")
+        .on("click", writeDownloadLink);
+
+    function writeDownloadLink(){
 
 
-    <script>
+        (function() {
+            var doctype = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
 
-        d3.select("#generate")
-            .on("click", writeDownloadLink);
+            window.URL = (window.URL || window.webkitURL);
 
-        function writeDownloadLink(){
+            var body = document.body;
 
+            var prefix = {
+                xmlns: "http://www.w3.org/2000/xmlns/",
+                xlink: "http://www.w3.org/1999/xlink",
+                svg: "http://www.w3.org/2000/svg"
+            };
 
-            (function() {
-                let doctype = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
+            initialize();
 
-                window.URL = (window.URL || window.webkitURL);
+            function initialize() {
+                var documents = [window.document],
+                    SVGSources = [];
+                iframes = document.querySelectorAll("iframe"),
+                    objects = document.querySelectorAll("object");
 
-                let body = document.body;
-
-                let prefix = {
-                    xmlns: "http://www.w3.org/2000/xmlns/",
-                    xlink: "http://www.w3.org/1999/xlink",
-                    svg: "http://www.w3.org/2000/svg"
-                };
-
-                initialize();
-
-                function initialize() {
-                    let documents = [window.document],
-                        SVGSources = [];
-                    iframes = document.querySelectorAll("iframe"),
-                        objects = document.querySelectorAll("object");
-
-                    [].forEach.call(iframes, function(el) {
-                        try {
-                            if (el.contentDocument) {
-                                documents.push(el.contentDocument);
-                            }
-                        } catch(err) {
-                            console.log(err)
+                [].forEach.call(iframes, function(el) {
+                    try {
+                        if (el.contentDocument) {
+                            documents.push(el.contentDocument);
                         }
-                    });
+                    } catch(err) {
+                        console.log(err)
+                    }
+                });
 
-                    [].forEach.call(objects, function(el) {
-                        try {
-                            if (el.contentDocument) {
-                                documents.push(el.contentDocument);
-                            }
-                        } catch(err) {
-                            console.log(err)
+                [].forEach.call(objects, function(el) {
+                    try {
+                        if (el.contentDocument) {
+                            documents.push(el.contentDocument);
                         }
-                    });
+                    } catch(err) {
+                        console.log(err)
+                    }
+                });
 
-                    documents.forEach(function(doc) {
-                        let styles = getStyles(doc);
-                        let newSources = getSources(doc, styles);
-                        for (let i = 0; i < newSources.length; i++) {
-                            SVGSources.push(newSources[i]);
-                        };
-                    });
+                documents.forEach(function(doc) {
+                    var styles = getStyles(doc);
+                    var newSources = getSources(doc, styles);
+                    for (var i = 0; i < newSources.length; i++) {
+                        SVGSources.push(newSources[i]);
+                    };
+                });
 
-                    if (SVGSources.length > 1) {
-                        createPopover(SVGSources);
-                    } else if (SVGSources.length > 0) {
-                        download(SVGSources[0]);
-                    } else {
-                        alert("The Crowbar couldn’t find any SVG nodes.");
+                if (SVGSources.length > 1) {
+                    createPopover(SVGSources);
+                } else if (SVGSources.length > 0) {
+                    download(SVGSources[0]);
+                } else {
+                    alert("The Crowbar couldn’t find any SVG nodes.");
+                }
+            }
+
+            function createPopover(sources) {
+                cleanup();
+
+                sources.forEach(function(s1) {
+                    sources.forEach(function(s2) {
+                        if (s1 !== s2) {
+                            if ((Math.abs(s1.top - s2.top) < 38) && (Math.abs(s1.left - s2.left) < 38)) {
+                                s2.top += 38;
+                                s2.left += 38;
+                            }
+                        }
+                    })
+                });
+
+                var buttonsContainer = document.createElement("div");
+                body.appendChild(buttonsContainer);
+
+                buttonsContainer.setAttribute("class", "svg-crowbar");
+                buttonsContainer.style["z-index"] = 1e7;
+                buttonsContainer.style["position"] = "absolute";
+                buttonsContainer.style["top"] = 0;
+                buttonsContainer.style["left"] = 0;
+
+
+
+                var background = document.createElement("div");
+                body.appendChild(background);
+
+                background.setAttribute("class", "svg-crowbar");
+                background.style["background"] = "rgba(255, 255, 255, 0.7)";
+                background.style["position"] = "fixed";
+                background.style["left"] = 0;
+                background.style["top"] = 0;
+                background.style["width"] = "100%";
+                background.style["height"] = "100%";
+
+                sources.forEach(function(d, i) {
+                    var buttonWrapper = document.createElement("div");
+                    buttonsContainer.appendChild(buttonWrapper);
+                    buttonWrapper.setAttribute("class", "svg-crowbar");
+                    buttonWrapper.style["position"] = "absolute";
+                    buttonWrapper.style["top"] = (d.top + document.body.scrollTop) + "px";
+                    buttonWrapper.style["left"] = (document.body.scrollLeft + d.left) + "px";
+                    buttonWrapper.style["padding"] = "4px";
+                    buttonWrapper.style["border-radius"] = "3px";
+                    buttonWrapper.style["color"] = "white";
+                    buttonWrapper.style["text-align"] = "center";
+                    buttonWrapper.style["font-family"] = "'Helvetica Neue'";
+                    buttonWrapper.style["background"] = "rgba(0, 0, 0, 0.8)";
+                    buttonWrapper.style["box-shadow"] = "0px 4px 18px rgba(0, 0, 0, 0.4)";
+                    buttonWrapper.style["cursor"] = "move";
+                    buttonWrapper.textContent =  "SVG #" + i + ": " + (d.id ? "#" + d.id : "") + (d.class ? "." + d.class : "");
+
+                    var button = document.createElement("button");
+                    buttonWrapper.appendChild(button);
+                    button.setAttribute("data-source-id", i)
+                    button.style["width"] = "150px";
+                    button.style["font-size"] = "12px";
+                    button.style["line-height"] = "1.4em";
+                    button.style["margin"] = "5px 0 0 0";
+                    button.textContent = "Download";
+
+                    button.onclick = function(el) {
+                        // console.log(el, d, i, sources)
+                        download(d);
+                    };
+
+                });
+
+            }
+
+            function cleanup() {
+                var crowbarElements = document.querySelectorAll(".svg-crowbar");
+
+                [].forEach.call(crowbarElements, function(el) {
+                    el.parentNode.removeChild(el);
+                });
+            }
+
+
+            function getSources(doc, styles) {
+                var svgInfo = [],
+                    svgs = doc.querySelectorAll("svg");
+
+                styles = (styles === undefined) ? "" : styles;
+
+                [].forEach.call(svgs, function (svg) {
+
+                    svg.setAttribute("version", "1.1");
+
+                    var defsEl = document.createElement("defs");
+                    svg.insertBefore(defsEl, svg.firstChild); //TODO   .insert("defs", ":first-child")
+                    // defsEl.setAttribute("class", "svg-crowbar");
+
+                    var styleEl = document.createElement("style")
+                    defsEl.appendChild(styleEl);
+                    styleEl.setAttribute("type", "text/css");
+
+
+                    // removing attributes so they aren't doubled up
+                    svg.removeAttribute("xmlns");
+                    svg.removeAttribute("xlink");
+
+                    // These are needed for the svg
+                    if (!svg.hasAttributeNS(prefix.xmlns, "xmlns")) {
+                        svg.setAttributeNS(prefix.xmlns, "xmlns", prefix.svg);
+                    }
+
+                    if (!svg.hasAttributeNS(prefix.xmlns, "xmlns:xlink")) {
+                        svg.setAttributeNS(prefix.xmlns, "xmlns:xlink", prefix.xlink);
+                    }
+
+                    var source = (new XMLSerializer()).serializeToString(svg).replace('</style>', '<![CDATA[' + styles + ']]></style>');
+                    var rect = svg.getBoundingClientRect();
+                    svgInfo.push({
+                        top: rect.top,
+                        left: rect.left,
+                        width: rect.width,
+                        height: rect.height,
+                        class: svg.getAttribute("class"),
+                        id: svg.getAttribute("id"),
+                        childElementCount: svg.childElementCount,
+                        source: [doctype + source]
+                    });
+                });
+                return svgInfo;
+            }
+
+            function download(source) {
+                var filename = "untitled";
+
+                if (source.id) {
+                    filename = source.id;
+                } else if (source.class) {
+                    filename = source.class;
+                } else if (window.document.title) {
+                    filename = window.document.title.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+                }
+
+                var url = window.URL.createObjectURL(new Blob(source.source, { "type" : "text\/xml" }));
+
+                var a = document.createElement("a");
+                body.appendChild(a);
+                a.setAttribute("class", "svg-crowbar");
+                a.setAttribute("download", filename + ".svg");
+                a.setAttribute("href", url);
+                a.style["display"] = "none";
+                a.click();
+
+                setTimeout(function() {
+                    window.URL.revokeObjectURL(url);
+                }, 10);
+            }
+
+            function getStyles(doc) {
+                var styles = "",
+                    styleSheets = doc.styleSheets;
+
+                if (styleSheets) {
+                    for (var i = 0; i < styleSheets.length; i++) {
+                        processStyleSheet(styleSheets[i]);
                     }
                 }
 
-                function createPopover(sources) {
-                    cleanup();
-
-                    sources.forEach(function(s1) {
-                        sources.forEach(function(s2) {
-                            if (s1 !== s2) {
-                                if ((Math.abs(s1.top - s2.top) < 38) && (Math.abs(s1.left - s2.left) < 38)) {
-                                    s2.top += 38;
-                                    s2.left += 38;
-                                }
-                            }
-                        })
-                    });
-
-                    let buttonsContainer = document.createElement("div");
-                    body.appendChild(buttonsContainer);
-
-                    buttonsContainer.setAttribute("class", "svg-crowbar");
-                    buttonsContainer.style["z-index"] = 1e7;
-                    buttonsContainer.style["position"] = "absolute";
-                    buttonsContainer.style["top"] = 0;
-                    buttonsContainer.style["left"] = 0;
-
-
-
-                    let background = document.createElement("div");
-                    body.appendChild(background);
-
-                    background.setAttribute("class", "svg-crowbar");
-                    background.style["background"] = "rgba(255, 255, 255, 0.7)";
-                    background.style["position"] = "fixed";
-                    background.style["left"] = 0;
-                    background.style["top"] = 0;
-                    background.style["width"] = "100%";
-                    background.style["height"] = "100%";
-
-                    sources.forEach(function(d, i) {
-                        let buttonWrapper = document.createElement("div");
-                        buttonsContainer.appendChild(buttonWrapper);
-                        buttonWrapper.setAttribute("class", "svg-crowbar");
-                        buttonWrapper.style["position"] = "absolute";
-                        buttonWrapper.style["top"] = (d.top + document.body.scrollTop) + "px";
-                        buttonWrapper.style["left"] = (document.body.scrollLeft + d.left) + "px";
-                        buttonWrapper.style["padding"] = "4px";
-                        buttonWrapper.style["border-radius"] = "3px";
-                        buttonWrapper.style["color"] = "white";
-                        buttonWrapper.style["text-align"] = "center";
-                        buttonWrapper.style["font-family"] = "'Helvetica Neue'";
-                        buttonWrapper.style["background"] = "rgba(0, 0, 0, 0.8)";
-                        buttonWrapper.style["box-shadow"] = "0px 4px 18px rgba(0, 0, 0, 0.4)";
-                        buttonWrapper.style["cursor"] = "move";
-                        buttonWrapper.textContent =  "SVG #" + i + ": " + (d.id ? "#" + d.id : "") + (d.class ? "." + d.class : "");
-
-                        let button = document.createElement("button");
-                        buttonWrapper.appendChild(button);
-                        button.setAttribute("data-source-id", i)
-                        button.style["width"] = "150px";
-                        button.style["font-size"] = "12px";
-                        button.style["line-height"] = "1.4em";
-                        button.style["margin"] = "5px 0 0 0";
-                        button.textContent = "Download";
-
-                        button.onclick = function(el) {
-                            // console.log(el, d, i, sources)
-                            download(d);
-                        };
-
-                    });
-
-                }
-
-                function cleanup() {
-                    let crowbarElements = document.querySelectorAll(".svg-crowbar");
-
-                    [].forEach.call(crowbarElements, function(el) {
-                        el.parentNode.removeChild(el);
-                    });
-                }
-
-
-                function getSources(doc, styles) {
-                    let svgInfo = [],
-                        svgs = doc.querySelectorAll("svg");
-
-                    styles = (styles === undefined) ? "" : styles;
-
-                    [].forEach.call(svgs, function (svg) {
-
-                        svg.setAttribute("version", "1.1");
-
-                        let defsEl = document.createElement("defs");
-                        svg.insertBefore(defsEl, svg.firstChild); //TODO   .insert("defs", ":first-child")
-                        // defsEl.setAttribute("class", "svg-crowbar");
-
-                        let styleEl = document.createElement("style")
-                        defsEl.appendChild(styleEl);
-                        styleEl.setAttribute("type", "text/css");
-
-
-                        // removing attributes so they aren't doubled up
-                        svg.removeAttribute("xmlns");
-                        svg.removeAttribute("xlink");
-
-                        // These are needed for the svg
-                        if (!svg.hasAttributeNS(prefix.xmlns, "xmlns")) {
-                            svg.setAttributeNS(prefix.xmlns, "xmlns", prefix.svg);
-                        }
-
-                        if (!svg.hasAttributeNS(prefix.xmlns, "xmlns:xlink")) {
-                            svg.setAttributeNS(prefix.xmlns, "xmlns:xlink", prefix.xlink);
-                        }
-
-                        let source = (new XMLSerializer()).serializeToString(svg).replace('</style>', '<![CDATA[' + styles + ']]></style>');
-                        let rect = svg.getBoundingClientRect();
-                        svgInfo.push({
-                            top: rect.top,
-                            left: rect.left,
-                            width: rect.width,
-                            height: rect.height,
-                            class: svg.getAttribute("class"),
-                            id: svg.getAttribute("id"),
-                            childElementCount: svg.childElementCount,
-                            source: [doctype + source]
-                        });
-                    });
-                    return svgInfo;
-                }
-
-                function download(source) {
-                    let filename = "untitled";
-
-                    if (source.id) {
-                        filename = source.id;
-                    } else if (source.class) {
-                        filename = source.class;
-                    } else if (window.document.title) {
-                        filename = window.document.title.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-                    }
-
-                    let url = window.URL.createObjectURL(new Blob(source.source, { "type" : "text\/xml" }));
-
-                    let a = document.createElement("a");
-                    body.appendChild(a);
-                    a.setAttribute("class", "svg-crowbar");
-                    a.setAttribute("download", filename + ".svg");
-                    a.setAttribute("href", url);
-                    a.style["display"] = "none";
-                    a.click();
-
-                    setTimeout(function() {
-                        window.URL.revokeObjectURL(url);
-                    }, 10);
-                }
-
-                function getStyles(doc) {
-                    let styles = "",
-                        styleSheets = doc.styleSheets;
-
-                    if (styleSheets) {
-                        for (let i = 0; i < styleSheets.length; i++) {
-                            processStyleSheet(styleSheets[i]);
-                        }
-                    }
-
-                    function processStyleSheet(ss) {
-                        if (ss.cssRules) {
-                            for (let i = 0; i < ss.cssRules.length; i++) {
-                                let rule = ss.cssRules[i];
-                                if (rule.type === 3) {
-                                    // Import Rule
-                                    processStyleSheet(rule.styleSheet);
-                                } else {
-                                    // hack for illustrator crashing on descendent selectors
-                                    if (rule.selectorText) {
-                                        if (rule.selectorText.indexOf(">") === -1) {
-                                            styles += "\n" + rule.cssText;
-                                        }
+                function processStyleSheet(ss) {
+                    if (ss.cssRules) {
+                        for (var i = 0; i < ss.cssRules.length; i++) {
+                            var rule = ss.cssRules[i];
+                            if (rule.type === 3) {
+                                // Import Rule
+                                processStyleSheet(rule.styleSheet);
+                            } else {
+                                // hack for illustrator crashing on descendent selectors
+                                if (rule.selectorText) {
+                                    if (rule.selectorText.indexOf(">") === -1) {
+                                        styles += "\n" + rule.cssText;
                                     }
                                 }
                             }
                         }
                     }
-                    return styles;
                 }
+                return styles;
+            }
 
-            })();
-
-
-
-
-        };
-
-    </script>
+        })();
 
 
 
-    <script>
-        $(function() {
-            $('#toggle-inFocus').change(function() {
 
-                inFocus = $(this).prop('checked');
+    };
 
-                if(inFocus == false){
-
-                    let otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
-
-                    otherSVG.transition().style("opacity", 1);
-
-                    otherSVG = null;
-
-                }
-                else if (inFocus == true){
+</script>
 
 
-                    let otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
+<!-- Bootstrap buttons events handler in Sidebar "Overview" section -->
+<script>
 
-                    otherSVG.transition().style("opacity", 0.3);
+    $(function() {
 
-                    otherSVG = null;
+        /*-- Handel toggle button for focusing selected process and associated packages  --*/
+        $('#toggle-inFocus').change(function() {
 
-                    thisNodeCircle.transition().attr("r", 20).style("opacity", 1);
-                    thisNodeCircleLabel
-                        .transition()
-                        .style("font", "20px sans-serif")
-                        .style("opacity", 1)
-                        .attr("x", function(d) { return d.children || d._children ? -30 : 30; });
+            inFocus = $(this).prop('checked');
+
+            if(!inFocus){
+                let otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
+
+                otherSVG.transition().style("opacity", 1);
+
+            }
+            else{
+                let otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
+
+                otherSVG.transition().style("opacity", 0.3);
+
+                thisNodeCircle.transition().attr("r", 20).style("opacity", 1);
+                thisNodeCircleLabel
+                    .transition()
+                    .style("font", "20px sans-serif")
+                    .style("opacity", 1)
+                    .attr("x", function(d) { return d.children || d._children ? -30 : 30; });
 
 
-                    forceNodes.forEach(function(target) {
+                forceNodes.forEach(function(target) {
 
-                        currentSelectedNode.packages.reads.forEach(function (readFile) {
+                    currentSelectedNode.packages.reads.forEach(function (readFile) {
 
-                            if(target.name == readFile){
-
+                        {
+                            if(target.name === readFile)
                                 console.log("d3.select:",d3.select("#package_" + readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"")).style("opacity", 1));
 
-                                d3.select("#package_" + readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"")).style("opacity", 1);
-                                d3.select("#packageLabel_" + readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"")).style("opacity", 1);
+                            d3.select("#package_" + readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"")).style("opacity", 1);
+                            d3.select("#packageLabel_" + readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"")).style("opacity", 1);
 
 
-                            }
-                        })
-                    });
-
-                }
-            });
-
-
-
-            $('#toggle-expandTree').bootstrapToggle({
-                on: 'Exand All',
-                off: 'Collapse All'
-            });
-
-            $('#toggle-expandTree').change(function() {
-
-                isExpanded = $(this).prop('checked');
-
-
-                if(isExpanded == false){
-
-                    collapseAll();
-
-                }
-                else if (isExpanded == true) {
-
-                    expandAll();
-
-                }
-
-            })
-
-        })
-    </script>
-
-    <script>
-
-        // script to prepare data
-        let fileDict = {};
-        let rawData = [] ;
-        let treeData = [];
-        //  let forceNodes = {"nodes" : []};
-
-    </script>
-
-
-    <script>
-
-        // script for visualization
-
-        //let currentJsonFile = "bash-count.json";
-        //let currentJsonFile = "stacked-up-website.json";
-        let currentJsonFile = "ache.json";
-
-        let currentSelectedNode;
-        let currentDisplayingNodes;
-
-
-
-        let availableJsonFiles = ["bash-count.json", "stacked-up-website.json", "ache.json"];
-
-        let forceData = {"packages": []};
-
-        let force = d3.layout.force();
-
-
-        let inFocus;
-        let isExpanded;
-
-        let packagesNumber = 0;
-
-        let isTreeRedrawn = false;
-
-        // add the tool tip
-        let tooltip = d3.select("body").append("div")
-            .attr("class", "tooltip")
-            .style("font-size",  12 + "px")
-            .style("opacity", 0);
-
-
-        let margin = {top: 300, right: 120, bottom: 300, left: 150},
-            width = 4500 - margin.right - margin.left,
-            height = 1400 - margin.top - margin.bottom,
-            padding = 3.5, // separation between same-color nodes
-            maxRadius = 20 // radious for each package ;
-
-        let timeLineLen;
-        let timeLineLen_Total;
-        let duration_total_ms;
-
-        let searchFilesInfoDiv;
-        let searchFilesList;
-
-        let sectionsInPackages = {};
-
-
-        let thisNodeCircle;
-        let thisNodeCircleLabel;
-
-
-        let i = 0,
-            duration = 750,
-            rootStartTime,
-            root,
-            m = 15; // number of distinct clusters;
-
-
-
-        let tree = d3.layout.tree()
-            .size([height , width ]);
-
-
-
-
-        let diagonal = d3.svg.diagonal()
-            .projection(function(d) { return [d.y, d.x]; });
-
-        let svg = d3.select("#viz-graph").append("svg")
-            .attr("width", width + margin.right + margin.left)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("class", "viz")
-            .attr("id", "viz")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
-
-        // Select the container for the processDetails and dimension it.
-        let processDetails = d3.select('#processDetails')
-            .style({
-                'width': 620-width + 'px',
-                'height': height + 'px',
-                'margin-top' : 25 + 'px'
-            });
-
-        let forceNodes; // = force.nodes();
-        let forceLinks; // = force.links();
-        let forcePackages = svg.selectAll(".package");
-        let label = svg.selectAll(".forceLabel");
-        let edge = svg.selectAll(".edge");
-
-
-
-        treeDraw(currentJsonFile);
-
-
-
-        //-- Click any empty space within the svg body to reset the location for the packages and detached the links between the packages and processes
-        d3.select("body").on("click",function(){
-
-
-            if (d3.event.target.toString().includes("SVGSVGElement")){
-
-                console.log('clicked an empty space!');
-
-
-                resetPackagesPosition();
+                        }
+                    })
+                });
 
             }
         });
 
 
-
-        let select = d3.select('#jsonSelections')
-            .append('select')
-            .attr('class','select')
-            .attr("x", 400)
-            .on('change',function onchange() {
-                selectValue = d3.select('select').property('value');
-
-                currentJsonFile = selectValue;
-
-                treeDraw(currentJsonFile);
-
-                isTreeRedrawn = true;
-            });
-
-
-        let options = select
-            .selectAll('option')
-            .data(availableJsonFiles).enter()
-            .append('option')
-            .text(function (d) { return d; });
-
-        d3.select(self.frameElement).style("height", "800px");
-
-
-        // update Tree function
-        function update(source) {
-
-
-            // Compute the new tree layout.
-            let nodes = tree.nodes(root).reverse(),
-                links = tree.links(nodes);
-
-
-            // Normalize for fixed-depth.
-            nodes.forEach(function(d) { d.y = d.depth * 320;
-
-            });
-
-            // Update the nodes…
-            let node = svg.selectAll("g.node")
-                .data(nodes, function(d) { return d.id || (d.id = ++i); });
-
-            // Enter any new nodes at the parent's previous position.
-            let nodeEnter = node.enter().append("g")
-                .attr("class", "node")
-                .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-                .on("dblclick", dblclick)
-                .on("click", click)
-                .on("mousedown", function(d){
-
-                    //  d3.select("body").transition().style("background-color", "#1c1c1c");
-
-
-
-                    // auto-show item content when show results reduces to single
-
-//                ;( function( $, window, document, undefined )
-//                {
-//                    let $container = $( '.viz' );
-//
-//
-//                    if( !$container.length ) return true;
-//
-//                    let $packages = $container.find( '.package' ),
-//                        $package			= $();
-//
-//                    $input.on( 'keyup', function()
-//                    {
-//                        $item = $items.not( '.is-hidden' );
-//                        if( $item.length == 1 )
-//                            $item.addClass( 'js--autoshown is-active' );
-//                        else
-//                            $items.filter( '.js--autoshown' ).removeClass( 'js--autoshown is-active' );
-//                    });
-//                })( jQuery, window, document );
-
-                })
-                .on("mouseup", function(d){
-
-                    console.log("mouseUP");
-                    d3.select("body").transition().style("background-color", "white");
-
-                })
-                .on("mouseover", function(d) {
-
-                    tooltip.transition()
-                        .duration(200)
-                        .style("opacity", .8);
-                    tooltip .html(
-                        d.description
-                    )
-                        .style("left", (d3.event.pageX) + "px")
-                        .style("top", (d3.event.pageY - 38) + "px");
-                })
-                .on("mouseout", function(d) {
-                    tooltip.transition()
-                        .duration(500)
-                        .style("opacity", 0);
-                });
-
-
-
-
-            nodeEnter.append("circle")
-                .attr("r", 1e-6)
-                .attr("class", "process")
-                .attr("id",  function(d) { return "process_" + d.name.replace(/[ ()]/g,''); })
-                .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
-
-            nodeEnter.append("text")
-                .attr("class", "processLabel")
-                .attr("id",  function(d) { return "processLabel_" + d.name.replace(/[ ()]/g,''); })
-                .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
-                .attr("dy", ".35em")
-                .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-                .text(function(d) { return d.name; })
-                .style("fill-opacity", 1e-6);
-
-
-            // Transition nodes to their new position.
-            let nodeUpdate = node.transition()
-                .duration(duration)
-                .attr("transform", function(d) {
-
-
-
-                    return "translate(" + d.y + "," + d.x + ")"; });
-
-            nodeUpdate.select("circle")
-                .attr("r", 8)
-                .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
-
-            nodeUpdate.select("text")
-                .style("fill-opacity", 1);
-
-            // Transition exiting nodes to the parent's new position.
-            let nodeExit = node.exit().transition()
-                .duration(duration)
-                .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
-                .remove();
-
-            nodeExit.select("circle")
-                .attr("r", 1e-6);
-
-            nodeExit.select("text")
-                .style("fill-opacity", 1e-6);
-
-            // Update the links…
-            let link = svg.selectAll("path.link")
-                .data(links, function(d) { return d.target.id; });
-
-            // Enter any new links at the parent's previous position.
-            link.enter().insert("path", "g")
-                .attr("class", "link")
-                .attr("d", function(d) {
-                    let o = {x: source.x0, y: source.y0};
-                    return diagonal({source: o, target: o});
-                });
-
-
-            // Transition links to their new position.
-            link.transition()
-                .duration(duration)
-                .attr("d", diagonal);
-
-            // Transition exiting nodes to the parent's new position.
-            link.exit().transition()
-                .duration(duration)
-                .attr("d", function(d) {
-                    let o = {x: source.x, y: source.y};
-                    return diagonal({source: o, target: o});
-                })
-                .remove();
-
-
-            // Update the link text
-            let linktext = svg.selectAll("g.link")
-                .data(links, function (d) {
-                    return d.target.id;
-                });
-
-            //  console.log('linktext',linktext);
-
-
-            linktext.enter()
-                .insert("g")
-                .attr("class", "link")
-                .attr("transform", function(d) { return "translate(" + d.source.y + "," + d.source.x + ")"; })
-                .append("text")
-                .attr("dy", ".35em")
-                .attr("text-anchor", "middle")
-                .style("font-size", 15)
-                .text(function (d) {
-                    return d.target.rule;
-                });
-
-            // Transition link text to their new positions
-
-            linktext.transition()
-                .duration(duration)
-                .attr("transform", function (d) {
-                    return "translate(" + ((d.source.y + d.target.y) / 2) + "," + ((d.source.x + d.target.x) / 2) + ")";
-                })
-
-
-            //Transition exiting link text to the parent's new position.
-            linktext.exit().transition()
-                .remove();
-
-
-            // Stash the old positions for transition.
-            nodes.forEach(function(d) {
-                d.x0 = d.x;
-                d.y0 = d.y;
-            });
-
-
-            currentDisplayingNodes = nodes;
-            console.log("currentDisplayingNodes: ", currentDisplayingNodes);
-
-        }
-
-        // Toggle children on click.
-        function dblclick(d) {
-
+        $('#packages_ConnectAll').on("click", function (e) {
 
 
             let links = force.links();
 
             links = [];
 
-            edge = svg.selectAll(".edge").data(links);
-
-            let edgeExit = edge.exit().remove();
-            let circles = svg.selectAll("circle");
-
-
-            forceLinks = links;
-
-            force.links(links);
-
-            restart();
-
-
-
-
-
-            let duration;
-
-            if (d.children) {
-
-
-                d._children = d.children;
-                d.children = null;
-
-                decreaseTimeLineLen(d.y );
-
-                console.log('Close');
-
-                duration = (d.start_time - rootStartTime) / 1000000;
-
-
-            } else {
-
-
-                d.children = d._children;
-                d._children = null;
-
-                console.log('Open');
-
-
-
-                let tempDuration = 0;
-
-
-                if (d.children != null){
-
-                    d.children.forEach(function(node) {
-
-                        if ((node.start_time - rootStartTime) > tempDuration) {
-
-                            tempDuration = node.start_time - rootStartTime;
-                        };
-
-
-                    });
-                }
-                else{
-                    tempDuration = d.exit_time - rootStartTime;
-
-                }
-
-
-                duration = tempDuration / 1000000;  //d.children[0].start_time - rootStartTime;
-
-
-            }
-
-            timeLineLen =  timeLineLen_Total * (duration / duration_total_ms);
-
-            //  let durationLabel  = "Took " + (duration / 1000000).toFixed(2) + " milliseconds";
-
-            updateTimeLine(timeLineLen, getTimeLineLabel(duration));
-
-
-
-            update(d);
-
-
-        }
-
-
-        // Toggle children on click.
-        function click(d) {
-
-
-            console.log('single click');
-
-            console.log('This D: ', d);
-
-            console.log('This this: ', this);
-
-
-            let otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
-
-            if(inFocus == true){
-
-
-                otherSVG.style("opacity", 0.3);
-
-            }
-            else    otherSVG.style("opacity", 1);
-
-
-
-            otherSVG = null;
-
-            currentSelectedNode = d;
-
-
-
-            if (thisNodeCircle != null && thisNodeCircleLabel != null){
-
-
-                thisNodeCircle.transition().attr("r", 8);
-                thisNodeCircleLabel.transition().style("font", "15px sans-serif").attr("x", function(d) { return d.children || d._children ? -10 : 10; });
-
-
-            }
-
-
-
-            thisNodeCircle = d3.select("#process_"+ d.name.replace(/[ ()]/g,''));  // d3.select("id","#process_" + d.name.replace(/[ ()]/g,''));
-            thisNodeCircleLabel = d3.select("#processLabel_"+ d.name.replace(/[ ()]/g,''));  // d3.select("id","#process_" + d.name.replace(/[ ()]/g,''));
-
-
-            thisNodeCircle.transition().attr("r", 20).style("opacity", 1);
-            thisNodeCircleLabel
-                .transition()
-                .style("font", "20px sans-serif")
-                .style("opacity", 1)
-                .attr("x", function(d) { return d.children || d._children ? -30 : 30; });
-
-
-
-
-            // let thisEdge = d3.select("#edge_" +package.name);
-
-            let isFadeItems = svg.selectAll(".is-focus");
-
-
-            let links = force.links();
-
-
-
-
-            links = [];
-            //edge = [];
-
 
             edge = svg.selectAll(".edge").data(links);
 
 
-
             let edgeExit = edge.exit().remove();
 
-            if(forceNodes.length > packagesNumber){
+
+            while(forceNodes.length > packagesNumber){
 
                 forceNodes.pop();
 
 
-            }
+            };
 
-            // add links to any nearby nodes
+            let associatedProcesses = [];
+            //
+            //                if (d.name != "other_files"){
+            //
+            //
+            //
+            //
+            //                }
 
-            let node = {};
-            node.x = d.y;
-            node.y = d.x;
-            node.px = d.y;
-            node.py = d.x;
-            node.weight = 10;
-            node.radius = 20;
-            node.fixed = true;
-
-
-
-            thisNode  = forceNodes.push(node);
+            //
 
 
-            let circles = svg.selectAll("circle");
+            forceNodes.forEach(function(thisPackage){
+
+                associatedProcesses = [];
+
+                thisPackage.files.forEach(function(file){
+
+
+                    file.reads.forEach(function(process){
+
+                        associatedProcesses.push(process);
+
+                    });
+
+
+                });
 
 
 
-            forceNodes.forEach(function(target) {
-
-                d.packages.reads.forEach(function (readFile) {
-
-                    if(target.name == readFile){
+                let uniq = [...new Set(associatedProcesses)];
+                associatedProcesses = uniq;
 
 
 
-                        d3.select("#package_" + readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"")).style("opacity", 1);
-                        d3.select("#packageLabel_" + readFile.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"")).style("opacity", 1);
+                currentDisplayingNodes.forEach(function(process){
 
-                        links.push({source: node, target: target});
+                    associatedProcesses.forEach(function(processName){
 
-                    }
-
-                })
+                        if(process.name === processName){
 
 
+                            process.fixed = true;
+
+
+                            let node = {};
+                            node.x = process.y;
+                            node.y = process.x;
+                            node.px = process.y;
+                            node.py = process.x;
+                            node.weight = 10;
+                            node.fixed = true;
+
+                            forceNodes.push(node);
+
+
+                            links.push({source: thisPackage , target: node});
+
+                        }
+
+                    })
+
+                });
 
             });
 
+//                  console.log("associatedProcesses", associatedProcesses);
+//
+//                  console.log("currentDisplayingNodes", currentDisplayingNodes);
+//
 
 
             forceLinks = links;
-
-
-
 
             let label = svg.selectAll(".forceLabel")
                 .data(force.nodes());
@@ -1043,690 +550,1108 @@
                 .attr("y", function (d) {return d.y - 30; });
 
             force.links(links);
-            //force.nodes(thisNode);
 
 
-
-            restart();
-
-
+            restart2();
 
 
 
 
-            // Delete the current processDetails section to prepare
-            // for new information.
-
-            processDetails.selectAll('*').remove();
-
-            let commands = '';
+        });
 
 
-            if(d.argv != null){
 
-                d.argv.forEach(function(argv){
 
-                    commands += argv;//.concat(argv.toString());
-                    commands += ' ';
+
+
+
+        /*-- Handel buttons for collapsing or expanding all nodes for the network tree --*/
+        $('#tree_CloseAll').on("click", function (e) {
+
+            collapseAll();
+
+        });
+
+        $('#tree_ExpandAll').on("click", function (e) {
+
+            expandAll();
+
+        });
+
+
+    })
+</script>
+
+
+
+<!-- GLobal dimension variables -->
+<script>
+
+    const margin = {top: 300, right: 120, bottom: 300, left: 150},
+        width = 4500 - margin.right - margin.left,
+        height = 1400 - margin.top - margin.bottom,
+        padding = 3.5, // separation between packages
+        maxRadius = 20; // radius for each package ;
+
+</script>
+
+<!-- GLobal data variables  -->
+<script>
+    // script to prepare data
+    let fileDict = {};
+    let rawData = [] ;
+    let treeData = [];
+    //  let forceNodes = {"nodes" : []};
+
+</script>
+
+
+<!-- GLobal sidebar variables  -->
+<script>
+
+
+    let searchFilesInfoDiv;
+    let searchFilesList;
+
+    // SideBar Process Details - Select the container for the processDetails and set the dimensions.
+    const processDetails = d3.select('#processDetails')
+        .style({
+            'width': 620-width + 'px',
+            'height': height + 'px',
+            'margin-top' : 25 + 'px'
+        });
+
+
+
+</script>
+
+
+
+<!-- GLobal variables for d3 visualization  -->
+<script>
+
+
+    /*-- Global variables for the visualization  --*/
+    const duration = 750;
+    let nodeId_Index = 0;
+
+
+    /*-- define the current data set for the visualization  --*/
+
+    //const currentJsonFile = "bash-count.json";
+    //const currentJsonFile = "stacked-up-website.json";
+    const currentJsonFile = "ache.json";
+
+    // boolean to indicate if the switch of focusing process and associated packages is toggled
+    let inFocus = false;
+
+
+
+    const diagonal = d3.svg.diagonal()
+        .projection(function(d) { return [d.y, d.x]; });
+
+    const svg = d3.select("#viz-graph").append("svg")
+        .attr("width", width + margin.right + margin.left)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("class", "viz")
+        .attr("id", "viz")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+    <!-- d3 tree layout / processes network graph related variables -->
+    const tree = d3.layout.tree()
+        .size([height , width ]);
+
+    let root,
+        currentSelectedNode,
+        currentDisplayingNodes;
+    let isTreeRedrawn = false;
+
+
+
+    <!-- d3 force layout / packages   related variables -->
+    let force = d3.layout.force();
+    let forceData = {"packages": []};
+    let packagesNumber = 0;
+    let thisNodeCircle, thisNodeCircleLabel;
+    let sectionsInPackages = {};
+
+    let forceNodes; // = force.nodes();
+    let forceLinks; // = force.links();
+    let forcePackages = svg.selectAll(".package");
+    let label = svg.selectAll(".forceLabel");
+    let edge = svg.selectAll(".edge");
+
+
+    <!-- d3 time line related variables -->
+    let timeLineLen = 0;
+    let timeLineLen_Total = 0;
+    let duration_total_ms;
+    let rootStartTime = 0;
+
+
+
+</script>
+
+
+<!-- Functions for d3 visualization  -->
+<script>
+
+    //-- Click any empty space within the svg body to reset the location for the packages and detached the links between the packages and processes
+    d3.select("body").on("click",function(){
+
+
+        if (d3.event.target.toString().includes("SVGSVGElement")){
+
+            console.log('clicked an empty space!');
+
+            resetPackagesPosition();
+
+        }
+    });
+
+
+
+
+    // update Tree function
+    function update(source) {
+
+        // Compute the new tree layout.
+        let nodes = tree.nodes(root).reverse(),
+            links = tree.links(nodes);
+
+
+        // Normalize for fixed-depth.
+        nodes.forEach(function(d) { d.y = d.depth * 320;
+
+        });
+
+        // Update the nodes…
+        let node = svg.selectAll("g.node")
+            .data(nodes, function(d) { return d.id || (d.id = ++nodeId_Index);});
+
+        // Enter any new nodes at the parent's previous position.
+        let nodeEnter = node.enter().append("g")
+            .attr("class", "node")
+            .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+            .on("dblclick", dblclickProcess)
+            .on("click", clickProcess)
+            .on("mousedown", function(d){
+
+                //  d3.select("body").transition().style("background-color", "#1c1c1c");
+
+
+
+                // auto-show item content when show results reduces to single
+
+                //                ;( function( $, window, document, undefined )
+                //                {
+                //                    let $container = $( '.viz' );
+                //
+                //
+                //                    if( !$container.length ) return true;
+                //
+                //                    let $packages = $container.find( '.package' ),
+                //                        $package			= $();
+                //
+                //                    $input.on( 'keyup', function()
+                //                    {
+                //                        $item = $items.not( '.is-hidden' );
+                //                        if( $item.length === 1 )
+                //                            $item.addClass( 'js--autoshown is-active' );
+                //                        else
+                //                            $items.filter( '.js--autoshown' ).removeClass( 'js--autoshown is-active' );
+                //                    });
+                //                })( jQuery, window, document );
+
+            })
+            .on("mouseup", function(d){
+
+                console.log("mouseUP");
+                d3.select("body").transition().style("background-color", "white");
+
+            })
+            .on("mouseover", function(d) {
+
+                tooltip.transition()
+                    .duration(200)
+                    .style("opacity", .8);
+                tooltip .html(
+                    d.description
+                )
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 38) + "px");
+            })
+            .on("mouseout", function(d) {
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            });
+
+
+
+        nodeEnter.append("circle")
+            .attr("r", 1e-6)
+            .attr("class", "process")
+            .attr("id",  function(d) { return "process_" + d.name.replace(/[ ()]/g,''); })
+            .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+        nodeEnter.append("text")
+            .attr("class", "processLabel")
+            .attr("id",  function(d) { return "processLabel_" + d.name.replace(/[ ()]/g,''); })
+            .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+            .attr("dy", ".35em")
+            .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+            .text(function(d) { return d.name; })
+            .style("fill-opacity", 1e-6);
+
+
+        // Transition nodes to their new position.
+        let nodeUpdate = node.transition()
+            .duration(duration)
+            .attr("transform", function(d) {
+
+
+
+                return "translate(" + d.y + "," + d.x + ")"; });
+
+        nodeUpdate.select("circle")
+            .attr("r", 8)
+            .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+        nodeUpdate.select("text")
+            .style("fill-opacity", 1);
+
+        // Transition exiting nodes to the parent's new position.
+        let nodeExit = node.exit().transition()
+            .duration(duration)
+            .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+            .remove();
+
+        nodeExit.select("circle")
+            .attr("r", 1e-6);
+
+        nodeExit.select("text")
+            .style("fill-opacity", 1e-6);
+
+        // Update the links…
+        let link = svg.selectAll("path.link")
+            .data(links, function(d) { return d.target.id; });
+
+        // Enter any new links at the parent's previous position.
+        link.enter().insert("path", "g")
+            .attr("class", "link")
+            .attr("d", function(d) {
+                let o = {x: source.x0, y: source.y0};
+                return diagonal({source: o, target: o});
+            });
+
+
+        // Transition links to their new position.
+        link.transition()
+            .duration(duration)
+            .attr("d", diagonal);
+
+        // Transition exiting nodes to the parent's new position.
+        link.exit().transition()
+            .duration(duration)
+            .attr("d", function(d) {
+                let o = {x: source.x, y: source.y};
+                return diagonal({source: o, target: o});
+            })
+            .remove();
+
+
+        // Update the link text
+        let linktext = svg.selectAll("g.link")
+            .data(links, function (d) {
+                return d.target.id;
+            });
+
+
+
+        linktext.enter()
+            .insert("g")
+            .attr("class", "link")
+            .attr("transform", function(d) { return "translate(" + d.source.y + "," + d.source.x + ")"; })
+            .append("text")
+            .attr("dy", ".35em")
+            .attr("text-anchor", "middle")
+            .style("font-size", 15)
+            .text(function (d) {
+                return d.target.rule;
+            });
+
+        // Transition link text to their new positions
+
+        linktext.transition()
+            .duration(duration)
+            .attr("transform", function (d) {
+                return "translate(" + ((d.source.y + d.target.y) / 2) + "," + ((d.source.x + d.target.x) / 2) + ")";
+            })
+
+
+        //Transition exiting link text to the parent's new position.
+        linktext.exit().transition()
+            .remove();
+
+
+        // Stash the old positions for transition.
+        nodes.forEach(function(d) {
+            d.x0 = d.x;
+            d.y0 = d.y;
+        });
+
+
+        currentDisplayingNodes = nodes;
+        console.log("currentDisplayingNodes: ", currentDisplayingNodes);
+
+    }
+
+    // Toggle children on click.
+    function dblclickProcess(d) {
+
+
+
+        let links = force.links();
+
+        links = [];
+
+        edge = svg.selectAll(".edge").data(links);
+
+        //Empty edges.
+        edge.exit().remove();
+        svg.selectAll("circle");
+
+
+        forceLinks = links;
+
+        force.links(links);
+
+        restart();
+
+
+
+        let newTimelineDuration;
+
+        if (d.children) {
+
+
+            d._children = d.children;
+            d.children = null;
+
+            decreaseTimeLineLen(d.y );
+
+            console.log('Close');
+
+            newTimelineDuration = (d.start_time - rootStartTime) / 1000000;
+
+
+        } else {
+
+
+            d.children = d._children;
+            d._children = null;
+
+            console.log('Open');
+
+
+
+            let tempDuration = 0;
+
+
+            if (d.children != null){
+
+                d.children.forEach(function(node) {
+
+                    if ((node.start_time - rootStartTime) > tempDuration) {
+
+                        tempDuration = node.start_time - rootStartTime;
+                    };
+
 
                 });
             }
             else{
+                tempDuration = d.exit_time - rootStartTime;
 
-                commands = 'No argument for this process'
             }
 
 
-            // Fill in the processDetails section with informationm
-            // from the node. Because we want to transition
-            // this to match the transitions on the graph,
-            // we first set it's opacity to 0.
-
-            processDetails.style({'opacity': 0});
-            // Now add the processDetails content.
+            newTimelineDuration = tempDuration / 1000000;  //d.children[0].start_time - rootStartTime;
 
 
-            let fileNames = d.reads.sort().concat(d.writes.sort());
-            let uniqFileNames = [...new Set(fileNames)];
+        }
+
+        timeLineLen =  timeLineLen_Total * (newTimelineDuration / duration_total_ms);
+
+        //  let durationLabel  = "Took " + (duration / 1000000).toFixed(2) + " milliseconds";
+
+        updateTimeLine(timeLineLen, getTimeLineLabel(newTimelineDuration));
 
 
-            //  let readFromDivHeader = processDetails.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
-            processDetails.append('h3').text("Process:").attr("href", "#ProcessName").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
-            processDetails.append('h5').text(d.name).attr("id", "ProcessName" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
+
+        update(d);
 
 
-            processDetails.append('h3').text("Commands:").attr("href", "#Commands").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
-            processDetails.append('h5').text(commands).attr("id", "Commands" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
-
-            processDetails.append('h3').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
-            processDetails.append('h6').text(uniqFileNames.length + " files").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
-            processDetails.append('input').attr("type", "search").attr("class", "fileSearch_input").attr("placeholder", "Search for listing files")
-                .style("margin-left", "10px;");
-
-            searchFilesInfoDiv = processDetails.append('div').attr("class", "searchFilesInfoDiv");
-
-            searchFilesList = processDetails.append('div').attr("class", "searchFilesList");
+    }
 
 
-            let filesList = [];
-
-            let fileNamesList = d.reads.sort().concat(d.writes.sort());
-
-            fileNamesList.forEach(function(file){
+    // Toggle tree  on click.
+    function clickProcess(d) {
 
 
-                let keyName = "\"" + file + "\"";
+        console.log('single click');
 
-                if(keyName in fileDict){
+        console.log('This D: ', d);
+
+        console.log('This this: ', this);
 
 
-                    let file = fileDict[keyName];
+        let otherSVG = d3.selectAll(".process, .processLabel, .package, .edge, .packageLabel, .link");
 
-                    filesList.push(file);
+        if(inFocus === true){
+
+
+            otherSVG.style("opacity", 0.3);
+
+        }
+        else    otherSVG.style("opacity", 1);
+
+
+        currentSelectedNode = d;
+
+
+
+        if (thisNodeCircle != null && thisNodeCircleLabel != null){
+
+
+            thisNodeCircle.transition().attr("r", 8);
+            thisNodeCircleLabel.transition().style("font", "15px sans-serif").attr("x", function(d) { return d.children || d._children ? -10 : 10; });
+
+
+        }
+
+
+
+        thisNodeCircle = d3.select("#process_"+ d.name.replace(/[ ()]/g,''));  // d3.select("id","#process_" + d.name.replace(/[ ()]/g,''));
+        thisNodeCircleLabel = d3.select("#processLabel_"+ d.name.replace(/[ ()]/g,''));  // d3.select("id","#process_" + d.name.replace(/[ ()]/g,''));
+
+
+        thisNodeCircle.transition().attr("r", 20).style("opacity", 1);
+        thisNodeCircleLabel
+            .transition()
+            .style("font", "20px sans-serif")
+            .style("opacity", 1)
+            .attr("x", function(d) { return d.children || d._children ? -30 : 30; });
+
+
+
+        let links = force.links();
+
+        links = [];
+
+        edge = svg.selectAll(".edge").data(links);
+
+
+        let edgeExit = edge.exit().remove();
+
+        if(forceNodes.length > packagesNumber){
+
+            forceNodes.pop();
+
+        }
+
+        // add links to any nearby nodes
+
+        let node = {};
+        node.x = d.y;
+        node.y = d.x;
+        node.px = d.y;
+        node.py = d.x;
+        node.weight = 10;
+        node.radius = 20;
+        node.fixed = true;
+
+
+
+        let thisNode  = forceNodes.push(node);
+
+
+        let circles = svg.selectAll("circle");
+
+
+
+        forceNodes.forEach(function(target) {
+
+            d.packages.reads.forEach(function (readFile) {
+
+                if(target.name === readFile){
+
+
+
+                    d3.select("#package_" + readFile.replace(/[.,\/#!$%&;:+{}=\-_`~()]/g,"")).style("opacity", 1);
+                    d3.select("#packageLabel_" + readFile.replace(/[.,\/#!$%&;:+{}=\-_`~()]/g,"")).style("opacity", 1);
+
+                    links.push({source: node, target: target});
 
                 }
 
+            })
+
+
+
+        });
+
+
+
+        forceLinks = links;
+
+
+        let label = svg.selectAll(".forceLabel")
+            .data(force.nodes());
+
+        label.attr("x", function(d){ return d.x; })
+            .attr("y", function (d) {return d.y - 30; });
+
+        force.links(links);
+        //force.nodes(thisNode);
+
+
+
+        restart();
+
+
+
+
+
+        // Delete the current processDetails section to prepare
+        // for new information.
+
+        processDetails.selectAll('*').remove();
+
+        let commands = '';
+
+
+        if(d.argv != null){
+
+            d.argv.forEach(function(argv){
+
+                commands += argv;//.concat(argv.toString());
+                commands += ' ';
 
             });
+        }
+        else{
+
+            commands = 'No argument for this process'
+        }
+
+
+        // Fill in the processDetails section with informationm
+        // from the node. Because we want to transition
+        // this to match the transitions on the graph,
+        // we first set it's opacity to 0.
+
+        processDetails.style({'opacity': 0});
+        // Now add the processDetails content.
+
+
+        let fileNames = d.reads.sort().concat(d.writes.sort());
+        let uniqFileNames = [...new Set(fileNames)];
+
+
+        //  let readFromDivHeader = processDetails.append('div').attr("id", "readFromDivHeader").attr("class", "panel-heading");
+        processDetails.append('h3').text("Process:").attr("href", "#ProcessName").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+        processDetails.append('h5').text(d.name).attr("id", "ProcessName" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
+
+
+        processDetails.append('h3').attr("class", "collapsible").append('a').text("Commands:").attr("href", "#Commands").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+        processDetails.append('h5').text(commands).attr("id", "Commands" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
+
+        processDetails.append('h3').text("Associated Files:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+        processDetails.append('h6').text(uniqFileNames.length + " files").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
+        processDetails.append('input').attr("type", "search").attr("class", "fileSearch_input").attr("placeholder", "Search for listing files")
+            .style("margin-left", "10px;");
+
+        searchFilesInfoDiv = processDetails.append('div').attr("class", "searchFilesInfoDiv");
+
+        searchFilesList = processDetails.append('div').attr("class", "searchFilesList");
+
+
+        let filesList = [];
+
+        let fileNamesList = d.reads.sort().concat(d.writes.sort());
+
+        fileNamesList.forEach(function(file){
+
+
+            let keyName = "\"" + file + "\"";
+
+            if(keyName in fileDict){
+
+
+                let thisFile = fileDict[keyName];
+
+                filesList.push(thisFile);
+
+            }
+
+
+        });
 
 
 
-            let filelistUL = searchFilesList.append('ul');
-            let fileCount = 1;
+        let filelistUL = searchFilesList.append('ul');
+        let fileCount = 1;
 
-            filesList.forEach(function(file){
+        filesList.forEach(function(file){
 
-                let id = "faq-" + fileCount;
-                let href = "#" + id;
+            let id = "faq-" + fileCount;
+            let href = "#" + id;
 
-                let fileLi =   filelistUL.append('li').attr("id",id ).attr("class", "noBeforeContent");
+            let fileLi =   filelistUL.append('li').attr("id",id ).attr("class", "noBeforeContent");
 
-                let fileH2 =  fileLi.append('h4');//.text(file.name);
-                let fileA =  fileH2.append('a').attr("href", href).text(file.name);
+            let fileH2 =  fileLi.append('h4');//.text(file.name);
+            fileH2.append('a').attr("href", href).text(file.name);
 
-                let fileDiv = fileLi.append('div');
-
-
-
-                let proccess_Read = "";
-                let proccess_Write = "";
+            let fileDiv = fileLi.append('div');
 
 
-                if(file.reads.length != 0){
-                    file.reads.forEach(function(process){
-                        proccess_Read += process + "<br/>"
-
-                    });
-                }
-                else {
-
-                    proccess_Read = "Not read by any process."
-                }
-
-                if(file.writes.length != 0){
-                    file.writes.forEach(function(process){
-                        proccess_Write += process + "<br/>"
-
-                    });
-                }
-                else {
-
-                    proccess_Write = "Not written by any process."
-                }
-
-                fileDiv.html(
-                    "<br>" +
-                    "<h5>From Package:  " +  file.package+ " </h5>" +
-
-                    "<h5>Read By: </h5>" +
-                    proccess_Read
-                    +
-                    "<br>"
-                    +
-                    "<h5>Written By: </h5>" +
-                    proccess_Write
-
-                )
+            let proccess_Read = "";
+            let proccess_Write = "";
 
 
+            if(file.reads.length != 0){
+                file.reads.forEach(function(process){
+                    proccess_Read += process + "<br/>"
 
-                fileCount++;
+                });
+            }
+            else {
 
-            });
+                proccess_Read = "Not read by any process."
+            }
 
+            if(file.writes.length != 0){
+                file.writes.forEach(function(process){
+                    proccess_Write += process + "<br/>"
 
-            searchFilesList.append('div').attr("class", "searchFilesList__notfound").html(
-                "<p>No matches were found&hellip; Try &ldquo;bash&rdquo;.</p>"
+                });
+            }
+            else {
 
-            );
+                proccess_Write = "Not written by any process."
+            }
 
+            fileDiv.html(
+                "<br>" +
+                "<h5>From Package:  " +  file.package+ " </h5>" +
 
-            // associationString: "reads" or  "writes
-            createFileTooTip(searchFilesInfoDiv,d,"reads");
-            createFileTooTip(searchFilesInfoDiv,d,"writes");
+                "<h5>Read By: </h5>" +
+                proccess_Read
+                +
+                "<br>"
+                +
+                "<h5>Written By: </h5>" +
+                proccess_Write
+
+            )
 
 
 
-            let packageNames = d.packages.reads.sort().concat(d.packages.writes.sort());
-            let uniqPackageNames = [...new Set(packageNames)];
+            fileCount++;
+
+        });
+
+
+        searchFilesList.append('div').attr("class", "searchFilesList__notfound").html(
+            "<p>No matches were found&hellip; Try &ldquo;bash&rdquo;.</p>"
+
+        );
+
+
+        // associationString: "reads" or  "writes
+        createFileTooTip(searchFilesInfoDiv,d,"reads");
+        createFileTooTip(searchFilesInfoDiv,d,"writes");
 
 
 
-            searchFilesInfoDiv.append('h3').text("Associated Packages:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
-            searchFilesInfoDiv.append('h6').text(uniqPackageNames.length + " packages").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
-
-            createPackageTooTip(searchFilesInfoDiv,d);
+        let packageNames = d.packages.reads.sort().concat(d.packages.writes.sort());
+        let uniqPackageNames = [...new Set(packageNames)];
 
 
 
-            // With the content in place, transition
-            // the opacity to make it visible.
+        searchFilesInfoDiv.append('h3').text("Associated Packages:").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+        searchFilesInfoDiv.append('h6').text(uniqPackageNames.length + " packages").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
 
-            processDetails.transition().style({'opacity': 1});
-
-
-            // 'use strict';
+        createPackageTooTip(searchFilesInfoDiv,d);
 
 
-            // search & highlight
-            ;( function( $, window, document, undefined )
+
+        // With the content in place, transition
+        // the opacity to make it visible.
+
+        processDetails.transition().style({'opacity': 1});
+
+
+        // 'use strict';
+
+
+        // search & highlight
+        ;( function( $, window, document, undefined )
+        {
+            let $container = $( '.fileSearch' );
+            let $searchFilesListContainer = $container.find( '.searchFilesList' );
+
+            if( !$container.length ) return true;
+
+
+            let $input			= $container.find( '.fileSearch_input' ),
+                $notfound		= $searchFilesListContainer.find( '.searchFilesList__notfound' ),
+                $items			= $searchFilesListContainer.find( '> ul > li' ),
+                $item			= $(),
+                itemsIndexed	= [];
+
+            console.log("searchFilesListContainer:", $searchFilesListContainer);
+
+
+            $items.each( function()
             {
-                let $container = $( '.fileSearch' );
-                let $searchFilesListContainer = $container.find( '.searchFilesList' );
+                itemsIndexed.push( $( this ).text().replace( /\s{2,}/g, ' ' ).toLowerCase() );
+            });
 
-                if( !$container.length ) return true;
+            $input.on( 'keyup', function( e )
+            {
+                console.log('keyup : ');
+
+                $(".searchFilesInfoDiv").hide();
+                $(".searchFilesList").show();
 
 
-                let $input			= $container.find( '.fileSearch_input' ),
-                    $notfound		= $searchFilesListContainer.find( '.searchFilesList__notfound' ),
-                    $items			= $searchFilesListContainer.find( '> ul > li' ),
-                    $item			= $(),
-                    itemsIndexed	= [];
+                if( e.keyCode === 13 ) // enter
+                {
 
-                console.log("searchFilesListContainer:", $searchFilesListContainer);
-
+                    $input.trigger( 'blur' );
+                    return true;
+                }
 
                 $items.each( function()
                 {
-                    itemsIndexed.push( $( this ).text().replace( /\s{2,}/g, ' ' ).toLowerCase() );
+                    $item = $( this );
+                    $item.html( $item.html().replace( /<span class="highlight">([^<]+)<\/span>/gi, '$1' ) );
                 });
 
-                $input.on( 'keyup', function( e )
+                let searchVal = $.trim( $input.val() ).toLowerCase();
+                if( searchVal.length )
                 {
-                    console.log('keyup : ');
-
-                    $(".searchFilesInfoDiv").hide();
-                    $(".searchFilesList").show();
-
-
-                    if( e.keyCode == 13 ) // enter
+                    for( let i in itemsIndexed )
                     {
-
-                        $input.trigger( 'blur' );
-                        return true;
+                        $item = $items.eq( i );
+                        if( itemsIndexed[ i ].indexOf( searchVal ) != -1 )
+                            $item.removeClass( 'is-hidden' ).html( $item.html().replace( new RegExp( searchVal+'(?!([^<]+)?>)', 'gi' ), '<span class="highlight">$&</span>' ) );
+                        else
+                            $item.addClass( 'is-hidden' );
                     }
+                }
+                else {
+                    $items.removeClass('is-hidden');
 
-                    $items.each( function()
-                    {
-                        $item = $( this );
-                        $item.html( $item.html().replace( /<span class="highlight">([^<]+)<\/span>/gi, '$1' ) );
-                    });
-
-                    let searchVal = $.trim( $input.val() ).toLowerCase();
-                    if( searchVal.length )
-                    {
-                        for( let i in itemsIndexed )
-                        {
-                            $item = $items.eq( i );
-                            if( itemsIndexed[ i ].indexOf( searchVal ) != -1 )
-                                $item.removeClass( 'is-hidden' ).html( $item.html().replace( new RegExp( searchVal+'(?!([^<]+)?>)', 'gi' ), '<span class="highlight">$&</span>' ) );
-                            else
-                                $item.addClass( 'is-hidden' );
-                        }
-                    }
-                    else {
-                        $items.removeClass('is-hidden');
-
-                        $(".searchFilesInfoDiv").show();
-                        $(".searchFilesList").hide();
-
-                    }
-
-                    $notfound.toggleClass( 'is-visible', $items.not( '.is-hidden' ).length == 0 );
-                });
-            })( jQuery, window, document );
-
-
-            // toggling items on title press
-
-            ;( function( $, window, document, undefined )
-            {
-                $( document ).on( 'click', '.searchFilesList h4 a', function( e )
-                {
-                    e.preventDefault();
-                    $( this ).parents( 'li' ).toggleClass( 'is-active' );
-                });
-            })( jQuery, window, document );
-
-
-            // auto-show item content when show results reduces to single
-
-            ;( function( $, window, document, undefined )
-            {
-                let $container = $( '.fileSearch' );
-                let $searchFilesListContainer = $container.find( '.searchFilesList' );
-
-                if( !$container.length ) return true;
-
-                let $input			= $container.find( '.fileSearch_input' ),
-                    $items			= $searchFilesListContainer.find( '> ul > li' ),
-                    $item			= $();
-
-                $input.on( 'keyup', function()
-                {
-                    $item = $items.not( '.is-hidden' );
-                    if( $item.length == 1 )
-                        $item.addClass( 'js--autoshown is-active' );
-                    else
-                        $items.filter( '.js--autoshown' ).removeClass( 'js--autoshown is-active' );
-                });
-            })( jQuery, window, document );
-
-
-
-        }
-
-
-        function createFileTooTip(notesDiv,source, associationString){
-
-
-            let readsList;
-            let idString;
-            let idString_href;
-            let text_String ;
-
-            if(associationString == 'reads'){
-
-                idString = "readsToDiv";
-                idString_href = "#readsToDiv";
-                text_String = "Reads from:";
-                readsList = source.reads.sort();
-            }
-            else if (associationString == 'writes'){
-
-                idString = "writesToDiv";
-                idString_href = "#writesToDiv";
-                text_String = "Writes to:";
-                readsList = source.writes.sort();
-
-            }
-
-
-
-            notesDiv.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", idString_href).text(text_String).style({'padding-left': 0, 'text-decoration': 'none', 'font': '8 px sans-serif' });
-
-            let readsFromDiv = notesDiv.append('div').attr("id", idString ).attr("class", "panel-collapse ");
-
-            // let readsList = source.writes.sort();
-            let packagePath = '';
-            let newDetails ;
-            let newSummary;
-            let currentUL ;
-
-
-            if(readsList.length !=0){
-
-                for (let i = 0; i < readsList.length; i++ ){
-
-                    packagePath = setPackagePath(readsList, i , i + 1);
-                    newDetails = readsFromDiv.append('details');
-                    newSummary = newDetails.append('summary').text(packagePath);
-                    currentUL = newDetails.append('ul');
-
-                    while(readsList[i].includes(packagePath) ){
-
-
-                        let thisReadArray = ["\"" + readsList[i] + "\""];
-
-                        let fileName = readsList[i].replace(packagePath,"");
-
-                        currentUL.append('li')
-                            .data(thisReadArray)
-                            .attr("class", 'noBeforeContent')
-                            .on("mouseover", function(d) {
-
-
-                                let thisFile =  fileDict[d];
-
-                                let proccess_Read = "";
-                                let proccess_Write = "";
-
-
-                                if(thisFile.reads.length != 0){
-                                    thisFile.reads.forEach(function(process){
-                                        proccess_Read += process + "<br/>"
-
-                                    });
-                                }
-                                else {
-
-                                    proccess_Read = "Not read by any process."
-                                }
-
-                                if(thisFile.writes.length != 0){
-                                    thisFile.writes.forEach(function(process){
-                                        proccess_Write += process + "<br/>"
-
-                                    });
-                                }
-                                else {
-
-                                    proccess_Write = "Not written by any process."
-                                }
-
-                                tooltip.transition()
-                                    .duration(200)
-                                    .style("opacity", .8);
-                                tooltip.html(
-                                    "<h5 style='font-size: 12px'>" + thisFile.name + " </h5>" +
-                                    "<h5 style='font-size: 12px'>From Package:  " +  thisFile.package+ " </h5>" +
-
-                                    "<h5 style='font-size: 12px'>Read By: </h5>" +
-                                    proccess_Read
-                                    +
-                                    "<br>"
-                                    +
-                                    "<h5 style='font-size: 12px'>Written By: </h5>" +
-                                    proccess_Write
-
-                                )
-                                    .style("left", (d3.event.pageX) + "px")
-                                    .style("top", (d3.event.pageY - 28) + "px");
-
-                            })
-                            .on("mouseout", function(d) {
-                                tooltip.transition()
-                                    .duration(500)
-                                    .style("opacity", 0);
-                            })
-                            .text(fileName);
-
-                        if(readsList[i+1] == null){
-
-                            break;
-                        }
-
-                        if(readsList[i+1].includes(packagePath) == false ){
-
-
-                            break;
-
-
-                        }
-                        i++;
-
-                    }
-
+                    $(".searchFilesInfoDiv").show();
+                    $(".searchFilesList").hide();
 
                 }
 
-            }
-            else {
-                readsFromDiv.append('details').append('summary').text("No associated file.");
+                $notfound.toggleClass( 'is-visible', $items.not( '.is-hidden' ).length === 0 );
+            });
+        })( jQuery, window, document );
 
-            }
 
+        // toggling items on title press
+
+        ;( function( $, window, document, undefined )
+        {
+            $( document ).on( 'click', '.searchFilesList h4 a', function( e )
+            {
+                e.preventDefault();
+                $( this ).parents( 'li' ).toggleClass( 'is-active' );
+            });
+        })( jQuery, window, document );
+
+
+        // auto-show item content when show results reduces to single
+
+        ;( function( $, window, document, undefined )
+        {
+            let $container = $( '.fileSearch' );
+            let $searchFilesListContainer = $container.find( '.searchFilesList' );
+
+            if( !$container.length ) return true;
+
+            let $input			= $container.find( '.fileSearch_input' ),
+                $items			= $searchFilesListContainer.find( '> ul > li' ),
+                $item			= $();
+
+            $input.on( 'keyup', function()
+            {
+                $item = $items.not( '.is-hidden' );
+                if( $item.length === 1 )
+                    $item.addClass( 'js--autoshown is-active' );
+                else
+                    $items.filter( '.js--autoshown' ).removeClass( 'js--autoshown is-active' );
+            });
+        })( jQuery, window, document );
+
+
+
+    }
+
+
+    function createFileTooTip(notesDiv,source, associationString){
+
+
+        let readsList;
+        let idString;
+        let idString_href;
+        let text_String ;
+
+        if(associationString === 'reads'){
+
+            idString = "readsToDiv";
+            idString_href = "#readsToDiv";
+            text_String = "Reads from:";
+            readsList = source.reads.sort();
+        }
+        else if (associationString === 'writes'){
+
+            idString = "writesToDiv";
+            idString_href = "#writesToDiv";
+            text_String = "Writes to:";
+            readsList = source.writes.sort();
 
         }
 
 
 
+        notesDiv.append('h5').attr("class", "panel-title").append('a').attr("data-toggle", "collapse").attr("href", idString_href).text(text_String).style({'padding-left': 0, 'text-decoration': 'none', 'font': '8 px sans-serif' });
 
-        function createPackageTooTip(processDetails,source){
+        let readsFromDiv = notesDiv.append('div').attr("id", idString ).attr("class", "panel-collapse ");
 
-
-            console.log('createPackageTooTip source', source);
-
-            let idString = "package_Div";
-
-            let packageNames = source.packages.reads.sort().concat(source.packages.writes.sort());
-            let packages = {};
+        // let readsList = source.writes.sort();
+        let packagePath = '';
+        let newDetails ;
+        let currentUL ;
 
 
-            packageNames.forEach(function (package) {
+        if(readsList.length !=0){
 
-                packages[package] = {["version"]:"", ["files"]:[]};
+            for (let i = 0; i < readsList.length; i++ ){
 
-                forceData.packages.forEach(function(forceDataPackage){
+                packagePath = setPackagePath(readsList, i , i + 1).replace('/','');
+                newDetails = readsFromDiv.append('details');
 
-                    if(forceDataPackage.name == package && forceDataPackage.name != "other_files" ){
+                newDetails.append('summary').text(packagePath);
 
-                        packages[package].version = "Version: " + forceDataPackage.version;
+                currentUL = newDetails.append('ul');
+
+                while(readsList[i].includes(packagePath) ){
+
+
+                    let thisReadArray = ["\"" + readsList[i] + "\""];
+
+                    let fileName = readsList[i].replace(packagePath,"");
+
+                    currentUL.append('li')
+                        .data(thisReadArray)
+                        .attr("class", 'noBeforeContent')
+                        .on("mouseover", function(d) {
+
+
+                            let thisFile =  fileDict[d];
+
+                            let proccess_Read = "";
+                            let proccess_Write = "";
+
+
+                            if(thisFile.reads.length != 0){
+                                thisFile.reads.forEach(function(process){
+                                    proccess_Read += process + "<br/>"
+
+                                });
+                            }
+                            else {
+
+                                proccess_Read = "Not read by any process."
+                            }
+
+                            if(thisFile.writes.length != 0){
+                                thisFile.writes.forEach(function(process){
+                                    proccess_Write += process + "<br/>"
+
+                                });
+                            }
+                            else {
+
+                                proccess_Write = "Not written by any process."
+                            }
+
+                            tooltip.transition()
+                                .duration(200)
+                                .style("opacity", .8);
+                            tooltip.html(
+                                "<h5 style='font-size: 12px'>" + thisFile.name + " </h5>" +
+                                "<h5 style='font-size: 12px'>From Package:  " +  thisFile.package+ " </h5>" +
+
+                                "<h5 style='font-size: 12px'>Read By: </h5>" +
+                                proccess_Read
+                                +
+                                "<br>"
+                                +
+                                "<h5 style='font-size: 12px'>Written By: </h5>" +
+                                proccess_Write
+
+                            )
+                                .style("left", (d3.event.pageX) + "px")
+                                .style("top", (d3.event.pageY - 28) + "px");
+
+                        })
+                        .on("mouseout", function(d) {
+                            tooltip.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                        })
+                        .text(fileName);
+
+                    if(readsList[i+1] == null){
+
+                        break;
                     }
-                })
+
+                    if(readsList[i+1].includes(packagePath) == false ){
 
 
-            });
+                        break;
 
 
-
-            let fileList = source.reads.sort().concat(source.writes.sort());
-
-            fileList.forEach(function(file){
-
-
-                let keyName = "\"" + file + "\"";
-
-                if(keyName in fileDict){
-
-
-                    let file = fileDict[keyName];
-
-                    packages[file.package].files.push(file);
-
+                    }
+                    i++;
 
                 }
 
 
-            });
-
-
-
-            let readsFromDiv = processDetails.append('div').attr("id", idString ).attr("class", "panel-collapse ");
-
-
-            let newDetails ;
-            let newSummary;
-            let currentUL ;
-            let container;
-
-
-            if(Object.keys(packages).length !=0){
-
-
-                Object.keys(packages).forEach(function(key) {
-
-
-                    let summaryText = "";
-                    if(packages[key].files.length > 1){
-
-                        summaryText = key + "    (" +  packages[key].files.length + " files)";
-                    }
-                    else {
-
-                        summaryText = key + "    (" +  packages[key].files.length + " file)";
-                    }
-
-
-                    container = readsFromDiv.append('div');
-
-//
-//                let checkBox =  container.append("foreignObject")
-//                    .attr("width", 100)
-//                    .attr("height", 100)
-//                    .style("float", 'left')
-//                    .style("margin-left", 30)
-//                    .append("xhtml:body")
-//                    .html("<form><input type=checkbox id=check /></form>")
-//                    .on("click", function(d, i){
-//
-//                        console.log(" theck box d:", d);
-//                        console.log(" the source:", source);
-//                       // console.log(svg.select("#check").node().checked);
-//
-//
-//                    });
-
-
-                    newDetails = container.append('details');
-                    newSummary = newDetails.append('summary').text(summaryText);
-
-                    newSummary.on("mouseover", function(d) {
-
-
-                        tooltip.transition()
-                            .duration(200)
-                            .style("opacity", .8);
-                        tooltip.html(
-                            "<h5 style='font-size: 12px'>" +  packages[key].version + " </h5>"
-
-                        ).style("left", (d3.event.pageX) + "px")
-                            .style("top", (d3.event.pageY - 28) + "px");
-
-
-
-                    }).on("mouseout", function(d) {
-                        tooltip.transition()
-                            .duration(500)
-                            .style("opacity", 0);
-                    });
-
-
-                    currentUL = newDetails.append('ul');
-
-                    packages[key].files.forEach(function (file) {
-
-                        currentUL.append('li')
-                            .attr("class", 'noBeforeContent')
-                            .text(file.name);
-
-                    })
-
-                });
-
-
-            }
-            else {
-                readsFromDiv.append('details').append('summary').text("No associated package.");
-
             }
 
+        }
+        else {
+            readsFromDiv.append('details').append('summary').text("No associated file.");
 
         }
 
-        function createAllPackageList(packages){
 
-            //  let packages = {};
-
-
-            let allPackageListDiv = d3.selectAll(".All_Packages");
-            let mainContainer;
-
-
-            allPackageListDiv.append('h3').text("All Packages:").attr("id", "AllPackagesDiv" ).attr("href", "#AllPackages").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
-            // let readsFromDiv = processDetails.append('div').attr("id", idString ).attr("class", "panel-collapse ");
-            mainContainer = allPackageListDiv.append('div').attr("id", "AllPackages" ).attr("class", "panel-collapse ");
-
-            mainContainer.append('h6').text(packages.length + " packages").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'#778899' ,  'font-size': '15px' });
-
-            let newDetails ;
-            let newSummary;
-            let currentUL ;
-            let subContainer;
+    }
 
 
 
 
-            packages.forEach(function(package){
+    function createPackageTooTip(processDetails_Div,source){
 
-                //    packages[package.name] = {["version"]: package.version, ["files"]:package.files};
+
+        console.log('createPackageTooTip source', source);
+
+        let idString = "package_Div";
+
+        let packageNames = source.packages.reads.sort().concat(source.packages.writes.sort());
+        let packages = {};
+
+
+        packageNames.forEach(function (thisPackage) {
+
+            packages[thisPackage] = {["version"]:"", ["files"]:[]};
+
+            forceData.packages.forEach(function(forceDataPackage){
+
+                if(forceDataPackage.name === thisPackage && forceDataPackage.name != "other_files" ){
+
+                    packages[thisPackage].version = "Version: " + forceDataPackage.version;
+                }
+            })
+
+
+        });
+
+
+
+        let fileList = source.reads.sort().concat(source.writes.sort());
+
+        fileList.forEach(function(file){
+
+
+            let keyName = "\"" + file + "\"";
+
+            if(keyName in fileDict){
+
+
+                let thisFile = fileDict[keyName];
+
+                packages[thisFile.package].files.push(thisFile);
+
+
+            }
+
+
+        });
+
+
+
+        let readsFromDiv = processDetails_Div.append('div').attr("id", idString ).attr("class", "panel-collapse ");
+
+
+        let newDetails ;
+        let newSummary;
+        let currentUL ;
+        let container;
+
+
+        if(Object.keys(packages).length !=0){
+
+
+            Object.keys(packages).forEach(function(key) {
+
 
                 let summaryText = "";
+                if(packages[key].files.length > 1){
 
-                if(package.files.length > 1){
-
-                    summaryText = package.name + "    (" +  package.files.length + " files)";
+                    summaryText = key + "    (" +  packages[key].files.length + " files)";
                 }
                 else {
 
-                    summaryText = package.name + "    (" +  package.files.length + " file)";
+                    summaryText = key + "    (" +  packages[key].files.length + " file)";
                 }
 
-                subContainer = mainContainer.append('div');
 
-                let checkBox =  subContainer.append("input")
-                    .attr("type", "checkbox")
-                    .attr("width", 100)
-                    .attr("height", 100)
-                    .attr("checked", true)
-                    .style("float", 'left')
-                    .style("padding-left", 50)
-                    .on("click", function(d, i){
+                container = readsFromDiv.append('div');
 
-
-                        let thisPackage = d3.select("#package_" +package.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
-                        let thisEdge = d3.select("#edge_" +package.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
-                        let thisPackageLabel = d3.select("#packageLabel_" +package.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
-
-
-
-                        if(d3.select(this).node().checked == false){
-
-
-                            thisPackage.style({
-                                "opacity": 0
-
-                            });
-
-                            thisPackageLabel.style({
-                                "opacity": 0
-
-                            });
-
-                            thisEdge.style({
-                                "opacity": 0
-
-                            });
+                //
+                //                let checkBox =  container.append("foreignObject")
+                //                    .attr("width", 100)
+                //                    .attr("height", 100)
+                //                    .style("float", 'left')
+                //                    .style("margin-left", 30)
+                //                    .append("xhtml:body")
+                //                    .html("<form><input type=checkbox id=check /></form>")
+                //                    .on("click", function(d, i){
+                //
+                //                        console.log(" theck box d:", d);
+                //                        console.log(" the source:", source);
+                //                       // console.log(svg.select("#check").node().checked);
+                //
+                //
+                //                    });
 
 
-
-                        }
-                        else{
-
-                            thisPackage.style({
-                                "opacity": 1
-
-                            });
-
-                            thisPackageLabel.style({
-                                "opacity": 1
-
-                            });
-
-                            thisEdge.style({
-                                "opacity": 1
-
-                            });
-
-
-                        }
-
-
-
-                    });
-
-
-                newDetails = subContainer.append('details');
+                newDetails = container.append('details');
                 newSummary = newDetails.append('summary').text(summaryText);
 
                 newSummary.on("mouseover", function(d) {
@@ -1736,10 +1661,11 @@
                         .duration(200)
                         .style("opacity", .8);
                     tooltip.html(
-                        "<h5 style='font-size: 12px'>" + "Version: " + package.version + " </h5>"
+                        "<h5 style='font-size: 12px'>" +  packages[key].version + " </h5>"
 
                     ).style("left", (d3.event.pageX) + "px")
                         .style("top", (d3.event.pageY - 28) + "px");
+
 
 
                 }).on("mouseout", function(d) {
@@ -1751,7 +1677,7 @@
 
                 currentUL = newDetails.append('ul');
 
-                package.files.forEach(function (file) {
+                packages[key].files.forEach(function (file) {
 
                     currentUL.append('li')
                         .attr("class", 'noBeforeContent')
@@ -1759,69 +1685,354 @@
 
                 })
 
-
-            })
-
+            });
 
 
+        }
+        else {
+            readsFromDiv.append('details').append('summary').text("No associated package.");
 
         }
 
 
-        function treeDraw(currentJsonFile){
+    };
+
+    function createAllPackageList(packages){
+
+        //  let packages = {};
+
+
+        let allPackageListDiv = d3.selectAll(".All_Packages");
+        let mainContainer;
+
+
+        allPackageListDiv.append('h3').text("All Packages:").attr("id", "AllPackagesDiv" ).attr("href", "#AllPackages").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+        // let readsFromDiv = processDetails.append('div').attr("id", idString ).attr("class", "panel-collapse ");
+        mainContainer = allPackageListDiv.append('div').attr("id", "AllPackages" ).attr("class", "panel-collapse ");
+
+        mainContainer.append('h6').text(packages.length + " packages").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'#778899' ,  'font-size': '15px' });
+
+        let newDetails ;
+        let newSummary;
+        let currentUL ;
+        let subContainer;
 
 
 
-            // d3.json block
-            d3.json(currentJsonFile, function(error, data){
+        packages.forEach(function(thisPackage){
 
-                if (error) throw error;
+            //    packages[thisPackage.name] = {["version"]: thisPackage.version, ["files"]:thisPackage.files};
 
-                let tempMaxRunTime = 0;
+            let summaryText = "";
+
+            if(thisPackage.files.length > 1){
+
+                summaryText = thisPackage.name + "    (" +  thisPackage.files.length + " files)";
+            }
+            else {
+
+                summaryText = thisPackage.name + "    (" +  thisPackage.files.length + " file)";
+            }
+
+            subContainer = mainContainer.append('div');
+
+            subContainer.append("input")
+                .attr("type", "checkbox")
+                .attr("width", 100)
+                .attr("height", 100)
+                .attr("checked", true)
+                .style("float", 'left')
+                .style("padding-left", 50)
+                .style("margin", '1px 10px 1px 1px')
+                .on("click", function(d, i){
+
+
+                    let thisPackage = d3.select("#package_" +thisPackage.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
+                    let thisEdge = d3.select("#edge_" +thisPackage.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
+                    let thisPackageLabel = d3.select("#packageLabel_" +thisPackage.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
 
 
 
-                data.packages.forEach(function (package) {
-
-                    package.files.forEach(function (file) {
-
-                        let keyName = "\"" + file + "\"";
-
-                        let fileInfo = [];
-                        fileInfo["reads"] =[];
-                        fileInfo["writes"] =[];
-                        fileInfo["package"] = package.name;
-                        fileInfo["name"] = file;
-
-                        fileDict[keyName] = fileInfo;
+                    if(!d3.select(this).node().checked){
 
 
+                        thisPackage.style({
+                            "opacity": 0
 
-                    })
+                        });
+
+                        thisPackageLabel.style({
+                            "opacity": 0
+
+                        });
+
+                        thisEdge.style({
+                            "opacity": 0
+
+                        });
+
+
+
+                    }
+                    else{
+
+                        thisPackage.style({
+                            "opacity": 1
+
+                        });
+
+                        thisPackageLabel.style({
+                            "opacity": 1
+
+                        });
+
+                        thisEdge.style({
+                            "opacity": 1
+
+                        });
+
+
+                    }
+
+
+
                 });
 
 
-                data.other_files.forEach(function (file) {
+            newDetails = subContainer.append('details');
+            newSummary = newDetails.append('summary').text(summaryText);
 
+            newSummary.on("mouseover", function(d) {
+
+
+                tooltip.transition()
+                    .duration(200)
+                    .style("opacity", .8);
+                tooltip.html(
+                    "<h5 style='font-size: 12px'>" + "Version: " + thisPackage.version + " </h5>"
+
+                ).style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+
+
+            }).on("mouseout", function(d) {
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            });
+
+
+            currentUL = newDetails.append('ul');
+
+            thisPackage.files.forEach(function (file) {
+
+                currentUL.append('li')
+                    .attr("class", 'noBeforeContent')
+                    .text(file.name);
+
+            })
+
+
+        })
+
+
+
+
+    };
+
+
+    function treeDraw(currentJson){
+
+
+        // d3.json block
+        d3.json(currentJson, function(error, data){
+
+            if (error) throw error;
+
+            let tempMaxRunTime = 0;
+
+
+
+            data.packages.forEach(function (thisPackage) {
+
+                thisPackage.files.forEach(function (file) {
 
                     let keyName = "\"" + file + "\"";
 
                     let fileInfo = [];
                     fileInfo["reads"] =[];
                     fileInfo["writes"] =[];
-                    fileInfo["package"] ='other_files';
+                    fileInfo["package"] = thisPackage.name;
                     fileInfo["name"] = file;
 
                     fileDict[keyName] = fileInfo;
 
 
+
+                })
+            });
+
+
+            data.other_files.forEach(function (file) {
+
+
+                let keyName = "\"" + file + "\"";
+
+                let fileInfo = [];
+                fileInfo["reads"] =[];
+                fileInfo["writes"] =[];
+                fileInfo["package"] ='other_files';
+                fileInfo["name"] = file;
+
+                fileDict[keyName] = fileInfo;
+
+
+            });
+
+
+
+            data.runs.forEach(function (run) {
+
+                run.processes.forEach(function(_process) {
+
+
+                    if(_process.reads != null){
+
+                        _process.reads.forEach(function(file){
+
+                            let keyName = "\"" + file + "\"";
+
+
+
+                            if( keyName in fileDict){
+
+                                //console.log('filesDict[file]:', filesDict[keyName]);
+
+                                fileDict[keyName].reads.push(_process.long_name);
+
+                            }
+
+                        });
+
+                    };
+
+
+                    if (_process.writes != null){
+                        _process.writes.forEach(function(file){
+
+
+
+                            let keyName = "\"" + file + "\"";
+
+                            if(keyName in fileDict){
+
+
+                                fileDict[keyName].writes.push(_process.long_name);
+
+                            }
+
+
+                        });
+                    }
+
+
+                })
+
+
+            });
+
+
+            let tempPackageX = 0;
+            let tempPackageY = -200;
+            let isAlternativeOn = 0;
+            let sections = [];
+
+            //Handle Packages to create force data
+            data.packages.forEach(function (thisPackage) {
+
+
+                let newPackage = {["name"]: thisPackage.name, ["version"]: thisPackage.version, ["section"] : thisPackage.section, ["files"] : [] , ["cx"]: 0, ["cy"]: tempPackageY , ["OGy"]: tempPackageY, ["color"]: "" , ["radius"] : maxRadius};
+
+                thisPackage.files.forEach(function (file) {
+
+
+                    let keyName = "\"" + file + "\"";
+
+                    let thisFile =  fileDict[keyName];
+                    newPackage.files.push(thisFile);
+
+                    // forceNodes.nodes.push(thisFile);
+
                 });
 
 
+                newPackage.cx = tempPackageX;
+                newPackage.OGX = tempPackageX;
 
-                data.runs.forEach(function (run) {
+                //Dynamically set the distances between nodes by number of packages
+                if(data.packages.length > 15 && data.packages.length < 30 ){
 
-                    run.processes.forEach(function(_process) {
+                    tempPackageX = tempPackageX + ((width /3) / data.packages.length); // 200;
+                }
+                else if(data.packages.length > 30){
+
+                    tempPackageX = tempPackageX + ((width /1.8) / data.packages.length); // 200;
+                }
+                else {
+
+                    tempPackageX = tempPackageX + (width / 4 / data.packages.length); // 200;
+                }
+
+
+                //push this package's section to local sections
+                sections.push(newPackage.section);
+
+                //push this package to the forceData
+                forceData.packages.push(newPackage);
+
+                //increase packagesNumber to keep the over package number in record
+                packagesNumber++;
+
+                // set alternative Y position for force nodes
+                if(isAlternativeOn === 0 && data.packages.length > 15){
+
+                    tempPackageY = -120;
+
+                    isAlternativeOn = 1;
+                }
+                else if (isAlternativeOn === 1){
+
+                    tempPackageY = -200;
+                    isAlternativeOn = 0;
+
+                }
+
+
+
+
+            });
+
+            console.log('forceData:' , forceData);
+
+
+            //Set sections colors for packages from local sections
+            setSectionsColors(sections);
+
+
+            //Create the all package list on the overview section on sidebar
+            createAllPackageList(forceData.packages);
+
+            //Handle runs
+            data.runs.forEach(function(run){
+
+                run.processes.forEach(function(_process){
+
+                    let packages = {["reads"]:[], ["writes"]: []};
+                    let packagesName = [];
+
+                    if(_process.parent == null){
+
+                        let node = {["name"]: _process.long_name, ["parent"]: "null", ["rule"] : "null", ["description"]: _process.description, ["reads"]: _process.reads ,  ["writes"]: _process.writes  ,["argv"]: _process.argv  , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
 
 
                         if(_process.reads != null){
@@ -1830,19 +2041,19 @@
 
                                 let keyName = "\"" + file + "\"";
 
-
-
                                 if( keyName in fileDict){
 
-                                    //console.log('filesDict[file]:', filesDict[keyName]);
-
-                                    fileDict[keyName].reads.push(_process.long_name);
+                                    packages.reads.push(fileDict[keyName].package);
+                                    packagesName.push(fileDict[keyName].package);
 
                                 }
 
                             });
 
+                            let uniq = [...new Set(packages.reads)];
+                            packages.reads = uniq;
                         };
+
 
 
                         if (_process.writes != null){
@@ -1854,982 +2065,852 @@
 
                                 if(keyName in fileDict){
 
-
-                                    fileDict[keyName].writes.push(_process.long_name);
+                                    packages.writes.push(fileDict[keyName].package);
+                                    packagesName.push(fileDict[keyName].package);
 
                                 }
 
 
                             });
+
+                            let uniq = [...new Set(packages.writes)];
+                            packages.writes = uniq;
                         }
 
+                        node.packages = packages;
 
-                    })
-
-
-                });
-
-
-                let tempPackageX = 0;
-                let tempPackageY = -200;
-                let isAlternativeOn = 0;
-                let sections = [];
-
-                //Handle Packages to create force data
-                data.packages.forEach(function (package) {
+                        let uniq = [...new Set(packagesName)];
+                        node.packageNames = uniq;
 
 
-                    let thisPackage = {["name"]: package.name, ["version"]: package.version, ["section"] : package.section, ["files"] : [] , ["cx"]: 0, ["cy"]: tempPackageY , ["OGy"]: tempPackageY, ["color"]: "" , ["radius"] : maxRadius};
+                        if(_process.exit_time > tempMaxRunTime ){
 
-                    package.files.forEach(function (file) {
+                            tempMaxRunTime = _process.exit_time;
+                        }
 
+                        rawData.push(node);
 
-                        let keyName = "\"" + file + "\"";
-
-                        let thisFile =  fileDict[keyName];
-                        thisPackage.files.push(thisFile);
-
-                        // forceNodes.nodes.push(thisFile);
-
-                    });
-
-
-                    thisPackage.cx = tempPackageX;
-                    thisPackage.OGX = tempPackageX;
-
-                    //Dynamically set the distances between nodes by number of packages
-                    if(data.packages.length > 15 && data.packages.length < 30 ){
-
-                        tempPackageX = tempPackageX + ((width /3) / data.packages.length); // 200;
-                    }
-                    else if(data.packages.length > 30){
-
-                        tempPackageX = tempPackageX + ((width /1.8) / data.packages.length); // 200;
                     }
                     else {
 
-                        tempPackageX = tempPackageX + (width / 4 / data.packages.length); // 200;
+                        let parentProcess = run.processes[ ( _process.parent[0] ) ];
+
+                        let node = {["name"]: _process.long_name, ["parent"]: parentProcess.long_name, ["rule"] : _process.parent[1], ["description"]: _process.description ,  ["reads"]: _process.reads ,  ["writes"]: _process.writes ,["argv"]: _process.argv , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
+
+
+                        // let filesDict = {} ;
+
+                        if(_process.reads != null){
+
+                            _process.reads.forEach(function(file){
+
+                                let keyName = "\"" + file + "\"";
+
+                                //console.log('Inner keyName:', fileDict[keyName]);
+                                //console.log('keyName:', keyName);
+
+                                if( keyName in fileDict){
+
+                                    // console.log('filesDict[file] package Name:', fileDict[keyName].package);
+
+                                    packages.reads.push(fileDict[keyName].package);
+                                    packagesName.push(fileDict[keyName].package);
+                                    //filesDict[keyName].reads.push(_process.long_name);
+
+                                }
+
+                            });
+
+                            let uniq = [...new Set(packages.reads)];
+                            packages.reads = uniq;
+                        };
+
+
+
+                        if (_process.writes != null){
+                            _process.writes.forEach(function(file){
+
+
+
+                                let keyName = "\"" + file + "\"";
+
+                                if(keyName in fileDict){
+
+                                    packages.writes.push(fileDict[keyName].package);
+                                    packagesName.push(fileDict[keyName].package);
+
+                                }
+
+
+                            });
+
+                            let uniq = [...new Set(packages.writes)];
+                            packages.writes = uniq;
+                        }
+
+                        node.packages = packages;
+
+                        let uniq = [...new Set(packagesName)];
+                        node.packageNames = uniq;
+
+
+                        if(_process.exit_time > tempMaxRunTime ){
+
+                            tempMaxRunTime = _process.exit_time;
+                        }
+
+                        rawData.push(node);
+
+
                     }
-
-
-                    //push this package's section to local sections
-                    sections.push(thisPackage.section);
-
-                    //push this package to the forceData
-                    forceData.packages.push(thisPackage);
-
-                    //increase packagesNumber to keep the over package number in record
-                    packagesNumber++;
-
-                    // set alternative Y position for force nodes
-                    if(isAlternativeOn == 0 && data.packages.length > 15){
-
-                        tempPackageY = -120;
-
-                        isAlternativeOn = 1;
-                    }
-                    else if (isAlternativeOn == 1){
-
-                        tempPackageY = -200;
-                        isAlternativeOn = 0;
-
-                    }
-
-
 
 
                 });
 
-                console.log('forceData:' , forceData);
-
-
-                //Set sections colors for packages from local sections
-                setSectionsColors(sections);
-
-                //Set sections to null to release memory
-                sections = null;
-
-
-
-                //Create the all package list on the overview section on sidebar
-                createAllPackageList(forceData.packages);
-
-                //Handle runs
-                data.runs.forEach(function(run){
-
-                    run.processes.forEach(function(_process){
-
-                        let packages = {["reads"]:[], ["writes"]: []};
-                        let packagesName = [];
-
-                        if(_process.parent == null){
-
-                            let node = {["name"]: _process.long_name, ["parent"]: "null", ["rule"] : "null", ["description"]: _process.description, ["reads"]: _process.reads ,  ["writes"]: _process.writes  ,["argv"]: _process.argv  , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
-
-
-                            if(_process.reads != null){
-
-                                _process.reads.forEach(function(file){
-
-                                    let keyName = "\"" + file + "\"";
-
-                                    if( keyName in fileDict){
-
-                                        packages.reads.push(fileDict[keyName].package);
-                                        packagesName.push(fileDict[keyName].package);
-
-                                    }
-
-                                });
-
-                                let uniq = [...new Set(packages.reads)];
-                                packages.reads = uniq;
-                            };
-
-
-
-                            if (_process.writes != null){
-                                _process.writes.forEach(function(file){
-
-
-
-                                    let keyName = "\"" + file + "\"";
-
-                                    if(keyName in fileDict){
-
-                                        packages.writes.push(fileDict[keyName].package);
-                                        packagesName.push(fileDict[keyName].package);
-
-                                    }
-
-
-                                });
-
-                                let uniq = [...new Set(packages.writes)];
-                                packages.writes = uniq;
-                            }
-
-                            node.packages = packages;
-
-                            let uniq = [...new Set(packagesName)];
-                            node.packageNames = uniq;
-
-
-                            if(_process.exit_time > tempMaxRunTime ){
-
-                                tempMaxRunTime = _process.exit_time;
-                            }
-
-                            rawData.push(node);
-
-                        }
-                        else {
-
-                            let parentProcess = run.processes[ ( _process.parent[0] ) ];
-
-                            let node = {["name"]: _process.long_name, ["parent"]: parentProcess.long_name, ["rule"] : _process.parent[1], ["description"]: _process.description ,  ["reads"]: _process.reads ,  ["writes"]: _process.writes ,["argv"]: _process.argv , ["start_time"] : _process.start_time , ["exit_time"] : _process.exit_time};
-
-
-                            // let filesDict = {} ;
-
-                            if(_process.reads != null){
-
-                                _process.reads.forEach(function(file){
-
-                                    let keyName = "\"" + file + "\"";
-
-                                    //console.log('Inner keyName:', fileDict[keyName]);
-                                    //console.log('keyName:', keyName);
-
-                                    if( keyName in fileDict){
-
-                                        // console.log('filesDict[file] package Name:', fileDict[keyName].package);
-
-                                        packages.reads.push(fileDict[keyName].package);
-                                        packagesName.push(fileDict[keyName].package);
-                                        //filesDict[keyName].reads.push(_process.long_name);
-
-                                    }
-
-                                });
-
-                                let uniq = [...new Set(packages.reads)];
-                                packages.reads = uniq;
-                            };
-
-
-
-                            if (_process.writes != null){
-                                _process.writes.forEach(function(file){
-
-
-
-                                    let keyName = "\"" + file + "\"";
-
-                                    if(keyName in fileDict){
-
-                                        packages.writes.push(fileDict[keyName].package);
-                                        packagesName.push(fileDict[keyName].package);
-
-                                    }
-
-
-                                });
-
-                                let uniq = [...new Set(packages.writes)];
-                                packages.writes = uniq;
-                            }
-
-                            node.packages = packages;
-
-                            let uniq = [...new Set(packagesName)];
-                            node.packageNames = uniq;
-
-
-                            if(_process.exit_time > tempMaxRunTime ){
-
-                                tempMaxRunTime = _process.exit_time;
-                            }
-
-                            rawData.push(node);
-
-
-                        }
-
-
-                    });
-
-                    console.log('rawData', rawData);
-
-
-                    let dataMap = rawData.reduce(function(map, node) {
-                        map[node.name] = node;
-                        return map;
-                    }, {});
-
-
-                    rawData.forEach(function(node) {
-                        // add to parent
-                        let parent = dataMap[node.parent];
-                        if (parent) {
-                            // create child array if it doesn't exist
-                            (parent.children || (parent.children = []))
-                            // add node to child array
-                                .push(node);
-                        } else {
-                            // parent is null or missing
-                            treeData.push(node);
-                        }
-                    });
-
-
-                    console.log('treeData', treeData);
-
-
+                console.log('rawData', rawData);
+
+
+                let dataMap = rawData.reduce(function(map, node) {
+                    map[node.name] = node;
+                    return map;
+                }, {});
+
+
+                rawData.forEach(function(node) {
+                    // add to parent
+                    let parent = dataMap[node.parent];
+                    if (parent) {
+                        // create child array if it doesn't exist
+                        (parent.children || (parent.children = []))
+                        // add node to child array
+                            .push(node);
+                    } else {
+                        // parent is null or missing
+                        treeData.push(node);
+                    }
                 });
 
 
-
-                function collapse(d) {
-
-                    if (d.children) {
-
-                        // Set default timeline length for root
-                        if(isTreeRedrawn == false){
-                            timeLineLen_Total =  timeLineLen_Total + (root.x0  / 2);
-
-                        }
+                console.log('treeData', treeData);
 
 
-                        d._children = d.children;
-                        d._children.forEach(collapse);
-                        d.children = null;
+            });
+
+
+
+            function collapse(d) {
+
+                if (d.children) {
+
+                    // Set default timeline length for root
+                    if(!isTreeRedrawn){
+                        timeLineLen_Total =  timeLineLen_Total + (root.x0  / 2);
+
                     }
 
 
+                    d._children = d.children;
+                    d._children.forEach(collapse);
+                    d.children = null;
                 }
 
 
+            }
 
 
 
-                //Time line code block
-                root = treeData[0];
-                root.x0 = height; // / 2;
-                root.y0 = 0;
+
+
+            //Time line code block
+            root = treeData[0];
+            root.x0 = height; // / 2;
+            root.y0 = 0;
 
 
 
-                rootStartTime = root.start_time;
+            rootStartTime = root.start_time;
 
 
-                let duration_ms = (root.children[0].start_time - rootStartTime) / 1000000;
+            let duration_ms = (root.children[0].start_time - rootStartTime) / 1000000;
 
-                let duration = new moment.duration(duration_ms);
+            let duration = new moment.duration(duration_ms);
 
-                let durationLabel  = "Took " + duration.asMilliseconds().toFixed(2) + " milliseconds";
-
-
-                duration_total_ms =  (tempMaxRunTime - rootStartTime) / 1000000 ;
-
-                let durationLabel_total  = getTimeLineLabel(duration_total_ms,"total");
+            let durationLabel  = "Took " + duration.asMilliseconds().toFixed(2) + " milliseconds";
 
 
-                // timeLineLen = root.x0 / 2;
-                timeLineLen_Total = root.x0 / 2;
+            duration_total_ms =  (tempMaxRunTime - rootStartTime) / 1000000 ;
+
+            let durationLabel_total  = getTimeLineLabel(duration_total_ms,"total");
 
 
-                root.children.forEach(collapse);
-
-                //  console.log('timeLineLen_Total: ', timeLineLen_Total);
-
-                timeLineLen =  timeLineLen_Total * (duration_ms / duration_total_ms);
-
-                //   console.log('timeLineLen: ', timeLineLen);
-
-                if(isTreeRedrawn == false){
+            // timeLineLen = root.x0 / 2;
+            timeLineLen_Total = root.x0 / 2;
 
 
-                    totalTimeLineDraw(timeLineLen_Total, durationLabel_total);
-                    timeLineDraw(timeLineLen, durationLabel);
+            root.children.forEach(collapse);
+
+            //  console.log('timeLineLen_Total: ', timeLineLen_Total);
+
+            timeLineLen =  timeLineLen_Total * (duration_ms / duration_total_ms);
+
+            //   console.log('timeLineLen: ', timeLineLen);
+
+            if(!isTreeRedrawn){
 
 
+                totalTimeLineDraw(timeLineLen_Total, durationLabel_total);
+                timeLineDraw(timeLineLen, durationLabel);
+
+
+            }
+            else{
+
+                updateTimeLine(timeLineLen,durationLabel);
+
+            }
+
+
+            update(root);
+
+            //Call Force Draw function
+            forceDraw(forceData);
+
+            // createPackageTooTip(searchFilesInfoDiv,d);
+
+        })
+
+    };
+
+
+
+
+
+    function getTimeLineLabel(duration_ms, isTotalString){
+
+        let duration_total = new moment.duration(duration_ms);
+
+        let durationLabel_total  = '';
+
+
+        if(duration_total.asMilliseconds() < 60000){
+
+            durationLabel_total =  duration_total.asMilliseconds().toFixed(2) + " milliseconds";
+
+        }
+        else if (duration_total.asSeconds() < 60 && duration_total.asSeconds() > 0){
+
+            durationLabel_total =  duration_total.asSeconds().toFixed(2) + " seconds";
+
+        }
+
+        else if (duration_total.asMinutes() < 60 && duration_total.asMinutes() > 0){
+
+            durationLabel_total =  duration_total.asMinutes().toFixed(2) + " minutes"; //+ " and " + duration.asSeconds().toFixed(0) + " seconds";
+
+        }
+        else if (duration_total.asHours() < 24 && duration_total.asHours() > 0){
+
+            durationLabel_total =   duration_total.asHours().toFixed(2) + " hours" ;
+
+        }
+        else if (duration_total.asDays() < 28 && duration_total.asDays() > 0){
+
+            durationLabel_total =  duration_total.asDays().toFixed(2) + " days" ;
+
+        }
+
+        if (isTotalString === "total"){
+
+            durationLabel_total = "Total " + durationLabel_total;
+        }else{
+
+            durationLabel_total = "Took " + durationLabel_total;
+        }
+
+        return durationLabel_total;
+
+
+    };
+
+    function timeLineDraw(length, durationLabel){
+
+        //  Draw the timeline for currentduration
+        svg.append("g")
+            .attr("class", "timeLineGroup")
+            .append("line")
+            .attr("class", "timeLine")
+            .attr("x1", 0)
+            .attr("y1", height  )
+            .attr("x2", length)
+            .attr("y2", height )
+            .attr("stroke-width", 5)
+            .attr("stroke", "#dbbd5a");
+
+
+
+        // Update the link text
+        svg.selectAll(".timeLineGroup").append("text")
+            .attr("y", height + 20)//magic number here
+            .attr("x", length / 2)
+            .attr('text-anchor', 'middle')
+            .attr("class", "timeLineText")//easy to style with CSS
+            .text(durationLabel);
+
+
+
+    };
+
+    function totalTimeLineDraw(length, durationLabel){
+
+        // Draw the timeline for total duration.
+        svg.append("g")
+            .attr("class", "TotalTimeLineGroup")
+            .append("line")
+            .attr("class", "timeLine_Total")
+            .attr("x1", 0)
+            .attr("y1", height )
+            .attr("x2", length)
+            .attr("y2", height )
+            .attr("stroke-width", 5)
+            .attr("stroke", "#5adbbd");
+
+
+
+        // Update the link text
+        svg.selectAll(".TotalTimeLineGroup").append("text")
+            .attr("y", height + 20)//magic number here
+            .attr("x", length )
+            .attr('text-anchor', 'middle')
+            .attr("class", "totalTimeLineText")//easy to style with CSS
+            .text(durationLabel);
+
+
+
+    };
+
+    function restart() {
+
+
+        edge = edge.data(forceLinks);
+
+        edge.enter().insert("line", ".package")
+            .attr("class", "edge")
+            .attr("id",  function(d){
+                return  "edge_" + d.target.name})
+            .attr("x1", function(d){ return d.source.x;
+            })
+            .attr("y1", function(d){ return d.source.y; })
+            .attr("x2", function(d){ return d.target.x; })
+            .attr("y2", function(d){ return d.target.y; });
+
+        //
+        //        forcePackages = forcePackages.data(forceNodes);
+        //        forcePackages
+        //            .attr("cx", function (d) {
+        //
+        //                  console.log(("d.x: " , d.x));
+        //                return d.x;
+        //            })
+        //            .attr("cy", function (d) {
+        //                return d.y;
+        //            });
+
+
+
+        //        label = label.data(forceNodes);
+        //        label.attr("x", function(d){ return d.x; })
+        //            .attr("y", function (d) {return d.y - 30; });
+
+        force.start();
+    };
+
+
+    function restart2() {
+
+
+        edge = edge.data(forceLinks);
+
+        edge.enter().insert("line", ".package")
+            .attr("class", "edge")
+            .attr("id",  function(d){
+                return  "edge_" + d.target.name})
+            .attr("x1", function(d){ return d.source.y;
+            })
+            .attr("y1", function(d){ return d.source.x; })
+            .attr("x2", function(d){ return d.target.y; })
+            .attr("y2", function(d){ return d.target.x; });
+
+        //
+        //        forcePackages = forcePackages.data(forceNodes);
+        //        forcePackages
+        //            .attr("cx", function (d) {
+        //
+        //                  console.log(("d.x: " , d.x));
+        //                return d.x;
+        //            })
+        //            .attr("cy", function (d) {
+        //                return d.y;
+        //            });
+
+
+
+        //        label = label.data(forceNodes);
+        //        label.attr("x", function(d){ return d.x; })
+        //            .attr("y", function (d) {return d.y - 30; });
+
+        force.start();
+    };
+
+
+    // Move nodes toward cluster focus.
+    function gravity(alpha) {
+        return function (d) {
+            d.y += (d.cy - d.y) * alpha;
+            d.x += (d.cx - d.x) * alpha;
+        };
+    };
+
+
+    // Resolve collisions between nodes.
+    function collide(alpha) {
+        let quadtree = d3.geom.quadtree(forceNodes);
+        return function (d) {
+            let r = d.radius + maxRadius + padding,
+                nx1 = d.x - r,
+                nx2 = d.x + r,
+                ny1 = d.y - r,
+                ny2 = d.y + r;
+            quadtree.visit(function (quad, x1, y1, x2, y2) {
+                if (quad.point && (quad.point !== d)) {
+                    let x = d.x - quad.point.x,
+                        y = d.y - quad.point.y,
+                        l = Math.sqrt(x * x + y * y),
+                        r = d.radius + quad.point.radius + (d.color !== quad.point.color) * padding;
+                    if (l < r) {
+                        l = (l - r) / l * alpha;
+                        d.x -= x *= l;
+                        d.y -= y *= l;
+                        quad.point.x += x;
+                        quad.point.y += y;
+                    }
                 }
-                else{
+                return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+            });
+        };
 
-                    updateTimeLine(timeLineLen,durationLabel);
-
-                }
+    };
 
 
+    function tick(e) {
 
-                update(root);
+        edge.attr("x1", function(d){
 
-                //Call Force Draw function
-                forceDraw(forceData);
+            //console.log("mapping link");
+            return d.source.x;
+        })
+            .attr("y1", function(d){ return d.source.y; })
+            .attr("x2", function(d){ return d.target.x; })
+            .attr("y2", function(d){ return d.target.y; });
 
-                // createPackageTooTip(searchFilesInfoDiv,d);
+
+        forcePackages
+            .each(gravity(0.15 * e.alpha))
+            .each(collide(0.2))
+            .attr("cx", function (d) {
+
+                //  console.log(("d.x: " , d.x));
+                return d.x;
+            })
+            .attr("cy", function (d) {
+                return d.y;
+            });
+
+
+        label.attr("x", function(d){ return d.x; })
+            .attr("y", function (d) {return d.y - 30; });
+    };
+
+    function forceDraw(data) {
+
+
+        let nodes = data.packages;
+
+
+        force = d3.layout.force()
+            .nodes(nodes)
+            .size([ width, height])
+            .linkDistance(300)
+            .linkStrength(0.5)
+            .gravity(0)
+            .charge(-100)
+            .on("tick", tick);
+
+
+        forceNodes = force.nodes();
+        forceLinks = force.links();
+
+        console.log("forceNodes: ", forceNodes );
+
+
+        // forcePackages
+        forcePackages = forcePackages
+            .data(forceNodes)
+            .enter().append("circle")
+            .attr("class", 'package')
+            .attr("id", function(d){
+                return "package_"+ d.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"");
 
             })
-
-
-
-        }
-
-        function getTimeLineLabel(duration_ms, isTotalString){
-
-            let duration_total = new moment.duration(duration_ms);
-
-            let durationLabel_total  = '';
-
-
-            if(duration_total.asMilliseconds() < 60000){
-
-                durationLabel_total =  duration_total.asMilliseconds().toFixed(2) + " milliseconds";
-
-            }
-            else if (duration_total.asSeconds() < 60 && duration_total.asSeconds() > 0){
-
-                durationLabel_total =  duration_total.asSeconds().toFixed(2) + " seconds";
-
-            }
-
-            else if (duration_total.asMinutes() < 60 && duration_total.asMinutes() > 0){
-
-                durationLabel_total =  duration_total.asMinutes().toFixed(2) + " minutes"; //+ " and " + duration.asSeconds().toFixed(0) + " seconds";
-
-            }
-            else if (duration_total.asHours() < 24 && duration_total.asHours() > 0){
-
-                durationLabel_total =   duration_total.asHours().toFixed(2) + " hours" ;
-
-            }
-            else if (duration_total.asDays() < 28 && duration_total.asDays() > 0){
-
-                durationLabel_total =  duration_total.asDays().toFixed(2) + " days" ;
-
-            }
-
-            if (isTotalString == "total"){
-
-                durationLabel_total = "Total " + durationLabel_total;
-            }else{
-
-                durationLabel_total = "Took " + durationLabel_total;
-            }
-
-            return durationLabel_total;
-
-
-        }
-
-        function timeLineDraw(length, durationLabel){
-
-            //  Draw the timeline for currentduration
-            let lines = svg.append("g")
-                .attr("class", "timeLineGroup")
-                .append("line")
-                .attr("class", "timeLine")
-                .attr("x1", 0)
-                .attr("y1", height  )
-                .attr("x2", length)
-                .attr("y2", height )
-                .attr("stroke-width", 5)
-                .attr("stroke", "#dbbd5a");
-
-
-
-            // Update the link text
-            let timeLineText = svg.selectAll(".timeLineGroup").append("text")
-                .attr("y", height + 20)//magic number here
-                .attr("x", length / 2)
-                .attr('text-anchor', 'middle')
-                .attr("class", "timeLineText")//easy to style with CSS
-                .text(durationLabel);
-
-
-
-        }
-
-        function totalTimeLineDraw(length, durationLabel){
-
-            // Draw the timeline for total duration.
-            let lines = svg.append("g")
-                .attr("class", "TotalTimeLineGroup")
-                .append("line")
-                .attr("class", "timeLine_Total")
-                .attr("x1", 0)
-                .attr("y1", height )
-                .attr("x2", length)
-                .attr("y2", height )
-                .attr("stroke-width", 5)
-                .attr("stroke", "#5adbbd");
-
-
-
-            // Update the link text
-            let timeLineText = svg.selectAll(".TotalTimeLineGroup").append("text")
-                .attr("y", height + 20)//magic number here
-                .attr("x", length )
-                .attr('text-anchor', 'middle')
-                .attr("class", "totalTimeLineText")//easy to style with CSS
-                .text(durationLabel);
-
-
-
-        }
-
-        function restart() {
-
-
-            edge = edge.data(forceLinks);
-
-            edge.enter().insert("line", ".package")
-                .attr("class", "edge")
-                .attr("id",  function(d){
-                    return  "edge_" + d.target.name})
-                .attr("x1", function(d){ return d.source.x;
-                })
-                .attr("y1", function(d){ return d.source.y; })
-                .attr("x2", function(d){ return d.target.x; })
-                .attr("y2", function(d){ return d.target.y; });
-
-//
-//        forcePackages = forcePackages.data(forceNodes);
-//        forcePackages
-//            .attr("cx", function (d) {
-//
-//                  console.log(("d.x: " , d.x));
-//                return d.x;
-//            })
-//            .attr("cy", function (d) {
-//                return d.y;
-//            });
-
-
-
-//        label = label.data(forceNodes);
-//        label.attr("x", function(d){ return d.x; })
-//            .attr("y", function (d) {return d.y - 30; });
-
-            force.start();
-        }
-
-
-        function restart2() {
-
-
-            edge = edge.data(forceLinks);
-
-            edge.enter().insert("line", ".package")
-                .attr("class", "edge")
-                .attr("id",  function(d){
-                    return  "edge_" + d.target.name})
-                .attr("x1", function(d){ return d.source.y;
-                })
-                .attr("y1", function(d){ return d.source.x; })
-                .attr("x2", function(d){ return d.target.y; })
-                .attr("y2", function(d){ return d.target.x; });
-
-//
-//        forcePackages = forcePackages.data(forceNodes);
-//        forcePackages
-//            .attr("cx", function (d) {
-//
-//                  console.log(("d.x: " , d.x));
-//                return d.x;
-//            })
-//            .attr("cy", function (d) {
-//                return d.y;
-//            });
-
-
-
-//        label = label.data(forceNodes);
-//        label.attr("x", function(d){ return d.x; })
-//            .attr("y", function (d) {return d.y - 30; });
-
-            force.start();
-        }
-
-
-        // Move nodes toward cluster focus.
-        function gravity(alpha) {
-            return function (d) {
-                d.y += (d.cy - d.y) * alpha;
-                d.x += (d.cx - d.x) * alpha;
-            };
-        }
-
-
-        // Resolve collisions between nodes.
-        function collide(alpha) {
-            let quadtree = d3.geom.quadtree(forceNodes);
-            return function (d) {
-                let r = d.radius + maxRadius + padding,
-                    nx1 = d.x - r,
-                    nx2 = d.x + r,
-                    ny1 = d.y - r,
-                    ny2 = d.y + r;
-                quadtree.visit(function (quad, x1, y1, x2, y2) {
-                    if (quad.point && (quad.point !== d)) {
-                        let x = d.x - quad.point.x,
-                            y = d.y - quad.point.y,
-                            l = Math.sqrt(x * x + y * y),
-                            r = d.radius + quad.point.radius + (d.color !== quad.point.color) * padding;
-                        if (l < r) {
-                            l = (l - r) / l * alpha;
-                            d.x -= x *= l;
-                            d.y -= y *= l;
-                            quad.point.x += x;
-                            quad.point.y += y;
-                        }
-                    }
-                    return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-                });
-            };
-
-        }
-
-
-        function tick(e) {
-
-            edge.attr("x1", function(d){
-
-                //console.log("mapping link");
-                return d.source.x;
+            .attr("r", function (d) {
+                return d.radius;
             })
-                .attr("y1", function(d){ return d.source.y; })
-                .attr("x2", function(d){ return d.target.x; })
-                .attr("y2", function(d){ return d.target.y; });
+            .style("fill",function(d) {
 
 
-            forcePackages
-                .each(gravity(0.15 * e.alpha))
-                .each(collide(0.2))
-                .attr("cx", function (d) {
+                if(d.section === sectionsInPackages[d.section].name){
 
-                    //  console.log(("d.x: " , d.x));
-                    return d.x;
-                })
-                .attr("cy", function (d) {
-                    return d.y;
+                    return sectionsInPackages[d.section].color;
+                }
+
+                return   "#4c366d" ; // reutn default ReproZip Color
+            })
+            .on("click", function(d) {
+
+
+
+
+                let links = force.links();
+
+                links = [];
+
+
+                edge = svg.selectAll(".edge").data(links);
+
+
+                let edgeExit = edge.exit().remove();
+
+
+                if(forceNodes.length > packagesNumber){
+
+                    forceNodes.pop();
+
+
+                }
+
+
+                let associatedProcesses = [];
+                //
+                //                if (d.name != "other_files"){
+                //
+                //
+                //
+                //
+                //                }
+
+                //
+                d.files.forEach(function(file){
+
+
+                    file.reads.forEach(function(process){
+
+                        associatedProcesses.push(process);
+
+                    })
+
                 });
 
 
-            label.attr("x", function(d){ return d.x; })
-                .attr("y", function (d) {return d.y - 30; });
+                console.log( "Before " +  d.name + " associatedProcesses", associatedProcesses);
+
+
+
+                let uniq = [...new Set(associatedProcesses)];
+                associatedProcesses = uniq;
+
+
+                console.log( d.name + " associatedProcesses", associatedProcesses);
+
+
+                // let currentDisplayingNodes = tree.nodes(root).reverse();
+
+
+                console.log("currentDisplayingNodes", currentDisplayingNodes);
+
+                currentDisplayingNodes.forEach(function(process){
+
+                    associatedProcesses.forEach(function(processName){
+
+                        if(process.name === processName){
+
+                            console.log("Same process: ", processName);
+
+                            console.log("The process: ", process);
+
+                            console.log("The d: ", d);
+
+                            process.fixed = true;
+
+
+                            let node = {};
+                            node.x = process.y;
+                            node.y = process.x;
+                            node.px = process.y;
+                            node.py = process.x;
+                            node.weight = 10;
+                            node.fixed = true;
+
+                            let thisNode  = forceNodes.push(node);
+
+
+                            links.push({source: d , target: node});
+
+                        }
+
+                    })
+
+                });
+
+
+                forceLinks = links;
+
+                let label = svg.selectAll(".forceLabel")
+                    .data(force.nodes());
+
+                label.attr("x", function(d){ return d.x; })
+                    .attr("y", function (d) {return d.y - 30; });
+
+                force.links(links);
+
+
+                restart2();
+
+            })
+            .on("mouseover", function(d) {
+
+                tooltip.transition()
+                    .duration(200)
+                    .style("opacity", .8);
+                tooltip .html(
+                    d.name + "<br>" + "section: "+ d.section + "<br>" + "version: " + d.version
+                )
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 38) + "px");
+            })
+            .on("mouseout", function(d) {
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            })
+            .call(force.drag);
+
+        label = label
+            .data(forceNodes)
+            .enter()
+            .append("text")
+            .text(function (d) { return d.name; })
+            .attr("class", "packageLabel")
+            .attr("id", function (d) { return  "packageLabel_" + d.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""); })
+            .style("text-anchor", "middle")
+            .style("fill", "#555")
+            .style("font-family", "Arial")
+            .style("font-size", 15);
+
+
+        restart();
+
+    };
+
+
+
+
+    function updateTimeLine(length, durationLabel){
+
+        let timeline =  svg.selectAll(".timeLine");
+
+        timeline.transition()
+            .attr("x2", length);
+
+
+        let timeLineText = d3.selectAll(".timeLineText")
+            .transition()
+            .attr("x", timeLineLen / 2)
+            .attr('text-anchor', 'middle')
+            .attr("class", "timeLineText")//easy to style with CSS
+
+            .text(durationLabel);
+
+    };
+
+
+    function decreaseTimeLineLen(length){
+
+        if((timeLineLen - ( length) >= 0)) {
+
+            timeLineLen =  length //timeLineLen - ( length);
         }
 
-        function forceDraw(data) {
+    };
 
+    function setPackagePath (fileList, index, nextIndex){
 
-            let nodes = data.packages;
+        // console.log('nextIndex: ', nextIndex);
 
+        let TestingPackagePath = '';
 
-            force = d3.layout.force()
-                .nodes(nodes)
-                .size([ width, height])
-                .linkDistance(300)
-                .linkStrength(0.5)
-                .gravity(0)
-                .charge(-100)
-                .on("tick", tick);
+        if(fileList[nextIndex] != null){
 
 
-            forceNodes = force.nodes();
-            forceLinks = force.links();
+            a1_Len =  fileList[index].length;
+            let i = 0;
 
-            console.log("forceNodes: ", forceNodes );
+            while(i < a1_Len && fileList[index].charAt(i)===fileList[nextIndex].charAt(i)){
 
-
-            // forcePackages
-            forcePackages = forcePackages
-                .data(forceNodes)
-                .enter().append("circle")
-                .attr("class", 'package')
-                .attr("id", function(d){
-                    return "package_"+ d.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"");
-
-                })
-                .attr("r", function (d) {
-                    return d.radius;
-                })
-                .style("fill",function(d) {
-
-
-                    if(d.section == sectionsInPackages[d.section].name){
-
-                        return sectionsInPackages[d.section].color;
-                    }
-
-                    return   "#5e3cc3" ; // reutn default ReproZip Color
-                })
-                .on("click", function(d) {
-
-
-                    let links = force.links();
-
-                    links = [];
-
-
-                    edge = svg.selectAll(".edge").data(links);
-
-
-                    let edgeExit = edge.exit().remove();
-
-
-                    if(forceNodes.length > packagesNumber){
-
-                        forceNodes.pop();
-
-
-                    }
-
-
-                    let associatedProcesses = [];
-//
-//                if (d.name != "other_files"){
-//
-//
-//
-//
-//                }
-
-//
-                    d.files.forEach(function(file){
-
-
-                        file.reads.forEach(function(process){
-
-                            associatedProcesses.push(process);
-
-                        })
-
-                    });
-
-
-                    let uniq = [...new Set(associatedProcesses)];
-                    associatedProcesses = uniq;
-
-                    console.log("associatedProcesses", associatedProcesses);
-
-                    // let currentDisplayingNodes = tree.nodes(root).reverse();
-
-
-                    console.log("currentDisplayingNodes", currentDisplayingNodes);
-
-                    currentDisplayingNodes.forEach(function(process){
-
-                        associatedProcesses.forEach(function(processName){
-
-                            if(process.name == processName){
-
-                                console.log("Same process: ", processName);
-
-                                console.log("The process: ", process);
-
-                                console.log("The d: ", d);
-
-                                process.fixed = true;
-
-
-                                let node = {};
-                                node.x = process.y;
-                                node.y = process.x;
-                                node.px = process.y;
-                                node.py = process.x;
-                                node.weight = 10;
-                                node.fixed = true;
-
-                                thisNode  = forceNodes.push(node);
-
-
-                                links.push({source: d , target: node});
-
-                            }
-
-                        })
-
-                    });
-
-
-                    forceLinks = links;
-
-                    let label = svg.selectAll(".forceLabel")
-                        .data(force.nodes());
-
-                    label.attr("x", function(d){ return d.x; })
-                        .attr("y", function (d) {return d.y - 30; });
-
-                    force.links(links);
-
-
-                    restart2();
-
-                })
-                .on("mouseover", function(d) {
-
-                    tooltip.transition()
-                        .duration(200)
-                        .style("opacity", .8);
-                    tooltip .html(
-                        d.name + "<br>" + "section: "+ d.section + "<br>" + "version: " + d.version
-                    )
-                        .style("left", (d3.event.pageX) + "px")
-                        .style("top", (d3.event.pageY - 38) + "px");
-                })
-                .on("mouseout", function(d) {
-                    tooltip.transition()
-                        .duration(500)
-                        .style("opacity", 0);
-                })
-                .call(force.drag);
-
-            label = label
-                .data(forceNodes)
-                .enter()
-                .append("text")
-                .text(function (d) { return d.name; })
-                .attr("class", "packageLabel")
-                .attr("id", function (d) { return  "packageLabel_" + d.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""); })
-                .style("text-anchor", "middle")
-                .style("fill", "#555")
-                .style("font-family", "Arial")
-                .style("font-size", 15);
-
-
-            restart();
-
-        }
-
-
-
-
-        function updateTimeLine(length, durationLabel){
-
-            let timeline =  svg.selectAll(".timeLine");
-
-            timeline.transition()
-                .attr("x2", length);
-
-
-            let timeLineText = d3.selectAll(".timeLineText")
-                .transition()
-                .attr("x", timeLineLen / 2)
-                .attr('text-anchor', 'middle')
-                .attr("class", "timeLineText")//easy to style with CSS
-
-                .text(durationLabel);
-
-        }
-
-
-        function decreaseTimeLineLen(length){
-
-            if((timeLineLen - ( length) >= 0)) {
-
-                timeLineLen =  length //timeLineLen - ( length);
+                i++
             }
 
-        }
-
-        function setPackagePath (fileList, index, nextIndex){
-
-            // console.log('nextIndex: ', nextIndex);
-
-            let TestingPackagePath = '';
-
-            if(fileList[nextIndex] != null){
+            if (fileList[index].substring(0,i) === '/'){
 
 
-                a1_Len =  fileList[index].length;
-                let i = 0;
+                // console.log('different character: ',fileList[index].substring(0,i));
 
-                while(i < a1_Len && fileList[index].charAt(i)===fileList[nextIndex].charAt(i)){
-
-                    i++
-                }
-
-                if (fileList[index].substring(0,i) == '/'){
-
-
-                    // console.log('different character: ',fileList[index].substring(0,i));
-
-                    TestingPackagePath = fileList[index].substring(0, fileList[index].lastIndexOf('/'));
-                    //  console.log('TestingPackagePath: ',TestingPackagePath);
-
-                }
-                else {
-
-
-                    TestingPackagePath = fileList[index].substring(0,i);
-                    TestingPackagePath = TestingPackagePath.substring(0, TestingPackagePath.lastIndexOf('/'));
-                    // console.log('TestingPackagePath: ',TestingPackagePath);
-
-                }
-
+                TestingPackagePath = fileList[index].substring(0, fileList[index].lastIndexOf('/'));
+                //  console.log('TestingPackagePath: ',TestingPackagePath);
 
             }
             else {
 
-                TestingPackagePath = fileList[index].substring(0, fileList[index].lastIndexOf('/'));
+
+                TestingPackagePath = fileList[index].substring(0,i);
+                TestingPackagePath = TestingPackagePath.substring(0, TestingPackagePath.lastIndexOf('/'));
+                // console.log('TestingPackagePath: ',TestingPackagePath);
 
             }
 
-            return TestingPackagePath;
+
+        }
+        else {
+
+            TestingPackagePath = fileList[index].substring(0, fileList[index].lastIndexOf('/'));
 
         }
 
+        return TestingPackagePath;
 
-        function resetPackagesPosition(){
-
-
-            if (thisNodeCircle != null && thisNodeCircleLabel != null){
+    };
 
 
-                thisNodeCircle.transition().attr("r", 8);
-                thisNodeCircleLabel.transition().style("font", "15px sans-serif").attr("x", function(d) { return d.children || d._children ? -10 : 10; });
+    function resetPackagesPosition(){
 
+
+        if (thisNodeCircle != null && thisNodeCircleLabel != null){
+
+
+            thisNodeCircle.transition().attr("r", 8);
+            thisNodeCircleLabel.transition().style("font", "15px sans-serif").attr("x", function(d) { return d.children || d._children ? -10 : 10; });
+
+
+        }
+
+        links = [];
+
+        edge = svg.selectAll(".edge").data(links);
+
+        let edgeExit = edge.exit().remove();
+        let circles = svg.selectAll("circle");
+
+        forceLinks = links;
+
+        force.links(links);
+
+        restart();
+    };
+
+    function setSectionsColors(sections){
+
+        //make the sections as unique set
+        let uniq = [...new Set(sections)];
+        sections = uniq;
+
+        let linearScale = d3.scale.linear().domain([0, sections.length]).range([0,400]);
+
+        let i = 0;
+
+        sections.forEach(function(section){
+
+
+            let thisSection = [];
+            thisSection["name"] = section;
+            thisSection["color"] = "hsl(" + linearScale(i) + ",60%,80%)";
+
+            sectionsInPackages[section] = thisSection;
+
+            i++;
+
+        });
+    };
+
+
+
+
+    function collapse(d) {
+
+        if (d.children) {
+
+            // Set default timeline length for root
+            if(!isTreeRedrawn){
+                timeLineLen_Total =  timeLineLen_Total + (root.x0  / 2);
 
             }
 
-            links = [];
 
-            edge = svg.selectAll(".edge").data(links);
-
-            let edgeExit = edge.exit().remove();
-            let circles = svg.selectAll("circle");
-
-            forceLinks = links;
-
-            force.links(links);
-
-            restart();
-        }
-
-        function setSectionsColors(sections){
-
-            //make the sections as unique set
-            let uniq = [...new Set(sections)];
-            sections = uniq;
-
-            let linearScale = d3.scale.linear().domain([0, sections.length]).range([0,400]);
-
-            let i = 0;
-
-            sections.forEach(function(section){
-
-
-                let thisSection = [];
-                thisSection["name"] = section;
-                thisSection["color"] = "hsl(" + linearScale(i) + ",60%,80%)";
-
-                sectionsInPackages[section] = thisSection;
-
-                i++;
-
-            });
+            d._children = d.children;
+            d._children.forEach(collapse);
+            d.children = null;
         }
 
 
+    };
 
 
-        function collapse(d) {
-
-            if (d.children) {
-
-                // Set default timeline length for root
-                if(isTreeRedrawn == false){
-                    timeLineLen_Total =  timeLineLen_Total + (root.x0  / 2);
-
-                }
-
-
-                d._children = d.children;
-                d._children.forEach(collapse);
-                d.children = null;
-            }
-
-
+    function expand(d){
+        let children = (d.children)?d.children:d._children;
+        if (d._children) {
+            d.children = d._children;
+            d._children = null;
         }
+        if(children)
+            children.forEach(expand);
+    };
+
+    function expandAll(){
+
+        resetPackagesPosition();
+
+        expand(root);
+        update(root);
+    }
+
+    function collapseAll(){
 
 
-        function expand(d){
-            let children = (d.children)?d.children:d._children;
-            if (d._children) {
-                d.children = d._children;
-                d._children = null;
-            }
-            if(children)
-                children.forEach(expand);
-        }
+        resetPackagesPosition();
 
-        function expandAll(){
-
-            resetPackagesPosition();
-
-            expand(root);
-            update(root);
-        }
-
-        function collapseAll(){
+        root.children.forEach(collapse);
+        collapse(root);
+        update(root);
+    };
 
 
-            resetPackagesPosition();
-
-            root.children.forEach(collapse);
-            collapse(root);
-            update(root);
-        }
+</script>
 
 
+<!-- Execution for d3 visualization  -->
+<script>
 
+    treeDraw(currentJsonFile);
 
-    </script>
+</script>
 
-
-</div>
 
 </body>
 
