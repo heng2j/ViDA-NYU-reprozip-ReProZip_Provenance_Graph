@@ -587,11 +587,25 @@
 <!-- GLobal dimension variables -->
 <script>
 
+
+
+    console.log(' $(window).resize() : ',  $(window).resize().outerWidth());
+
+
     const margin = {top: 300, right: 120, bottom: 150, left: 150},
-        width = 4500 - margin.right - margin.left,
-        height = 1400 - margin.top - margin.bottom,
+        width = $(window).resize().outerWidth() + 3000 - margin.right - margin.left, //4500
+        height = $(window).resize().outerHeight() + 500 - margin.top - margin.bottom,  //1400
         padding = 3.5, // separation between packages
         maxRadius = 20; // radius for each package ;
+
+
+
+    //
+    //        const margin = {top: 300, right: 120, bottom: 150, left: 150},
+    //            width = $(window).resize().outerWidth() + 3000 - margin.right - margin.left, //4500
+    //            height = $(window).resize().outerHeight() + 500 - margin.top - margin.bottom,  //1400
+    //            padding = 3.5, // separation between packages
+    //            maxRadius = 20; // radius for each package ;
 
 </script>
 
