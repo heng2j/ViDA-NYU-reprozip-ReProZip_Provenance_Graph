@@ -589,10 +589,10 @@
 
 
 
-    console.log(' $(window).resize() : ',  $(window).resize().outerWidth());
+    console.log(' $(window).resize() : ',  $(window).resize());
 
 
-    const margin = {top: 300, right: 120, bottom: 150, left: 150},
+    const margin = {top: $(window).resize().outerHeight() * 0.3, right: $(window).resize().outerWidth()  * 0.1, bottom: $(window).resize().outerHeight() * 0.15, left:  $(window).resize().outerWidth()  * 0.1},
         width = $(window).resize().outerWidth() + 3000 - margin.right - margin.left, //4500
         height = $(window).resize().outerHeight() + 500 - margin.top - margin.bottom,  //1400
         padding = 3.5, // separation between packages
@@ -602,8 +602,8 @@
 
     //
     //        const margin = {top: 300, right: 120, bottom: 150, left: 150},
-    //            width = $(window).resize().outerWidth() + 3000 - margin.right - margin.left, //4500
-    //            height = $(window).resize().outerHeight() + 500 - margin.top - margin.bottom,  //1400
+    //            width = 4500 - margin.right - margin.left, //4500
+    //            height = 1400 - margin.top - margin.bottom,  //1400
     //            padding = 3.5, // separation between packages
     //            maxRadius = 20; // radius for each package ;
 
@@ -653,8 +653,8 @@
     /*-- define the current data set for the visualization  --*/
 
     //const currentJsonFile = "bash-count.json";
-    const currentJsonFile = "stacked-up-website.json";
-    //const currentJsonFile = "ache.json";
+    //const currentJsonFile = "stacked-up-website.json";
+    const currentJsonFile = "ache.json";
 
     // boolean to indicate if the switch of focusing process and associated packages is toggled
     let inFocus = false;
