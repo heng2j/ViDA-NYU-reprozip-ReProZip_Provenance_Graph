@@ -879,7 +879,7 @@ function createFileTooTip(notesDiv,source, associationString){
                             .duration(500)
                             .style("opacity", 0);
                     })
-                    .text(fileName);
+                    .text(fileName.replace('//',''));
 
                 if(readsList[i+1] == null){
 
@@ -1558,7 +1558,7 @@ function treeDraw(currentJson){
 
             if (d.children) {
 
-                // Set default timeline length for root
+                // Set default timeline length for root Check for the tree node size instead of double counting length
                 if(!isTreeRedrawn){
                     timeLineLen_Total =  timeLineLen_Total + (root.x0  / 2);
 
