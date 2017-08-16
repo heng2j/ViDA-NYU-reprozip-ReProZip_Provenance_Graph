@@ -265,7 +265,11 @@ function update(source) {
     currentDisplayingNodes = nodes;
     console.log("currentDisplayingNodes: ", currentDisplayingNodes);
 
-}
+
+   // svg.append('use').attr('xlink:href','#package');
+
+
+};
 
 // Toggle children on click.
 function dblclickProcess(d) {
@@ -348,9 +352,12 @@ function dblclickProcess(d) {
 
     updateTimeLine(timeLineLen, getTimeLineLabel(newTimelineDuration));
 
+    console.log('tree.size(): ',tree.size());
+    console.log('timeLineLen_Total: ', timeLineLen_Total);
 
 
     update(d);
+
 
 
 }
@@ -449,8 +456,8 @@ function clickProcess(d) {
 
 
 
-                d3.select("#package_" + readFile.replace(/[.,\/#!$%&;:+{}=\-_`~()]/g,"")).style("opacity", 1);
-                d3.select("#packageLabel_" + readFile.replace(/[.,\/#!$%&;:+{}=\-_`~()]/g,"")).style("opacity", 1);
+                d3.select(".package_" + readFile.replace(/[.,\/#!$%&;:+{}=\-_`~()]/g,"")).style("opacity", 1);
+                d3.select(".packageLabel_" + readFile.replace(/[.,\/#!$%&;:+{}=\-_`~()]/g,"")).style("opacity", 1);
 
                 links.push({source: node, target: target});
 
@@ -1104,7 +1111,7 @@ function createAllPackageList(packages){
             .on("click", function(d, i){
 
 
-                let selectedPackage = d3.select("#package_" + thisPackage.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
+                let selectedPackage = d3.select(".package_" + thisPackage.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
                 let thisEdge = d3.select("#edge_" +thisPackage.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
                 let thisPackageLabel = d3.select("#packageLabel_" +thisPackage.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,""));
 
@@ -1554,27 +1561,27 @@ function treeDraw(currentJson){
 
 
 
-        function collapse(d) {
+        // function collapse(d) {
+        //
+        //     if (d.children) {
+        //
+        //         // Set default timeline length for root Check for the tree node size instead of double counting length
+        //         if(!isTreeRedrawn){
+        //             timeLineLen_Total =  timeLineLen_Total + 400;// (root.x0  / 2);
+        //
+        //         }
+        //
+        //
+        //         d._children = d.children;
+        //         d._children.forEach(collapse);
+        //         d.children = null;
+        //     }
+        //
+        //
+        // }
 
-            if (d.children) {
 
-                // Set default timeline length for root Check for the tree node size instead of double counting length
-                if(!isTreeRedrawn){
-                    timeLineLen_Total =  timeLineLen_Total + (root.x0  / 2);
-
-                }
-
-
-                d._children = d.children;
-                d._children.forEach(collapse);
-                d.children = null;
-            }
-
-
-        }
-
-
-
+       // timeLineLen_Total = tree.size()[1];
 
 
         //Time line code block
@@ -1600,12 +1607,24 @@ function treeDraw(currentJson){
 
 
         // timeLineLen = root.x0 / 2;
-        timeLineLen_Total = root.x0 / 2;
+
+
+
+
 
 
         root.children.forEach(collapse);
 
-        //  console.log('timeLineLen_Total: ', timeLineLen_Total);
+
+
+        console.log('countCollapse: ', countCollapse);
+        console.log('maxcCountCollapse: ', maxcCountCollapse);
+
+
+
+        timeLineLen_Total =  (maxcCountCollapse + 1) * 400;
+
+        console.log('timeLineLen_Total: ', timeLineLen_Total);
 
         timeLineLen =  timeLineLen_Total * (duration_ms / duration_total_ms);
 
@@ -1633,19 +1652,26 @@ function treeDraw(currentJson){
 
         // createPackageTooTip(searchFilesInfoDiv,d);
 
+       console.log('tree.size(): ',tree.size());
+
+       //[1103, 6336]
+
+
     })
 
 };
 
 
 
-
+//Need to fix the diplay of time
 
 function getTimeLineLabel(duration_ms, isTotalString){
 
     let duration_total = new moment.duration(duration_ms);
 
     let durationLabel_total  = '';
+
+    console.log("duration_total: ", duration_total);
 
 
     if(duration_total.asMilliseconds() < 60000){
@@ -1907,14 +1933,20 @@ function forceDraw(data) {
 
     console.log("forceNodes: ", forceNodes );
 
+   // let forceGroup = svg.append("g").attr("id", "forceGroup").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
 
     // forcePackages
     forcePackages = forcePackages
         .data(forceNodes)
         .enter().append("circle")
         .attr("class", 'package')
+        .attr("class", function(d){
+            return "package    package_"+ d.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"");
+
+        })
         .attr("id", function(d){
-            return "package_"+ d.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"");
+            return "package"            //  return "package_"+ d.name.replace(/[.,\/#!$%\^&\*;:+{}=\-_`~()]/g,"");
 
         })
         .attr("r", function (d) {
@@ -2058,6 +2090,11 @@ function forceDraw(data) {
                 .style("opacity", 0);
         })
         .call(force.drag);
+
+
+    //forceGroup.append(forcePackages);
+
+
 
     label = label
         .data(forceNodes)
@@ -2207,21 +2244,33 @@ function setSectionsColors(sections){
 
 
 
+let countCollapse = 0;
+let maxcCountCollapse = 0;
+
 
 function collapse(d) {
 
     if (d.children) {
 
         // Set default timeline length for root
-        if(!isTreeRedrawn){
-            timeLineLen_Total =  timeLineLen_Total + (root.x0  / 2);
+        // if(!isTreeRedrawn){
+        //     timeLineLen_Total =  timeLineLen_Total + 400;// (root.x0  / 2); //timeLineLen_Total + (root.x0  / 2);
+        //
+        // }
 
-        }
-
+        countCollapse++;
 
         d._children = d.children;
         d._children.forEach(collapse);
         d.children = null;
+    }
+
+
+    if (countCollapse > maxcCountCollapse){
+
+        maxcCountCollapse = countCollapse;
+
+        countCollapse = 0;
     }
 
 
