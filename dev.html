@@ -30,6 +30,7 @@
   <script src="https://d3js.org/d3.v4.min.js"></script>
   -->
     <script src="//d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="http://static.mentful.com/gantt-chart-d3v21.js"></script>
 
 
 
@@ -60,7 +61,7 @@
                             <button id="packages_ConnectAll" type="button" class="btn btn-primary " style="text-align: left; margin-top: 2px"><i class="fa fa-share-alt fa-rotate-270" aria-hidden="true" style="margin-right: 5px" ></i>  Connect All Packages </button>
                             <button id="tree_CloseAll"  type="button" class="btn btn-primary " style="text-align: left; margin-top: 2px"> <i class="fa fa-circle" aria-hidden="true" style="margin-right: 5px"></i>  Collapse All </button>
                             <button id="tree_ExpandAll" type="button" class="btn btn-primary " style="text-align: left; margin-top: 2px"><i class="fa fa-sitemap fa-rotate-270" aria-hidden="true" style="margin-right: 5px" ></i>  Expand All </button>
-
+                            <button id="timeLineShow" type="button" class="btn btn-primary " style="text-align: left; margin-top: 2px"><i class="fa fa-sitemap fa-rotate-270" aria-hidden="true" style="margin-right: 5px" ></i>  Timeline </button>
                         </div>
 
 
@@ -187,6 +188,10 @@
           //const currentJsonFile = "stacked-up-website_og.json";
           //const currentJsonFile = "ache.json";
 
+
+
+
+
           // boolean to indicate if the switch of focusing process and associated packages is toggled
           let inFocus = false;
 
@@ -235,6 +240,17 @@
           let timeLineLen_Total = 0;
           let duration_total_ms;
           let rootStartTime = 0;
+
+          const taskStatus = {
+              "SUCCEEDED" : "bar",
+              "FAILED" : "bar-failed",
+              "RUNNING" : "bar-running",
+              "KILLED" : "bar-killed"
+          };
+
+          let taskNames = [];
+
+          let processes = [];
 
 
 
