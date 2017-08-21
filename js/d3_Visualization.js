@@ -350,7 +350,15 @@ function dblclickProcess(d) {
 
     //  let durationLabel  = "Took " + (duration / 1000000).toFixed(2) + " milliseconds";
 
-    updateTimeLine(timeLineLen, getTimeLineLabel(newTimelineDuration));
+    if(newTimelineDuration > 0){
+
+    updateTimeLine(timeLineLen, getTimeLineLabel(newTimelineDuration,'took') + d.name + " is done.");
+    }
+    else {
+
+        updateTimeLine(timeLineLen,  d.name + " is the initial process");
+
+    }
 
     console.log('tree.size(): ',tree.size());
     console.log('timeLineLen_Total: ', timeLineLen_Total);
@@ -496,8 +504,10 @@ function clickProcess(d) {
 
     processDetails.selectAll('*').remove();
 
-    let commands = '';
 
+
+    // Extract and prepare the commands message for this selected process
+    let commands = '';
 
     if(d.argv != null){
 
@@ -514,15 +524,22 @@ function clickProcess(d) {
     }
 
 
+    let runtime = ''; //new moment.duration((d.exit_time/1000000) - (d.start_time / 1000000));
+
+   // runtime = runtime.asMilliseconds().toFixed(2) + " milliseconds";
+
+
+    runtime =  getTimeLineLabel((d.exit_time/1000000) - (d.start_time / 1000000));
+
+
     // Fill in the processDetails section with informationm
     // from the node. Because we want to transition
     // this to match the transitions on the graph,
     // we first set it's opacity to 0.
-
     processDetails.style({'opacity': 0});
+
+
     // Now add the processDetails content.
-
-
     let fileNames = d.reads.sort().concat(d.writes.sort());
     let uniqFileNames = [...new Set(fileNames)];
 
@@ -531,6 +548,8 @@ function clickProcess(d) {
     processDetails.append('h3').text("Process:").attr("href", "#ProcessName").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
     processDetails.append('h5').text(d.name).attr("id", "ProcessName" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
 
+    processDetails.append('h3').attr("class", "collapsible").append('a').text("Runtime:").attr("href", "#Runtime").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+    processDetails.append('h5').text(runtime).attr("id", "Runtime" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
 
     processDetails.append('h3').attr("class", "collapsible").append('a').text("Commands:").attr("href", "#Commands").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
     processDetails.append('h5').text(commands).attr("id", "Commands" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
@@ -1258,6 +1277,13 @@ function treeDraw(currentJson){
 
             run.processes.forEach(function(_process) {
 
+                //preparing data for timeline
+                taskNames.push(_process.long_name);
+
+                generateProcessesForTimeLine(_process);
+
+
+
 
                 if(_process.reads != null){
 
@@ -1306,7 +1332,7 @@ function treeDraw(currentJson){
 
 
         let tempPackageX = 0;
-        let tempPackageY = -200;
+        let tempPackageY = -100;
         let isAlternativeOn = 0;
         let sections = [];
 
@@ -1359,13 +1385,13 @@ function treeDraw(currentJson){
             // set alternative Y position for force nodes
             if(isAlternativeOn === 0 && data.packages.length > 15){
 
-                tempPackageY = -120;
+                tempPackageY = -60;
 
                 isAlternativeOn = 1;
             }
             else if (isAlternativeOn === 1){
 
-                tempPackageY = -200;
+                tempPackageY = -100;
                 isAlternativeOn = 0;
 
             }
@@ -1532,7 +1558,7 @@ function treeDraw(currentJson){
 
             console.log('rawData', rawData);
 
-
+            /*-- create treeData --*/
             let dataMap = rawData.reduce(function(map, node) {
                 map[node.name] = node;
                 return map;
@@ -1598,7 +1624,7 @@ function treeDraw(currentJson){
 
         let duration = new moment.duration(duration_ms);
 
-        let durationLabel  = "Took " + duration.asMilliseconds().toFixed(2) + " milliseconds";
+        let durationLabel  = "Cumulatively took " + duration.asMilliseconds().toFixed(2) + " milliseconds" +  " when " + root.children[0].name + " is done.";
 
 
         duration_total_ms =  (tempMaxRunTime - rootStartTime) / 1000000 ;
@@ -1671,42 +1697,46 @@ function getTimeLineLabel(duration_ms, isTotalString){
 
     let durationLabel_total  = '';
 
-    console.log("duration_total: ", duration_total);
 
 
-    if(duration_total.asMilliseconds() < 60000){
+    if(duration_total.asMilliseconds() < 1000){
 
         durationLabel_total =  duration_total.asMilliseconds().toFixed(2) + " milliseconds";
 
     }
-    else if (duration_total.asSeconds() < 60 && duration_total.asSeconds() > 0){
+   if (duration_total._data.seconds > 0){
 
-        durationLabel_total =  duration_total.asSeconds().toFixed(2) + " seconds";
-
-    }
-
-    else if (duration_total.asMinutes() < 60 && duration_total.asMinutes() > 0){
-
-        durationLabel_total =  duration_total.asMinutes().toFixed(2) + " minutes"; //+ " and " + duration.asSeconds().toFixed(0) + " seconds";
+        durationLabel_total =  duration_total._data.seconds + " seconds and " + duration_total._data.milliseconds.toFixed(2) + " milliseconds";
 
     }
-    else if (duration_total.asHours() < 24 && duration_total.asHours() > 0){
 
-        durationLabel_total =   duration_total.asHours().toFixed(2) + " hours" ;
+   if (duration_total._data.minutes > 0 ){
+
+        durationLabel_total =   duration_total._data.minutes + " minutes and " + duration_total._data.seconds + "." + duration_total._data.milliseconds.toFixed(0) + " seconds";
 
     }
-    else if (duration_total.asDays() < 28 && duration_total.asDays() > 0){
+    if ( duration_total._data.hours > 0){
 
-        durationLabel_total =  duration_total.asDays().toFixed(2) + " days" ;
+        durationLabel_total =   duration_total._data.hours + " hours and " + duration_total._data.minutes + " minutes" ;
+
+
+    }
+    if (duration_total._data.days > 0){
+
+        durationLabel_total =   duration_total._data.days + " days and " + duration_total._data.hours + " hours" ;
 
     }
 
     if (isTotalString === "total"){
 
         durationLabel_total = "Total " + durationLabel_total;
-    }else{
+    }else if (isTotalString === "took"){
 
-        durationLabel_total = "Took " + durationLabel_total;
+        durationLabel_total = "Cumulatively took "  + durationLabel_total +  " when " ;
+    }
+    else{
+
+
     }
 
     return durationLabel_total;
@@ -1769,6 +1799,73 @@ function totalTimeLineDraw(length, durationLabel){
 
 
 };
+
+
+
+function renderGanttChart(){
+
+
+    processes.sort(function(a, b) {
+        return a.endDate - b.endDate;
+    });
+
+
+    var maxDate = processes[processes.length - 1].endDate;
+
+
+
+    processes.sort(function(a, b) {
+        return a.startDate - b.startDate;
+    });
+
+    var minDate = processes[0].startDate;
+
+    console.log( 'maxDate - minDate: ', maxDate - minDate);
+
+
+    let format = ".%Lms";
+
+    if(( maxDate - minDate) > 1000){
+
+        format = ":%Ss";
+    };
+
+
+    var gantt = d3.gantt().taskTypes(taskNames).taskStatus(taskStatus).tickFormat(format);
+    gantt(processes);
+}
+
+
+
+function generateProcessesForTimeLine(_process){
+
+
+
+
+    var startDate = new Date(_process.start_time/1000000);
+
+    // console.log( '_process.start_time: ', _process.start_time / 1000000);
+    //
+    // console.log( 'startDate: ', startDate.toString("MMM dd"));
+
+
+    var endDate = new Date(_process.exit_time/1000000);
+
+    // console.log( '_process.exit_time: ', _process.exit_time / 1000000);
+    // console.log( 'endDate: ', endDate.toString("MMM dd"));
+
+
+    let timeLineProcess = {['startDate']: new Date(startDate),['endDate']: new Date(endDate), ['taskName']: _process.long_name , "status":"RUNNING" };
+
+
+
+    processes.push(timeLineProcess);
+
+
+    // console.log( '_process.start_time: ', _process.start_time / 1000000);
+
+};
+
 
 function restart() {
 
