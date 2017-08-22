@@ -356,18 +356,18 @@ function dblclickProcess(d) {
 
     if(newTimelineDuration > 0 && isOpen == true){
 
-    updateTimeLine(timeLineLen + margin.left, getTimeLineLabel(newTimelineDuration,'took') + d.name + " is done.");
+    updateTimeLine(timeLineLen, getTimeLineLabel(newTimelineDuration,'took') + d.name + " is done.");
     }
 
     else if(newTimelineDuration > 0 && isOpen == false){
 
-        updateTimeLine(timeLineLen + margin.left, getTimeLineLabel(newTimelineDuration,'took') + d.name + " is started.");
+        updateTimeLine(timeLineLen , getTimeLineLabel(newTimelineDuration,'took') + d.name + " is started.");
     }
     else if(newTimelineDuration === 0){
 
 
 
-        updateTimeLine(timeLineLen + margin.left,  d.name + " is the initial process");
+        updateTimeLine(timeLineLen ,  d.name + " is the initial process");
 
     }
     else {
@@ -1664,7 +1664,7 @@ function treeDraw(currentJson){
 
         duration_total_ms =  0 ;
 
-        let durationLabel_total  = 'There is no timeline data available for this experiment';
+        let durationLabel_total  = 'No timeline data available for this experiment';
 
         timeLineLen_Total = 0;
 
@@ -1710,8 +1710,8 @@ function treeDraw(currentJson){
         if(!isTreeRedrawn){
 
 
-            totalTimeLineDraw(timeLineLen_Total, durationLabel_total);
-            timeLineDraw(timeLineLen + margin.left , durationLabel);
+            totalTimeLineDraw(timeLineLen_Total , durationLabel_total);
+            timeLineDraw(timeLineLen  , durationLabel);
 
 
         }
@@ -1814,7 +1814,7 @@ function timeLineDraw(length, durationLabel){
     // Update the link text
     svg.selectAll(".timeLineGroup").append("text")
         .attr("y", height + 20)//magic number here
-        .attr("x", (length / 2) + 50)
+        .attr("x", (length / 2) +  margin.left)
         .attr('text-anchor', 'middle')
         .attr("class", "timeLineText")//easy to style with CSS
         .text(durationLabel);
@@ -1842,7 +1842,7 @@ function totalTimeLineDraw(length, durationLabel){
     // Update the link text
     svg.selectAll(".TotalTimeLineGroup").append("text")
         .attr("y", height + 20)//magic number here
-        .attr("x", length )
+        .attr("x", length  + margin.left )
         .attr('text-anchor', 'middle')
         .attr("class", "totalTimeLineText")//easy to style with CSS
         .text(durationLabel);
