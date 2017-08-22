@@ -356,18 +356,18 @@ function dblclickProcess(d) {
 
     if(newTimelineDuration > 0 && isOpen == true){
 
-    updateTimeLine(timeLineLen, getTimeLineLabel(newTimelineDuration,'took') + d.name + " is done.");
+    updateTimeLine(timeLineLen + margin.left, getTimeLineLabel(newTimelineDuration,'took') + d.name + " is done.");
     }
 
     else if(newTimelineDuration > 0 && isOpen == false){
 
-        updateTimeLine(timeLineLen, getTimeLineLabel(newTimelineDuration,'took') + d.name + " is started.");
+        updateTimeLine(timeLineLen + margin.left, getTimeLineLabel(newTimelineDuration,'took') + d.name + " is started.");
     }
     else if(newTimelineDuration === 0){
 
 
 
-        updateTimeLine(timeLineLen,  d.name + " is the initial process");
+        updateTimeLine(timeLineLen + margin.left,  d.name + " is the initial process");
 
     }
     else {
@@ -1438,6 +1438,13 @@ function treeDraw(currentJson){
         //Handle runs
         data.runs.forEach(function(run){
 
+            console.log('run.name: ', run.name);
+
+            runNames.push(run.name);
+
+            rawData[run.name] = [];
+            treeData[run.name] = [];
+
             run.processes.forEach(function(_process){
 
                 let packages = {["reads"]:[], ["writes"]: []};
@@ -1501,7 +1508,7 @@ function treeDraw(currentJson){
                         tempMaxRunTime = _process.exit_time;
                     }
 
-                    rawData.push(node);
+                    rawData[run.name].push(node);
 
                 }
                 else {
@@ -1554,7 +1561,6 @@ function treeDraw(currentJson){
 
                             }
 
-
                         });
 
                         let uniq = [...new Set(packages.writes)];
@@ -1572,7 +1578,7 @@ function treeDraw(currentJson){
                         tempMaxRunTime = _process.exit_time;
                     }
 
-                    rawData.push(node);
+                    rawData[run.name].push(node);
 
 
                 }
@@ -1580,16 +1586,16 @@ function treeDraw(currentJson){
 
             });
 
-            console.log('rawData', rawData);
+            console.log('rawData:', rawData[run.name]);
 
             /*-- create treeData --*/
-            let dataMap = rawData.reduce(function(map, node) {
+            let dataMap = rawData[run.name].reduce(function(map, node) {
                 map[node.name] = node;
                 return map;
             }, {});
 
 
-            rawData.forEach(function(node) {
+            rawData[run.name].forEach(function(node) {
                 // add to parent
                 let parent = dataMap[node.parent];
                 if (parent) {
@@ -1599,12 +1605,12 @@ function treeDraw(currentJson){
                         .push(node);
                 } else {
                     // parent is null or missing
-                    treeData.push(node);
+                    treeData[run.name].push(node);
                 }
             });
 
 
-            console.log('treeData', treeData);
+            console.log('treeData:', treeData[run.name]);
 
 
         });
@@ -1634,14 +1640,20 @@ function treeDraw(currentJson){
        // timeLineLen_Total = tree.size()[1];
 
 
-        //Time line code block
-        root = treeData[0];
+
+        root = treeData[runNames[0]][0];
         root.x0 = height; // / 2;
         root.y0 = 0;
 
+        console.log('root: ', root);
 
 
-        rootStartTime = root.start_time;
+
+
+        //Time line code block
+
+        // rootStartTime = root.start_time;
+        rootStartTime = treeData[runNames[0]][0].start_time;
 
 
         let duration_ms = 0;
@@ -1659,20 +1671,25 @@ function treeDraw(currentJson){
 
         // timeLineLen = root.x0 / 2;
 
+
+        root.children.forEach(collapse);
+
         if (rootStartTime >= 0){
 
 
-           duration_ms = (root.children[0].start_time - rootStartTime) / 1000000;
+            duration_ms = (root.children[0].start_time - rootStartTime) / 1000000;
 
-           duration = new moment.duration(duration_ms);
+            duration = new moment.duration(duration_ms);
 
-           durationLabel  = "Cumulatively took " + duration.asMilliseconds().toFixed(2) + " milliseconds" +  " when " + root.children[0].name + " is started.";
+            durationLabel  = "Cumulatively took " + duration.asMilliseconds().toFixed(2) + " milliseconds" +  " when " + root.children[0].name + " is started.";
 
-           duration_total_ms =  (tempMaxRunTime - rootStartTime) / 1000000 ;
+            duration_total_ms =  (tempMaxRunTime - rootStartTime) / 1000000 ;
 
-           durationLabel_total  = getTimeLineLabel(duration_total_ms,"total");
+            durationLabel_total  = getTimeLineLabel(duration_total_ms,"total");
 
-           timeLineLen_Total =  (maxcCountCollapse + 1) * 400;
+            timeLineLen_Total =  (maxcCountCollapse + 1) * 400;
+
+
 
         }
 
@@ -1680,15 +1697,8 @@ function treeDraw(currentJson){
 
 
 
-        root.children.forEach(collapse);
-
-
-
         console.log('countCollapse: ', countCollapse);
         console.log('maxcCountCollapse: ', maxcCountCollapse);
-
-
-
 
 
         console.log('timeLineLen_Total: ', timeLineLen_Total);
@@ -1701,7 +1711,7 @@ function treeDraw(currentJson){
 
 
             totalTimeLineDraw(timeLineLen_Total, durationLabel_total);
-            timeLineDraw(timeLineLen, durationLabel);
+            timeLineDraw(timeLineLen + margin.left , durationLabel);
 
 
         }
@@ -1804,7 +1814,7 @@ function timeLineDraw(length, durationLabel){
     // Update the link text
     svg.selectAll(".timeLineGroup").append("text")
         .attr("y", height + 20)//magic number here
-        .attr("x", length / 2)
+        .attr("x", (length / 2) + 50)
         .attr('text-anchor', 'middle')
         .attr("class", "timeLineText")//easy to style with CSS
         .text(durationLabel);
@@ -2313,7 +2323,7 @@ function updateTimeLine(length, durationLabel){
 
     let timeLineText = d3.selectAll(".timeLineText")
         .transition()
-        .attr("x", timeLineLen / 2)
+        .attr("x", (timeLineLen / 2) + 50)
         .attr('text-anchor', 'middle')
         .attr("class", "timeLineText")//easy to style with CSS
 
