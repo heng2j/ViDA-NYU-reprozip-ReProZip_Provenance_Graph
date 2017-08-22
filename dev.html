@@ -166,8 +166,10 @@
       <script>
           // script to prepare data
           let fileDict = {};
-          let rawData = [] ;
-          let treeData = [];
+          // let rawData = [] ;
+          let rawData = {} ;
+          // let treeData = [];
+          let treeData = {};
           //  let forceNodes = {"nodes" : []};
 
       </script>
@@ -189,9 +191,14 @@
           //const currentJsonFile = "stacked-up-website.json";
           //const currentJsonFile = "stacked-up-website_og.json";
           const currentJsonFile = "ache.json";
+          //const currentJsonFile = "digits.json";
 
 
 
+          /*-- Variables for runs --*/
+
+          let runNames = [];
+          let runsNumber = 0;
 
 
           // boolean to indicate if the switch of focusing process and associated packages is toggled
