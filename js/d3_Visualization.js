@@ -293,7 +293,7 @@ function dblclickProcess(d) {
 
     restart();
 
-
+    let isOpen = false;
 
     let newTimelineDuration;
 
@@ -318,7 +318,7 @@ function dblclickProcess(d) {
 
         console.log('Open');
 
-
+        isOpen = true;
 
         let tempDuration = 0;
 
@@ -350,9 +350,14 @@ function dblclickProcess(d) {
 
     //  let durationLabel  = "Took " + (duration / 1000000).toFixed(2) + " milliseconds";
 
-    if(newTimelineDuration > 0){
+    if(newTimelineDuration > 0 && isOpen == true){
 
     updateTimeLine(timeLineLen, getTimeLineLabel(newTimelineDuration,'took') + d.name + " is done.");
+    }
+
+    else if(newTimelineDuration > 0 && isOpen == false){
+
+        updateTimeLine(timeLineLen, getTimeLineLabel(newTimelineDuration,'took') + d.name + " is started.");
     }
     else {
 
@@ -1624,7 +1629,7 @@ function treeDraw(currentJson){
 
         let duration = new moment.duration(duration_ms);
 
-        let durationLabel  = "Cumulatively took " + duration.asMilliseconds().toFixed(2) + " milliseconds" +  " when " + root.children[0].name + " is done.";
+        let durationLabel  = "Cumulatively took " + duration.asMilliseconds().toFixed(2) + " milliseconds" +  " when " + root.children[0].name + " is started.";
 
 
         duration_total_ms =  (tempMaxRunTime - rootStartTime) / 1000000 ;
@@ -1805,6 +1810,53 @@ function totalTimeLineDraw(length, durationLabel){
 function renderGanttChart(){
 
 
+
+    let forcePackages = svg.selectAll(".package");
+    let label = svg.selectAll(".forceLabel");
+    let edge = svg.selectAll(".edge");
+
+
+
+    let node = svg.selectAll("g.node");
+    let link = svg.selectAll("path.link");
+    let linktext = svg.selectAll("g.link");
+    let timeLineText = d3.selectAll(".timeLineText");
+
+    let timeline =  svg.selectAll(".timeLine");
+
+
+    let timeLine_Total = d3.selectAll(".timeLine_Total");
+    let totalTimeLineText = d3.selectAll(".totalTimeLineText");
+
+
+    forcePackages.remove();
+    label.remove();
+    edge.remove();
+
+    node.remove();
+    link.remove();
+    linktext.remove();
+    timeLineText.remove();
+    timeline.remove();
+    timeLine_Total.remove();
+    totalTimeLineText.remove();
+
+
+
+    forceData = {"packages": []};
+    packagesNumber = 0;
+    sectionsInPackages = {};
+
+
+    force.nodes = null;
+    force.links = null;
+
+    // forceNodes = force.nodes;
+    // forceLinks = force.links();
+
+   // treeDraw(currentJsonFile);
+
+
     processes.sort(function(a, b) {
         return a.endDate - b.endDate;
     });
@@ -1833,6 +1885,8 @@ function renderGanttChart(){
 
     var gantt = d3.gantt().taskTypes(taskNames).taskStatus(taskStatus).tickFormat(format);
     gantt(processes);
+
+
 }
 
 
