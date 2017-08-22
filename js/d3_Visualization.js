@@ -320,33 +320,37 @@ function dblclickProcess(d) {
 
         isOpen = true;
 
-        let tempDuration = 0;
+        newTimelineDuration = (d.exit_time - rootStartTime) / 1000000;
 
-
-        if (d.children != null){
-
-            d.children.forEach(function(node) {
-
-                if ((node.start_time - rootStartTime) > tempDuration) {
-
-                    tempDuration = node.start_time - rootStartTime;
-                };
-
-
-            });
-        }
-        else{
-            tempDuration = d.exit_time - rootStartTime;
-
-        }
-
-
-        newTimelineDuration = tempDuration / 1000000;  //d.children[0].start_time - rootStartTime;
+        // let tempDuration = 0;
+        //
+        //
+        // if (d.children != null){
+        //
+        //     d.children.forEach(function(node) {
+        //
+        //         if ((node.start_time - rootStartTime) > tempDuration) {
+        //
+        //             tempDuration = node.start_time - rootStartTime;
+        //         };
+        //
+        //
+        //     });
+        // }
+        // else{
+        //     tempDuration = d.exit_time - rootStartTime;
+        //
+        // }
+        //
+        //
+        // newTimelineDuration = tempDuration / 1000000;  //d.children[0].start_time - rootStartTime;
 
 
     }
 
     timeLineLen =  timeLineLen_Total * (newTimelineDuration / duration_total_ms);
+
+    console.log('timeLineLen:', timeLineLen);
 
     //  let durationLabel  = "Took " + (duration / 1000000).toFixed(2) + " milliseconds";
 
@@ -359,9 +363,16 @@ function dblclickProcess(d) {
 
         updateTimeLine(timeLineLen, getTimeLineLabel(newTimelineDuration,'took') + d.name + " is started.");
     }
-    else {
+    else if(newTimelineDuration === 0){
+
+
 
         updateTimeLine(timeLineLen,  d.name + " is the initial process");
+
+    }
+    else {
+
+        updateTimeLine(0);
 
     }
 
@@ -371,6 +382,7 @@ function dblclickProcess(d) {
 
     update(d);
 
+    updatedProcessDetails(d);
 
 
 }
@@ -470,7 +482,7 @@ function clickProcess(d) {
 
 
                 d3.select(".package_" + readFile.replace(/[.,\/#!$%&;:+{}=\-_`~()]/g,"")).style("opacity", 1);
-                d3.select(".packageLabel_" + readFile.replace(/[.,\/#!$%&;:+{}=\-_`~()]/g,"")).style("opacity", 1);
+                d3.select("#packageLabel_" + readFile.replace(/[.,\/#!$%&;:+{}=\-_`~()]/g,"")).style("opacity", 1);
 
                 links.push({source: node, target: target});
 
@@ -500,7 +512,14 @@ function clickProcess(d) {
 
     restart();
 
+    updatedProcessDetails(d);
 
+
+
+
+}
+
+function updatedProcessDetails(d){
 
 
 
@@ -531,13 +550,15 @@ function clickProcess(d) {
 
     let runtime = ''; //new moment.duration((d.exit_time/1000000) - (d.start_time / 1000000));
 
-   // runtime = runtime.asMilliseconds().toFixed(2) + " milliseconds";
+    // runtime = runtime.asMilliseconds().toFixed(2) + " milliseconds";
 
-
+    if (d.start_time >= 0){
     runtime =  getTimeLineLabel((d.exit_time/1000000) - (d.start_time / 1000000));
+    }
+    else runtime = 'Runtime data is not available.';
 
 
-    // Fill in the processDetails section with informationm
+        // Fill in the processDetails section with informationm
     // from the node. Because we want to transition
     // this to match the transitions on the graph,
     // we first set it's opacity to 0.
@@ -792,9 +813,7 @@ function clickProcess(d) {
         });
     })( jQuery, window, document );
 
-
-
-}
+};
 
 
 function createFileTooTip(notesDiv,source, associationString){
@@ -1625,20 +1644,37 @@ function treeDraw(currentJson){
         rootStartTime = root.start_time;
 
 
-        let duration_ms = (root.children[0].start_time - rootStartTime) / 1000000;
+        let duration_ms = 0;
 
-        let duration = new moment.duration(duration_ms);
+        let duration;
 
-        let durationLabel  = "Cumulatively took " + duration.asMilliseconds().toFixed(2) + " milliseconds" +  " when " + root.children[0].name + " is started.";
+        let durationLabel  = '';
 
+        duration_total_ms =  0 ;
 
-        duration_total_ms =  (tempMaxRunTime - rootStartTime) / 1000000 ;
+        let durationLabel_total  = 'There is no timeline data available for this experiment';
 
-        let durationLabel_total  = getTimeLineLabel(duration_total_ms,"total");
+        timeLineLen_Total = 0;
 
 
         // timeLineLen = root.x0 / 2;
 
+        if (rootStartTime >= 0){
+
+
+           duration_ms = (root.children[0].start_time - rootStartTime) / 1000000;
+
+           duration = new moment.duration(duration_ms);
+
+           durationLabel  = "Cumulatively took " + duration.asMilliseconds().toFixed(2) + " milliseconds" +  " when " + root.children[0].name + " is started.";
+
+           duration_total_ms =  (tempMaxRunTime - rootStartTime) / 1000000 ;
+
+           durationLabel_total  = getTimeLineLabel(duration_total_ms,"total");
+
+           timeLineLen_Total =  (maxcCountCollapse + 1) * 400;
+
+        }
 
 
 
@@ -1653,7 +1689,7 @@ function treeDraw(currentJson){
 
 
 
-        timeLineLen_Total =  (maxcCountCollapse + 1) * 400;
+
 
         console.log('timeLineLen_Total: ', timeLineLen_Total);
 
