@@ -30,7 +30,7 @@
   <script src="https://d3js.org/d3.v4.min.js"></script>
   -->
     <script src="//d3js.org/d3.v3.min.js"></script>
-    <script type="text/javascript" src="http://static.mentful.com/gantt-chart-d3v21.js"></script>
+    <script type="text/javascript" src="js/gantt-chart-d3.js"></script>
 
 
 
@@ -61,8 +61,8 @@
                             <button id="packages_ConnectAll" type="button" class="btn btn-primary " style="text-align: left; margin-top: 2px"><i class="fa fa-share-alt fa-rotate-270" aria-hidden="true" style="margin-right: 5px" ></i>  Connect All Packages </button>
                             <button id="tree_CloseAll"  type="button" class="btn btn-primary " style="text-align: left; margin-top: 2px"> <i class="fa fa-circle" aria-hidden="true" style="margin-right: 5px"></i>  Collapse All </button>
                             <button id="tree_ExpandAll" type="button" class="btn btn-primary " style="text-align: left; margin-top: 2px"><i class="fa fa-sitemap fa-rotate-270" aria-hidden="true" style="margin-right: 5px" ></i>  Expand All </button>
-                            <button id="timeLineShow" type="button" class="btn btn-primary " style="text-align: left; margin-top: 2px"><i class="fa fa-sitemap fa-rotate-270" aria-hidden="true" style="margin-right: 5px" ></i>  Show Timeline </button>
-                            <button id="graphShow" type="button" class="btn btn-primary " style="text-align: left; margin-top: 2px"><i class="fa fa-sitemap fa-rotate-270" aria-hidden="true" style="margin-right: 5px" ></i>  Show Graph </button>
+                            <button id="timeLineShow" type="button" class="btn btn-primary " style="text-align: left; margin-top: 2px"><i class="fa fa-bar-chart fa-rotate-90 " aria-hidden="true" style="margin-right: 5px" ></i>  Show Timeline </button>
+                            <button id="graphShow" type="button" class="btn btn-primary " style="text-align: left; margin-top: 2px"><i class="fa fa-refresh fa-rotate-270" aria-hidden="true" style="margin-right: 5px" ></i>  Refresh </button>
 
                         </div>
 
@@ -72,6 +72,11 @@
                                 <input id="toggle-inFocus" type="checkbox" data-toggle="toggle" >
                                 Focus on/off
                             </label>
+                        </div>
+
+                        <div id="thisRunName">
+
+
                         </div>
 
                         <div class="All_Packages" style="color: lightslategrey;font: 13px sans-serif;">
@@ -172,6 +177,7 @@
           let treeData = {};
           //  let forceNodes = {"nodes" : []};
 
+
       </script>
 
 
@@ -210,6 +216,7 @@
               .projection(function(d) { return [d.y, d.x]; });
 
           const svg = d3.select("#viz-graph").append("svg")
+              .attr("class", "chart")
               .attr("width", width + margin.right + margin.left)
               .attr("height", height + margin.top + margin.bottom)
               .append("g")
