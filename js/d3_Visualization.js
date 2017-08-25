@@ -1274,8 +1274,11 @@ function createAllPackageList(packages){
 function treeDraw(currentJson){
 
 
+
+
     // d3.json block
     d3.json(currentJson, function(error, data){
+
 
         if (error) throw error;
 
@@ -1378,6 +1381,8 @@ function treeDraw(currentJson){
 
         });
 
+        console.log('processes: ', processes);
+
 
         let tempPackageX = 0;
         let tempPackageY = -100;
@@ -1454,6 +1459,8 @@ function treeDraw(currentJson){
 
         //Set sections colors for packages from local sections
         setSectionsColors(sections);
+
+
 
 
         //Create the all package list on the overview section on sidebar
@@ -1664,6 +1671,15 @@ function treeDraw(currentJson){
 
 
        // timeLineLen_Total = tree.size()[1];
+
+
+
+
+        let runNametDiv = d3.select("#thisRunName");
+
+        runNametDiv.append('h3').text("Run Name:").attr("href", "#thisRunName").attr("data-toggle", "collapse").style({'padding-left': 0, 'text-decoration': 'none' ,'color':'white' ,  'font-size': '20px' });
+
+        runNametDiv.append('h5').text(runNames[0]).attr("id", "thisRunName" ).attr("class", "panel-collapse ").style({'padding-left': 0, 'text-decoration': 'none', 'font-size': '15px' });
 
 
 
@@ -1881,7 +1897,7 @@ function totalTimeLineDraw(length, durationLabel){
     // Update the link text
     svg.selectAll(".TotalTimeLineGroup").append("text")
         .attr("y", height + 20)//magic number here
-        .attr("x", length  + margin.left )
+        .attr("x", length  )
         .attr('text-anchor', 'middle')
         .attr("class", "totalTimeLineText")//easy to style with CSS
         .text(durationLabel);
@@ -1890,51 +1906,60 @@ function totalTimeLineDraw(length, durationLabel){
 
 };
 
+function removeSvg(){
+
+    console.log('svg: ',     svg);
+
+    svg.remove();
+};
+
 
 
 function renderGanttChart(){
 
+    svg.remove();
 
-
-    let forcePackages = svg.selectAll(".package");
-    let label = svg.selectAll(".forceLabel");
-    let edge = svg.selectAll(".edge");
-
-
-
-    let node = svg.selectAll("g.node");
-    let link = svg.selectAll("path.link");
-    let linktext = svg.selectAll("g.link");
-    let timeLineText = d3.selectAll(".timeLineText");
-
-    let timeline =  svg.selectAll(".timeLine");
-
-
-    let timeLine_Total = d3.selectAll(".timeLine_Total");
-    let totalTimeLineText = d3.selectAll(".totalTimeLineText");
-
-
-    forcePackages.remove();
-    label.remove();
-    edge.remove();
-
-    node.remove();
-    link.remove();
-    linktext.remove();
-    timeLineText.remove();
-    timeline.remove();
-    timeLine_Total.remove();
-    totalTimeLineText.remove();
-
-
-
-    forceData = {"packages": []};
-    packagesNumber = 0;
-    sectionsInPackages = {};
-
-
-    force.nodes = null;
-    force.links = null;
+    // let viz = svg.selectAll(".package");
+    //
+    // let forcePackages = svg.selectAll(".package");
+    // let label = svg.selectAll(".forceLabel");
+    // let edge = svg.selectAll(".edge");
+    //
+    //
+    //
+    // let node = svg.selectAll("g.node");
+    // let link = svg.selectAll("path.link");
+    // let linktext = svg.selectAll("g.link");
+    // let timeLineText = d3.selectAll(".timeLineText");
+    //
+    // let timeline =  svg.selectAll(".timeLine");
+    //
+    //
+    // let timeLine_Total = d3.selectAll(".timeLine_Total");
+    // let totalTimeLineText = d3.selectAll(".totalTimeLineText");
+    //
+    //
+    // forcePackages.remove();
+    // label.remove();
+    // edge.remove();
+    //
+    // node.remove();
+    // link.remove();
+    // linktext.remove();
+    // timeLineText.remove();
+    // timeline.remove();
+    // timeLine_Total.remove();
+    // totalTimeLineText.remove();
+    //
+    //
+    //
+    // forceData = {"packages": []};
+    // packagesNumber = 0;
+    // sectionsInPackages = {};
+    //
+    //
+    // force.nodes = null;
+    // force.links = null;
 
     // forceNodes = force.nodes;
     // forceLinks = force.links();
@@ -1981,22 +2006,24 @@ function generateProcessesForTimeLine(_process){
 
 
 
-    var startDate = new Date(_process.start_time/1000000);
+    var startDate = _process.start_time/1000000;
 
     // console.log( '_process.start_time: ', _process.start_time / 1000000);
     //
     // console.log( 'startDate: ', startDate.toString("MMM dd"));
 
 
-    var endDate = new Date(_process.exit_time/1000000);
+    var endDate = _process.exit_time/1000000;
 
     // console.log( '_process.exit_time: ', _process.exit_time / 1000000);
-    // console.log( 'endDate: ', endDate.toString("MMM dd"));
-
+    // console.log( 'endDate: ', endDate);
 
     let timeLineProcess = {['startDate']: new Date(startDate),['endDate']: new Date(endDate), ['taskName']: _process.long_name , "status":"RUNNING" };
 
-
+    //
+    // //let timeLineProcess = {['startDate']: new Date(_process.start_time/1000000),['endDate']: new Date(_process.exit_time/1000000), ['taskName']: _process.long_name , "status":"RUNNING" };
+    //
+    // console.log('timeLineProcess.endDate - timeLineProcess.endDate.startDate: ', timeLineProcess.endDate );
 
     processes.push(timeLineProcess);
 

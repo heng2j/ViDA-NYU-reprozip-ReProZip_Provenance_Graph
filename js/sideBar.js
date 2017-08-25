@@ -9,7 +9,7 @@ const processDetails = d3.select('#processDetails')
     .style({
         'width': 620-width + 'px',
         'height': height + 'px',
-        'margin-top' : 25 + 'px'
+        'margin-top' : 0 + 'px'
     });
 
 
@@ -197,4 +197,29 @@ $(function() {
     });
 
 
-})
+    $('#timeLineShow').on("click", function (e) {
+
+        console.log('graphShow');
+
+        renderGanttChart();
+
+    });
+
+
+    $('#graphShow').on("click", function (e) {
+
+
+        //removeSvg();
+        location.reload();
+
+        // let timeline = svg.selectAll(".chart");
+        // timeline.remove();
+
+
+
+        //treeDraw(currentJsonFile);
+
+    });
+
+
+});
