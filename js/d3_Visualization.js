@@ -45,9 +45,15 @@ d3.select("body").on("click",function(){
 // update Tree function
 function update(source) {
 
+
+
+
     // Compute the new tree layout.
     let nodes = tree.nodes(root).reverse(),
         links = tree.links(nodes);
+
+    console.log('source.x: ', source.x);
+    console.log('source.y: ', source.y);
 
 
     // Normalize for fixed-depth.
@@ -55,9 +61,14 @@ function update(source) {
 
     });
 
+
+
     // Update the nodes…
     let node = svg.selectAll("g.node")
         .data(nodes, function(d) { return d.id || (d.id = ++nodeId_Index);});
+
+
+
 
     let DELAY = 200, clicks = 0, timer = null;
 
@@ -149,6 +160,7 @@ function update(source) {
 
 
 
+
     nodeEnter.append("circle")
         .attr("r", 1e-6)
         .attr("class", "process")
@@ -163,6 +175,7 @@ function update(source) {
         .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
         .text(function(d) { return d.name; })
         .style("fill-opacity", 1e-6);
+
 
 
     // Transition nodes to their new position.
@@ -181,11 +194,14 @@ function update(source) {
     nodeUpdate.select("text")
         .style("fill-opacity", 1);
 
+
+
     // Transition exiting nodes to the parent's new position.
     let nodeExit = node.exit().transition()
         .duration(duration)
         .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
         .remove();
+
 
     nodeExit.select("circle")
         .attr("r", 1e-6);
@@ -210,6 +226,7 @@ function update(source) {
     link.transition()
         .duration(duration)
         .attr("d", diagonal);
+
 
     // Transition exiting nodes to the parent's new position.
     link.exit().transition()
@@ -250,20 +267,27 @@ function update(source) {
         })
 
 
+
     //Transition exiting link text to the parent's new position.
     linktext.exit().transition()
         .remove();
 
 
+
+
+
     // Stash the old positions for transition.
     nodes.forEach(function(d) {
         d.x0 = d.x;
-        d.y0 = d.y;
+        d.y0 = d.y ;
+
     });
+
 
 
     currentDisplayingNodes = nodes;
     console.log("currentDisplayingNodes: ", currentDisplayingNodes);
+
 
 
    // svg.append('use').attr('xlink:href','#package');
@@ -1435,6 +1459,8 @@ function treeDraw(currentJson){
         //Create the all package list on the overview section on sidebar
         createAllPackageList(forceData.packages);
 
+
+
         //Handle runs
         data.runs.forEach(function(run){
 
@@ -1643,7 +1669,12 @@ function treeDraw(currentJson){
 
         root = treeData[runNames[0]][0];
         root.x0 = height; // / 2;
-        root.y0 = 0;
+        root.y0 = 1000;
+        root.y = 1000;
+
+
+        console.log('height: ', height);
+        console.log('root.y0: ', root.y0);
 
         console.log('root: ', root);
 
@@ -1655,6 +1686,7 @@ function treeDraw(currentJson){
         // rootStartTime = root.start_time;
         rootStartTime = treeData[runNames[0]][0].start_time;
 
+        console.log('rootStartTime:', rootStartTime);
 
         let duration_ms = 0;
 
@@ -1672,9 +1704,16 @@ function treeDraw(currentJson){
         // timeLineLen = root.x0 / 2;
 
 
-        root.children.forEach(collapse);
+        if(root.children!=null){
 
-        if (rootStartTime >= 0){
+            root.children.forEach(collapse);
+        }
+
+        console.log('maxcCountCollapse: ', maxcCountCollapse);
+
+
+
+        if (rootStartTime >= 0 && root.children!=null){
 
 
             duration_ms = (root.children[0].start_time - rootStartTime) / 1000000;
@@ -1705,7 +1744,7 @@ function treeDraw(currentJson){
 
         timeLineLen =  timeLineLen_Total * (duration_ms / duration_total_ms);
 
-        //   console.log('timeLineLen: ', timeLineLen);
+          console.log('timeLineLen: ', timeLineLen);
 
         if(!isTreeRedrawn){
 
